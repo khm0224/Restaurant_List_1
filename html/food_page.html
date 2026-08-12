@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="../css/login_page.css">
 </head>
 <body>
+<!-- 식당 탐색 화면 전체 영역 -->
 <div id="container">
+    <!-- 로고, 검색, 로그인 버튼 -->
     <div id="top-bar">
         <div class="top-left">
             <img src="../img/mainLogo.png" alt="logo" class="logo-img">
@@ -23,6 +25,7 @@
         </div>
     </div>
 
+    <!-- 식당 카테고리 선택 버튼 -->
     <div id="function-bar">
         <div class="category-wrap">
             <button class="category-btn active" data-category="한식" aria-pressed="true">한식</button>
@@ -33,6 +36,7 @@
         </div>
     </div>
 
+    <!-- 식당 목록과 Google 지도 영역 -->
     <div id="content">
         <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true" aria-controls="side-bar">
             <span aria-hidden="true">☰</span>
@@ -52,8 +56,10 @@
     </div>
 </div>
 
+<!-- JavaScript가 로그인 모달을 삽입하는 위치 -->
 <div id="login-modal-root"></div>
 
+<!-- 페이지 기능에 필요한 스크립트 -->
 <script src="../js/map-config.js"></script>
 <script src="../js/restaurantData.js"></script>
 <script src="../js/food_page.js"></script>

@@ -5,6 +5,7 @@ const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 
+// 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(category, index) {
     if (window.setSelectedRestaurant) {
         window.setSelectedRestaurant(category, index);
@@ -13,6 +14,7 @@ function openStoreDetail(category, index) {
     window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
 }
 
+// 현재 카테고리의 식당 목록과 클릭 이벤트를 화면에 만듭니다.
 function renderSelectedStores() {
     const activeButton = [...categoryButtons].find(button => button.classList.contains('active'));
     const selectedCategory = activeButton ? activeButton.dataset.category : '한식';
@@ -96,6 +98,7 @@ categoryButtons.forEach(button => {
     });
 });
 
+// 첫 화면에는 기본 카테고리인 한식을 표시합니다.
 renderSelectedStores();
 
 sidebarToggle.addEventListener('click', () => {
@@ -110,6 +113,7 @@ sidebarToggle.addEventListener('click', () => {
     }, 320);
 });
 
+// API 키를 확인한 뒤 Google 지도 스크립트를 불러옵니다.
 function loadGoogleMaps() {
     const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
     const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
@@ -139,6 +143,7 @@ function loadGoogleMaps() {
     document.head.appendChild(script);
 }
 
+// 지도 로드가 완료되면 기본 위치에 지도와 마커를 표시합니다.
 function initFoodMap() {
     const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
     const map = new google.maps.Map(document.getElementById('map-api'), {

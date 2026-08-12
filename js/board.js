@@ -1,6 +1,7 @@
 // 서버/DB 없이 브라우저 localStorage로 댓글을 흉내내는 간이 게시판 모듈
 const BOARD_STORAGE_KEY = 'restaurantComments';
 
+// 댓글 저장소에서 식당별 댓글 목록을 읽습니다.
 function loadBoard() {
     try {
         return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {};
@@ -9,6 +10,7 @@ function loadBoard() {
     }
 }
 
+// 변경된 댓글 목록을 브라우저에 저장합니다.
 function saveBoard(board) {
     localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(board));
 }
@@ -48,6 +50,7 @@ window.Board = {
 // 리뷰(평점 + 내용 + 사진)도 같은 방식으로 localStorage에 흉내내어 저장
 const REVIEW_STORAGE_KEY = 'restaurantReviews';
 
+// 리뷰 저장소에서 식당별 리뷰 목록을 읽습니다.
 function loadReviewBoard() {
     try {
         return JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY)) || {};
@@ -56,6 +59,7 @@ function loadReviewBoard() {
     }
 }
 
+// 변경된 리뷰 목록을 브라우저에 저장합니다.
 function saveReviewBoard(board) {
     localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(board));
 }
