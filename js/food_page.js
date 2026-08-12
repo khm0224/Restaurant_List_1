@@ -64,9 +64,10 @@ sidebarToggle.addEventListener('click', () => {
 
 function loadGoogleMaps() {
     const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
+    const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
 
-    if (!apiKey) {
-        mapStatus.textContent = 'Google Maps API 키가 없어 지도가 비활성화되었습니다.';
+    if (!hasValidApiKeyFormat) {
+        mapStatus.textContent = '유효한 Google Maps API 키가 없어 지도가 비활성화되었습니다.';
         mapStatus.classList.add('is-error');
         return;
     }
