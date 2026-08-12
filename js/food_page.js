@@ -7,11 +7,26 @@ const loadMapButton = document.getElementById('load-map-btn');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 
-function renderStores(category) {
-    const stores = window.restaurantData?.[category] || [];
+function renderSelectedStores() {
+    const selectedCategories = [...categoryButtons]
+        .filter(button => button.classList.contains('active'))
+        .map(button => button.dataset.category);
 
-    storeList.innerHTML = stores.map((store, index) => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
+    const stores = selectedCategories.flatMap(category =>
+        (window.restaurantData?.[category] || []).map((store, index) => ({
+            ...store,
+            category,
+            index
+        }))
+    );
+
+    if (stores.length === 0) {
+        storeList.innerHTML = '<p class="empty-store-list">음식 종류를 하나 이상 선택하세요.</p>';
+        return;
+    }
+
+    storeList.innerHTML = stores.map(store => `
+        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(store.category)}&id=${store.index}">
             <article class="store-card">
                 <img src="${store.img}" alt="${store.name}" class="store-img">
                 <div class="store-info">
@@ -29,12 +44,13 @@ function renderStores(category) {
 
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
-        categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
-        renderStores(button.dataset.category);
+        const isSelected = button.classList.toggle('active');
+        button.setAttribute('aria-pressed', String(isSelected));
+        renderSelectedStores();
     });
 });
 
-renderStores('한식');
+renderSelectedStores();
 
 sidebarToggle.addEventListener('click', () => {
     const isCollapsed = content.classList.toggle('sidebar-collapsed');

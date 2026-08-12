@@ -190,6 +190,13 @@ html, body {
     min-height: 100%;
 }
 
+.empty-store-list {
+    margin: 24px 8px;
+    color: #666;
+    text-align: center;
+    line-height: 1.6;
+}
+
 .store-card-link {
     text-decoration: none;
     color: inherit;
