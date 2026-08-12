@@ -14,17 +14,20 @@ function openStoreDetail(category, index) {
 }
 
 function renderSelectedStores() {
-    const activeButton = [...categoryButtons].find(button => button.classList.contains('active'));
-    const selectedCategory = activeButton ? activeButton.dataset.category : '한식';
+    const selectedCategories = [...categoryButtons]
+        .filter(button => button.classList.contains('active'))
+        .map(button => button.dataset.category);
 
-    const stores = (window.restaurantData?.[selectedCategory] || []).map((store, index) => ({
-        ...store,
-        category: selectedCategory,
-        index
-    }));
+    const stores = selectedCategories.flatMap(category =>
+        (window.restaurantData?.[category] || []).map((store, index) => ({
+            ...store,
+            category,
+            index
+        }))
+    );
 
     if (stores.length === 0) {
-        storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
+        storeList.innerHTML = '<p class="empty-store-list">음식 종류를 하나 이상 선택하세요.</p>';
         return;
     }
 
@@ -86,15 +89,9 @@ function renderSelectedStores() {
 
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
-        const nextCategory = button.dataset.category;
-
-        categoryButtons.forEach(btn => {
-            const isActive = btn === button;
-            btn.classList.toggle('active', isActive);
-            btn.setAttribute('aria-pressed', String(isActive));
-        });
-
-        renderSelectedStores(nextCategory);
+        const isSelected = button.classList.toggle('active');
+        button.setAttribute('aria-pressed', String(isSelected));
+        renderSelectedStores();
     });
 });
 

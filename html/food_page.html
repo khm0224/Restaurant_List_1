@@ -1,49 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>맛집 추천</title>
     <link rel="stylesheet" href="../css/food_page.css">
 </head>
-
 <body>
-    <div id="container">
-        <div id="top-bar">
-            <div class="top-left">
-                <img src="../img/mainLogo.png" alt="logo" class="logo-img">
-            </div>
-
-            <div class="top-center">
-                <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
-            </div>
-
-            <div class="top-right">
-                <button class="login-btn">로그인</button>
-            </div>
+<div id="container">
+    <div id="top-bar">
+        <div class="top-left">
+            <img src="../img/mainLogo.png" alt="logo" class="logo-img">
         </div>
 
-        <div id="function-bar">
-            <div class="category-wrap">
-                <button class="category-btn active" data-category="한식">한식</button>
-                <button class="category-btn" data-category="일식">일식</button>
-                <button class="category-btn" data-category="중식">중식</button>
-                <button class="category-btn" data-category="양식">양식</button>
-                <button class="category-btn" data-category="디저트">디저트</button>
-            </div>
+        <div class="top-center">
+            <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
         </div>
 
-        <div id="content">
-            <div id="side-bar">
-                <div id="store-list"></div>
-            </div>
-            <div id="map-api">지도</div>
+        <div class="top-right">
+            <button class="login-btn">로그인</button>
         </div>
     </div>
 
-    <script src="../js/restaurantData.js"></script>
-    <script src="../js/food_page.js"></script>
-</body>
+    <div id="function-bar">
+        <div class="category-wrap">
+            <button class="category-btn active" data-category="한식">한식</button>
+            <button class="category-btn" data-category="일식">일식</button>
+            <button class="category-btn" data-category="중식">중식</button>
+            <button class="category-btn" data-category="양식">양식</button>
+            <button class="category-btn" data-category="디저트">디저트</button>
+        </div>
+    </div>
 
+    <div id="content">
+        <div id="side-bar">
+            <div id="store-list"></div>
+        </div>
+        <div id="map-api">지도</div>
+    </div>
+</div>
+
+<script src="../js/restaurantData.js"></script>
+<script src="../js/food_page.js"></script>
+</body>
 </html>
