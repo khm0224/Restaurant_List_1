@@ -1,68 +1,72 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>맛집 추천</title>
-    <!-- CSS 스타일시트 통합 -->
-    <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/main_page_style.css">
-    <link rel="stylesheet" href="./css/login_page.css">
+    
 </head>
 
 <body>
+    <script src="./js/map-config.js"></script>
     <header class="header">
+
+
         <div class="logo">
             <span class="logo-icon">🍗</span> <!--상단 로고 이미지 -->
             <span>로고이름</span> <!--상단 로고 텍스트 -->
         </div>
 
+
         <!-- ============ 카테고리1 (상단) ============ -->
         <nav class="nav">
-            <a href="#">상단1</a> <!-- 상단 카테고리 버튼1-->
-            <a href="#">상단2</a>
-            <a href="#">상단3</a>
-            <a href="#">상단4</a>
-            <a href="#">상단5</a>
+            <a href="#"> 상단1</a> <!-- 상단 카테고리 버튼1-->
+            <a href="#"> 상단2</a> <!-- 상단 카테고리 버튼1-->
+            <a href="#"> 상단3</a> <!-- 상단 카테고리 버튼1-->
+            <a href="#">상단4</a> <!-- 상단 카테고리 버튼1-->
+            <a href="#">상단5</a> <!-- 상단 카테고리 버튼1-->
         </nav>
         <div class="header-right">
             <div class="search-box">
                 <input type="text" placeholder="메뉴를 검색하시오..">
                 <span class="search-btn">🔍</span>
             </div>
-            <span class="login-btn" id="loginBtn">🙎🏻‍♂️</span>
+            <span class="login-btn">🙎🏻‍♂️</span>
         </div>
     </header>
+
 
     <!-- ============ 히어로 섹션 ============ -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-eyebrow">히어로 텍스트 1</div>
-            <div class="hero-title">히어로 텍스트 2</div>
+            <div class="hero-eyebrow"> 히어로 텍스트 1</div> <!-- 히어로 텍스트 1 -->
+            <div class="hero-title"> 히어로 텍스트 2</div> <!-- 히어로 텍스트 2 -->
             <p class="hero-desc">히어로 텍스트 3</p>
-            <a href="#" class="hero-cta">맛집으로 바로가기 버튼 ›</a>
+            <a href="#" class="hero-cta">맛집으로 바로가기 버튼 ›</a> <!-- 맛집으로 바로가기 버튼 -->
         </div>
     </section>
 
+
     <!-- ============ 카테고리2 (중앙) ============ -->
     <div class="category-bar">
-        <button class="chip active">필터 초기화</button>
-        <button class="chip">필터1</button>
-        <button class="chip">필터2</button>
-        <button class="chip">필터3</button>
-        <button class="chip">필터4</button>
-        <button class="chip">필터5</button>
-        <button class="chip">필터6</button>
+        <button class="chip active">필터 초기화</button> <!-- 전체 보기 버튼: 필터 초기화 -->
+        <button class="chip">필터1</button> <!-- 필터1 -->
+        <button class="chip">필터2</button> <!-- 필터2 -->
+        <button class="chip">필터3</button> <!-- 필터3 -->
+        <button class="chip">필터4</button> <!-- 필터4 -->
+        <button class="chip">필터5</button> <!-- 필터5 -->
+        <button class="chip">필터6</button> <!-- 필터6 -->
     </div>
 
-    <!-- ============ top list ============ -->
+    <!-- ============ top list============ -->
     <section class="section">
         <div class="section-head">
             <h2>top list</h2>
-            <a href="#" class="more-link">더보기 ›</a>
+            <a href="#" class="more-link">더보기 ›</a> <!-- 전체 목록으로 이동 -->
         </div>
 
+        <!-- 나중에 실제 음식점 데이터(이미지, 이름, 위치, 별점 등)로 채울 자리 -->
         <div class="restaurant-grid">
             <div class="r-card-placeholder">음식점1</div>
             <div class="r-card-placeholder">음식점2</div>
@@ -70,52 +74,26 @@
             <div class="r-card-placeholder">음식점4</div>
             <div class="r-card-placeholder">음식점5</div>
         </div>
-    </section>
 
-    <!-- ============ 지도 섹션 ============ -->
-    <section class="homepage-map">
+    </section>
+    <section class ="homepage-map">
         <div class="section-head">
             <h2>주변 맛집 지도</h2>
             <a href="./html/food_page.html" class="more-link">
                 크게 보기 ›
             </a>
         </div>
-        <div id="homepage-map">
-            <p id="homepage-map-status">지도를 불러오는 중입니다…</p>
-        </div>
+
+        <div id="homepage-map"></div>
     </section> 
-
-    <!-- ============ 로그인 모달 팝업 ============ -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeBtn">&times;</button>
-            <h2 class="modal-title">맛집리스트 로그인하기</h2>
-            
-            <form class="login-form" onsubmit="return false;">
-                <div class="input-group">
-                    <input type="email" placeholder="아이디" required>
-                    <span class="input-icon">😒</span>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" placeholder="비밀번호" required>
-                    <span class="input-icon">😒</span>
-                </div>
-                
-                <div class="find-link">
-                    <a href="#">아이디/비밀번호 찾기</a>
-                </div>
-                
-                <button type="submit" class="btn btn-login">로그인</button>
-                <button type="button" class="btn btn-signup">회원가입</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 스크립트 연결 -->
-    <script src="./js/map-config.js"></script>
     <script src="./js/main.js"></script>
-    <script src="./js/login_modal.js"></script>
+
+    <script
+    
+    src="https://maps.googleapis.com/maps/api/js?key=_API_KEY&callback=initHomepageMap&v=weekly"
+        async
+        defer>
+    </script>
 </body>
 
 </html>
