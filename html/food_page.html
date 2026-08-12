@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>맛집 추천</title>
     <link rel="stylesheet" href="../css/food_page.css">
 </head>
 <body>
@@ -12,11 +12,9 @@
         <div class="top-left">
             <img src="../img/mainLogo.png" alt="logo" class="logo-img">
         </div>
-
         <div class="top-center">
             <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
         </div>
-
         <div class="top-right">
             <button class="login-btn">로그인</button>
         </div>
@@ -33,46 +31,30 @@
     </div>
 
     <div id="content">
+        <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true" aria-controls="side-bar">
+            <span aria-hidden="true">☰</span>
+        </button>
         <div id="side-bar">
             <div id="store-list"></div>
         </div>
-        <div id="map-api">지도</div>
+        <div id="map-area">
+            <div id="map-api" aria-label="Google 지도"></div>
+            <div id="map-loader">
+                <div class="map-loader-card">
+                    <h2>Google 지도 연결</h2>
+                    <p>테스트용 API 키를 입력하면 이 영역에 지도가 표시됩니다.</p>
+                    <div class="map-key-row">
+                        <input id="map-api-key" type="password" autocomplete="off" placeholder="Google Maps API 키">
+                        <button id="load-map-btn" type="button">지도 불러오기</button>
+                    </div>
+                    <p id="map-status">API 키는 파일이나 브라우저 저장소에 저장되지 않습니다.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="../js/restaurantData.js"></script>
-<script>
-const categoryButtons = document.querySelectorAll('.category-btn');
-const storeList = document.getElementById('store-list');
-
-function renderStores(category) {
-    const stores = window.restaurantData[category] || [];
-
-    storeList.innerHTML = stores.map((store, index) => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
-            <article class="store-card">
-                <img src="${store.img}" alt="${store.name}" class="store-img">
-                <div class="store-info">
-                    <h3 class="store-name">${store.name}</h3>
-                    <p class="store-address">${store.address}</p>
-                    <div class="store-meta">
-                        <span>⭐ ${store.rating}</span>
-                        <span>리뷰 ${store.reviewCount}</span>
-                    </div>
-                </div>
-            </article>
-        </a>
-    `).join('');
-}
-
-categoryButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
-        renderStores(button.dataset.category);
-    });
-});
-
-renderStores('한식');
-</script>
+<script src="../js/food_page.js"></script>
 </body>
 </html>
