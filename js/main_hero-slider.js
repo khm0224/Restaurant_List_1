@@ -92,7 +92,7 @@
 
     function resetTimer() {
         clearInterval(timer);
-        timer = setInterval(next, 4000);
+        timer = setInterval(next, 5000);
     }
 
     update();
