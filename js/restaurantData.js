@@ -61,6 +61,31 @@ window.restaurantData = {
     ]
 };
 
+window.getRestaurantData = function (category, index) {
+    if (!category || index === undefined || index === null) {
+        return null;
+    }
+
+    const normalizedIndex = Number(index);
+    return window.restaurantData?.[category]?.[normalizedIndex] || null;
+};
+
+window.setSelectedRestaurant = function (category, index) {
+    const store = window.getRestaurantData(category, index);
+    if (!store) {
+        return null;
+    }
+
+    const selected = {
+        ...store,
+        category,
+        id: Number(index)
+    };
+
+    sessionStorage.setItem('selectedRestaurant', JSON.stringify(selected));
+    return selected;
+};
+
 // 카테고리별 임시 메뉴 데이터 (식당 개별 메뉴 정보는 아직 없어서 카테고리 기준으로 대체)
 window.menuTemplates = {
     한식: [

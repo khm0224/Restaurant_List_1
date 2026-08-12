@@ -81,7 +81,8 @@
             <form id="review-form">
                 <div class="modal-field">
                     <label>평점</label>
-                    <div class="star-rating" id="star-rating">
+                    <input type="hidden" id="review-rating-input" required>
+                    <div class="star-rating" id="star-rating" aria-label="평점 선택" aria-required="true">
                         <button type="button" class="star-btn" data-value="1">★</button>
                         <button type="button" class="star-btn" data-value="2">★</button>
                         <button type="button" class="star-btn" data-value="3">★</button>

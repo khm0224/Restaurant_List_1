@@ -58,6 +58,14 @@ function loadGoogleMaps() {
 const categoryButtons = document.querySelectorAll('.category-btn');
 const storeList = document.getElementById('store-list');
 
+function openStoreDetail(category, index) {
+    if (window.setSelectedRestaurant) {
+        window.setSelectedRestaurant(category, index);
+    }
+
+    window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
+}
+
 function renderStores(category) {
     if (!storeList) {
         return;
@@ -66,8 +74,8 @@ function renderStores(category) {
     const stores = window.restaurantData?.[category] || [];
 
     storeList.innerHTML = stores.map((store, index) => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
-            <article class="store-card">
+        <article class="store-card" data-category="${category}" data-index="${index}" tabindex="0">
+            <div class="store-main-row">
                 <img src="${store.img}" alt="${store.name}" class="store-img">
                 <div class="store-info">
                     <h3 class="store-name">${store.name}</h3>
@@ -77,9 +85,48 @@ function renderStores(category) {
                         <span>리뷰 ${store.reviewCount}</span>
                     </div>
                 </div>
-            </article>
-        </a>
+                <button class="nav-btn route-btn" type="button" data-category="${category}" data-index="${index}">길찾기</button>
+            </div>
+        </article>
     `).join('');
+
+    storeList.querySelectorAll('.route-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const targetCategory = button.dataset.category;
+            const targetIndex = Number(button.dataset.index);
+            const selectedStore = window.getRestaurantData?.(targetCategory, targetIndex);
+
+            if (selectedStore) {
+                const destination = `${selectedStore.name} ${selectedStore.address}`;
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`;
+                window.open(mapUrl, '_blank', 'noopener,noreferrer');
+            }
+        });
+    });
+
+    storeList.querySelectorAll('.store-card').forEach(card => {
+        card.addEventListener('click', (event) => {
+            if (event.target.closest('.detail-btn')) {
+                return;
+            }
+
+            const targetCategory = card.dataset.category;
+            const targetIndex = Number(card.dataset.index);
+            openStoreDetail(targetCategory, targetIndex);
+        });
+
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const targetCategory = card.dataset.category;
+                const targetIndex = Number(card.dataset.index);
+                openStoreDetail(targetCategory, targetIndex);
+            }
+        });
+    });
 }
 
 if (categoryButtons.length && storeList) {

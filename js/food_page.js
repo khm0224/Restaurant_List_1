@@ -5,27 +5,32 @@ const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 
-function renderSelectedStores() {
-    const selectedCategories = [...categoryButtons]
-        .filter(button => button.classList.contains('active'))
-        .map(button => button.dataset.category);
+function openStoreDetail(category, index) {
+    if (window.setSelectedRestaurant) {
+        window.setSelectedRestaurant(category, index);
+    }
 
-    const stores = selectedCategories.flatMap(category =>
-        (window.restaurantData?.[category] || []).map((store, index) => ({
-            ...store,
-            category,
-            index
-        }))
-    );
+    window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
+}
+
+function renderSelectedStores() {
+    const activeButton = [...categoryButtons].find(button => button.classList.contains('active'));
+    const selectedCategory = activeButton ? activeButton.dataset.category : '한식';
+
+    const stores = (window.restaurantData?.[selectedCategory] || []).map((store, index) => ({
+        ...store,
+        category: selectedCategory,
+        index
+    }));
 
     if (stores.length === 0) {
-        storeList.innerHTML = '<p class="empty-store-list">음식 종류를 하나 이상 선택하세요.</p>';
+        storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
         return;
     }
 
     storeList.innerHTML = stores.map(store => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(store.category)}&id=${store.index}">
-            <article class="store-card">
+        <article class="store-card" data-category="${store.category}" data-index="${store.index}" tabindex="0">
+            <div class="store-main-row">
                 <img src="${store.img}" alt="${store.name}" class="store-img">
                 <div class="store-info">
                     <h3 class="store-name">${store.name}</h3>
@@ -35,16 +40,61 @@ function renderSelectedStores() {
                         <span>리뷰 ${store.reviewCount}</span>
                     </div>
                 </div>
-            </article>
-        </a>
+                <button class="nav-btn route-btn" type="button" data-category="${store.category}" data-index="${store.index}">길찾기</button>
+            </div>
+        </article>
     `).join('');
+
+    storeList.querySelectorAll('.route-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const targetCategory = button.dataset.category;
+            const targetIndex = Number(button.dataset.index);
+            const selectedStore = window.getRestaurantData?.(targetCategory, targetIndex);
+
+            if (selectedStore) {
+                const destination = `${selectedStore.name} ${selectedStore.address}`;
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`;
+                window.open(mapUrl, '_blank', 'noopener,noreferrer');
+            }
+        });
+    });
+
+    storeList.querySelectorAll('.store-card').forEach(card => {
+        card.addEventListener('click', (event) => {
+            if (event.target.closest('.route-btn')) {
+                return;
+            }
+
+            const targetCategory = card.dataset.category;
+            const targetIndex = Number(card.dataset.index);
+            openStoreDetail(targetCategory, targetIndex);
+        });
+
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const targetCategory = card.dataset.category;
+                const targetIndex = Number(card.dataset.index);
+                openStoreDetail(targetCategory, targetIndex);
+            }
+        });
+    });
 }
 
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
-        const isSelected = button.classList.toggle('active');
-        button.setAttribute('aria-pressed', String(isSelected));
-        renderSelectedStores();
+        const nextCategory = button.dataset.category;
+
+        categoryButtons.forEach(btn => {
+            const isActive = btn === button;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', String(isActive));
+        });
+
+        renderSelectedStores(nextCategory);
     });
 });
 

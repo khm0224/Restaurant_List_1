@@ -20,6 +20,7 @@ const reviewModalCancel = document.getElementById('review-modal-cancel');
 const reviewForm = document.getElementById('review-form');
 const starRating = document.getElementById('star-rating');
 const starButtons = starRating.querySelectorAll('.star-btn');
+const reviewRatingInput = document.getElementById('review-rating-input');
 const reviewText = document.getElementById('review-text');
 const reviewPhotoInput = document.getElementById('review-photo');
 const reviewPhotoPreview = document.getElementById('review-photo-preview');
@@ -40,7 +41,24 @@ commentLocked.hidden = true;
 const COMMENTS_PER_PAGE = 5;
 let commentPage = 1;
 
-const saved = sessionStorage.getItem('selectedRestaurant');
+let saved = sessionStorage.getItem('selectedRestaurant');
+const queryParams = new URLSearchParams(window.location.search);
+const categoryParam = queryParams.get('category');
+const idParam = queryParams.get('id');
+
+if (!saved && categoryParam && idParam !== null) {
+    const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam));
+
+    if (fallbackStore) {
+        saved = JSON.stringify({
+            ...fallbackStore,
+            category: categoryParam,
+            id: Number(idParam)
+        });
+        sessionStorage.setItem('selectedRestaurant', saved);
+    }
+}
+
 let restaurantId = null;
 
 if (!saved) {
@@ -210,6 +228,8 @@ let selectedRating = 0;
 
 function setStarRating(value) {
     selectedRating = value;
+    reviewRatingInput.value = value ? String(value) : '';
+    reviewRatingInput.setCustomValidity('');
     starButtons.forEach(btn => {
         btn.classList.toggle('selected', Number(btn.dataset.value) <= value);
     });
@@ -217,6 +237,10 @@ function setStarRating(value) {
 
 starButtons.forEach(btn => {
     btn.addEventListener('click', () => setStarRating(Number(btn.dataset.value)));
+});
+
+reviewText.addEventListener('input', () => {
+    reviewText.setCustomValidity('');
 });
 
 function openReviewModal() {
@@ -258,7 +282,17 @@ reviewPhotoInput.addEventListener('change', () => {
 reviewForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    if (selectedRating === 0 || !reviewText.value.trim()) {
+    if (selectedRating === 0) {
+        reviewRatingInput.setCustomValidity('별점을 선택해 주세요.');
+        reviewRatingInput.reportValidity();
+        reviewRatingInput.setCustomValidity('');
+        return;
+    }
+
+    if (!reviewText.value.trim()) {
+        reviewText.setCustomValidity('리뷰 내용을 작성해 주세요.');
+        reviewText.reportValidity();
+        reviewText.setCustomValidity('');
         return;
     }
 

@@ -43,39 +43,7 @@
 </div>
 
 <script src="../js/restaurantData.js"></script>
-<script>
-const categoryButtons = document.querySelectorAll('.category-btn');
-const storeList = document.getElementById('store-list');
-
-function renderStores(category) {
-    const stores = window.restaurantData[category] || [];
-
-    storeList.innerHTML = stores.map((store, index) => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
-            <article class="store-card">
-                <img src="${store.img}" alt="${store.name}" class="store-img">
-                <div class="store-info">
-                    <h3 class="store-name">${store.name}</h3>
-                    <p class="store-address">${store.address}</p>
-                    <div class="store-meta">
-                        <span>⭐ ${store.rating}</span>
-                        <span>리뷰 ${store.reviewCount}</span>
-                    </div>
-                </div>
-            </article>
-        </a>
-    `).join('');
-}
-
-categoryButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
-        renderStores(button.dataset.category);
-    });
-});
-
-renderStores('한식');
-</script>
+<script src="../js/food_page.js"></script>
 </body>
 
 </html>
