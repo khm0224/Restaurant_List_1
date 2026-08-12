@@ -378,39 +378,16 @@ html, body {
     line-height: 1.5;
 }
 
-.map-key-row {
-    display: flex;
-    gap: 8px;
-}
-
-#map-api-key {
-    flex: 1;
-    min-width: 0;
-    padding: 11px 12px;
-    border: 1px solid #c9ced6;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-#load-map-btn {
-    padding: 0 16px;
-    border: 0;
-    border-radius: 8px;
-    background: #1a73e8;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-#load-map-btn:disabled {
-    background: #9aa0a6;
-    cursor: wait;
-}
-
 #map-status {
     margin: 12px 0 0;
     min-height: 21px;
     font-size: 13px;
+    color: #5f6368;
+}
+
+#map-status.is-error {
+    color: #b3261e;
+    font-weight: 600;
 }
 
 @media (max-width: 760px) {
@@ -434,11 +411,4 @@ html, body {
         min-height: 420px;
     }
 
-    .map-key-row {
-        flex-direction: column;
-    }
-
-    #load-map-btn {
-        padding: 11px 16px;
-    }
 }

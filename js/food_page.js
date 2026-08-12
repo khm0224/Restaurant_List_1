@@ -2,8 +2,6 @@ const categoryButtons = document.querySelectorAll('.category-btn');
 const storeList = document.getElementById('store-list');
 const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
-const mapKeyInput = document.getElementById('map-api-key');
-const loadMapButton = document.getElementById('load-map-btn');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 
@@ -64,27 +62,21 @@ sidebarToggle.addEventListener('click', () => {
     }, 320);
 });
 
-loadMapButton.addEventListener('click', loadGoogleMaps);
-mapKeyInput.addEventListener('keydown', event => {
-    if (event.key === 'Enter') loadGoogleMaps();
-});
-
 function loadGoogleMaps() {
-    const apiKey = mapKeyInput.value.trim();
+    const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
 
     if (!apiKey) {
-        mapStatus.textContent = 'API 키를 입력하세요.';
-        mapKeyInput.focus();
+        mapStatus.textContent = 'Google Maps API 키가 없어 지도가 비활성화되었습니다.';
+        mapStatus.classList.add('is-error');
         return;
     }
 
-    loadMapButton.disabled = true;
     mapStatus.textContent = '지도를 불러오는 중입니다…';
 
     window.initFoodMap = initFoodMap;
     window.gm_authFailure = () => {
         mapStatus.textContent = '인증에 실패했습니다. API 키와 HTTP 리퍼러 제한을 확인하세요.';
-        loadMapButton.disabled = false;
+        mapStatus.classList.add('is-error');
     };
 
     const script = document.createElement('script');
@@ -93,7 +85,7 @@ function loadGoogleMaps() {
     script.defer = true;
     script.onerror = () => {
         mapStatus.textContent = 'Google Maps 스크립트를 불러오지 못했습니다.';
-        loadMapButton.disabled = false;
+        mapStatus.classList.add('is-error');
     };
     document.head.appendChild(script);
 }
@@ -119,6 +111,7 @@ function initFoodMap() {
     });
 
     marker.addListener('click', () => infoWindow.open({ anchor: marker, map }));
-    mapKeyInput.value = '';
     mapLoader.hidden = true;
 }
+
+loadGoogleMaps();
