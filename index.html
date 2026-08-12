@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>맛집 추천</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
     
 </head>
 
@@ -76,7 +76,23 @@
         </div>
 
     </section>
+    <section class ="homepage-map">
+        <div class="section-head">
+            <h2>주변 맛집 지도</h2>
+            <a href="./html/food_page.html" class="more-link">
+                크게 보기 ›
+            </a>
+        </div>
 
+        <div id="homepage-map"></div>
+    </section> 
+    <script src="./js/main.js"></script>
+
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpntbMN0VUcZ31FeIp7I9RhAyWLS4wk84_API_KEY&callback=initHomepageMap&v=weekly"
+        async
+        defer>
+    </script>
 </body>
 
 </html>
