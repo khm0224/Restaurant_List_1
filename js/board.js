@@ -3,7 +3,7 @@ const BOARD_STORAGE_KEY = 'restaurantComments';
 
 function loadBoard() {
     try {
-        return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {};
+        return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {}; //localStorage 이 내장 브라우저에 저장시켜준다.(DB대신 사용)
     } catch {
         return {};
     }
