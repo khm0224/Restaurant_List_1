@@ -148,7 +148,7 @@ body {
     scroll-behavior: smooth;
     scrollbar-width: thin;
     flex-shrink: 0;
-    transition: width 0.3s ease, padding 0.3s ease;
+    transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
 }
 
 #side-bar::-webkit-scrollbar {
@@ -162,8 +162,16 @@ body {
 
 #content.sidebar-collapsed #side-bar {
     width: 0;
+    min-width: 0;
     padding-right: 0;
     padding-left: 0;
+    overflow: hidden;
+    border-right-width: 0;
+    pointer-events: none;
+}
+
+#content.sidebar-collapsed #store-list {
+    visibility: hidden;
 }
 
 #sidebar-toggle {
@@ -276,6 +284,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transform: translateY(5px);
 }
 
 .store-meta {
@@ -285,17 +294,19 @@ body {
     font-size: 13px;
     color: #444;
     margin-top: 8px;
+    transform: translateY(5px);
 }
 
 .card-actions {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 0;
     margin-left: auto;
     flex-shrink: 0;
     min-width: 92px;
+    height: 104px;
 }
 
 .nav-btn {
@@ -346,31 +357,6 @@ body {
     background: #fafafa;
     border-color: #d9d9d9;
     color: #333;
-}
-
-.store-name {
-    margin: 0 0 6px;
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.store-address {
-    margin: 0;
-    flex: 1;
-    min-width: 0;
-    font-size: 13px;
-    color: #777;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.store-meta {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    font-size: 13px;
-    color: #444;
 }
 
 .detail-page {
@@ -515,6 +501,7 @@ body {
 
     #content.sidebar-collapsed #side-bar {
         width: 100%;
+        min-width: 0;
         max-height: 0;
         padding-top: 0;
         padding-bottom: 0;
