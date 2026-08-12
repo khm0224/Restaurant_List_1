@@ -248,3 +248,44 @@ a {
     flex: 1;
     /* 남은 공간을 5개가 똑같이 나눠 가짐 */
 }
+
+/*==========홈페이지 미니맵============*/
+
+.homepage-map {
+    padding: 32px 40px;
+}
+
+#homepage-map {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 43%;
+    height: 420px;
+    background: #ddd;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+#homepage-map-status {
+    margin: 0;
+    padding: 18px;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+}
+
+#homepage-map-status.is-disabled,
+#homepage-map-status.is-error {
+    color: #b3261e;
+}
+
+@media (max-width: 760px) {
+    .homepage-map {
+        padding: 24px 20px;
+    }
+
+    #homepage-map {
+        width: 100%;
+        height: 320px;
+    }
+}
