@@ -399,3 +399,78 @@ body {
     margin: 0 auto 22px;
     text-align: center;
 }
+
+#map-area {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+#map-api {
+    width: 100%;
+    height: 100%;
+    background-color: #999;
+}
+
+#map-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #e8eef5, #cdd9e7);
+}
+
+#map-loader[hidden] {
+    display: none;
+}
+
+.map-loader-card {
+    width: min(480px, 100%);
+    padding: 28px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 16px 40px rgba(31, 52, 73, 0.18);
+    text-align: center;
+}
+
+.map-loader-card h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+}
+
+#map-status {
+    margin: 0;
+    min-height: 21px;
+    color: #5f6368;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#map-status.is-error {
+    color: #b3261e;
+    font-weight: 600;
+}
+
+@media (max-width: 760px) {
+    #content {
+        flex-direction: column;
+    }
+
+    #side-bar {
+        width: 100%;
+        max-height: 42vh;
+    }
+
+    #content.sidebar-collapsed #side-bar {
+        width: 100%;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #map-area {
+        min-height: 420px;
+    }
+}
