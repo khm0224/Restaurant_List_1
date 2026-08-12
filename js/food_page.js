@@ -1,0 +1,224 @@
+const restaurantData = {
+    한식: [
+        {
+            name: '마포 한옥마을 식당',
+            img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 마포구 합정동 123-4',
+            rating: 4.8,
+            reviewCount: 210
+        },
+        {
+            name: '서울갈비집',
+            img: 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 강남구 역삼동 45-7',
+            rating: 4.7,
+            reviewCount: 186
+        },
+        {
+            name: '청담 김치찌개',
+            img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 강남구 청담동 88-2',
+            rating: 4.6,
+            reviewCount: 142
+        }
+    ],
+    일식: [
+        {
+            name: '오사카 라멘',
+            img: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 종로구 신문로 22',
+            rating: 4.9,
+            reviewCount: 320
+        },
+        {
+            name: '스시 마루',
+            img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 송파구 잠실동 17-8',
+            rating: 4.8,
+            reviewCount: 271
+        },
+        {
+            name: '동경 우동집',
+            img: 'https://images.unsplash.com/photo-1526318896980-cf78c088247c?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 서초구 서초동 65-1',
+            rating: 4.5,
+            reviewCount: 154
+        }
+    ],
+    중식: [
+        {
+            name: '베이징 만두',
+            img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 용산구 이태원동 22-9',
+            rating: 4.7,
+            reviewCount: 198
+        },
+        {
+            name: '홍루몽',
+            img: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 중구 명동 12-3',
+            rating: 4.6,
+            reviewCount: 176
+        },
+        {
+            name: '중화루',
+            img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 성동구 성수동 42-5',
+            rating: 4.5,
+            reviewCount: 129
+        }
+    ],
+    양식: [
+        {
+            name: '브런치 바',
+            img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 강서구 화곡동 77-8',
+            rating: 4.8,
+            reviewCount: 233
+        },
+        {
+            name: '파스타 하우스',
+            img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 마포구 상수동 11-3',
+            rating: 4.7,
+            reviewCount: 190
+        },
+        {
+            name: '그릴 스테이크',
+            img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 서초구 반포동 44-9',
+            rating: 4.9,
+            reviewCount: 271
+        }
+    ],
+    디저트: [
+        {
+            name: '딸기베이커리',
+            img: 'https://images.unsplash.com/photo-1483695028939-5bb13f8648b0?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 종로구 혜화동 5-18',
+            rating: 4.7,
+            reviewCount: 160
+        },
+        {
+            name: '카페 모나',
+            img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 강남구 논현동 77-2',
+            rating: 4.6,
+            reviewCount: 144
+        },
+        {
+            name: '초코 케이크',
+            img: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80',
+            address: '서울특별시 송파구 문정동 23-1',
+            rating: 4.8,
+            reviewCount: 201
+        }
+    ]
+};
+
+const categoryButtons = document.querySelectorAll('.category-btn');
+const storeList = document.getElementById('store-list');
+const content = document.getElementById('content');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const mapKeyInput = document.getElementById('map-api-key');
+const loadMapButton = document.getElementById('load-map-btn');
+const mapLoader = document.getElementById('map-loader');
+const mapStatus = document.getElementById('map-status');
+
+function renderStores(category) {
+    const stores = restaurantData[category] || [];
+
+    storeList.innerHTML = stores.map(store => `
+        <article class="store-card">
+            <img src="${store.img}" alt="${store.name}" class="store-img">
+            <div class="store-info">
+                <h3 class="store-name">${store.name}</h3>
+                <p class="store-address">${store.address}</p>
+                <div class="store-meta">
+                    <span>⭐ ${store.rating}</span>
+                    <span>리뷰 ${store.reviewCount}</span>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+categoryButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+        renderStores(button.dataset.category);
+    });
+});
+
+renderStores('한식');
+
+sidebarToggle.addEventListener('click', () => {
+    const isCollapsed = content.classList.toggle('sidebar-collapsed');
+    sidebarToggle.setAttribute('aria-expanded', String(!isCollapsed));
+    sidebarToggle.setAttribute('aria-label', isCollapsed ? '식당 목록 보이기' : '식당 목록 숨기기');
+
+    window.setTimeout(() => {
+        if (window.foodMap) {
+            google.maps.event.trigger(window.foodMap, 'resize');
+        }
+    }, 320);
+});
+
+loadMapButton.addEventListener('click', loadGoogleMaps);
+mapKeyInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter') loadGoogleMaps();
+});
+
+function loadGoogleMaps() {
+    const apiKey = mapKeyInput.value.trim();
+
+    if (!apiKey) {
+        mapStatus.textContent = 'API 키를 입력하세요.';
+        mapKeyInput.focus();
+        return;
+    }
+
+    loadMapButton.disabled = true;
+    mapStatus.textContent = '지도를 불러오는 중입니다…';
+
+    window.initFoodMap = initFoodMap;
+    window.gm_authFailure = () => {
+        mapStatus.textContent = '인증에 실패했습니다. API 키와 HTTP 리퍼러 제한을 확인하세요.';
+        loadMapButton.disabled = false;
+    };
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initFoodMap&v=weekly&language=ko&region=KR`;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+        mapStatus.textContent = 'Google Maps 스크립트를 불러오지 못했습니다.';
+        loadMapButton.disabled = false;
+    };
+    document.head.appendChild(script);
+}
+
+function initFoodMap() {
+    const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
+    const map = new google.maps.Map(document.getElementById('map-api'), {
+        center: seoulCityHall,
+        zoom: 13,
+        mapTypeControl: false,
+        streetViewControl: false
+    });
+    window.foodMap = map;
+
+    const marker = new google.maps.Marker({
+        position: seoulCityHall,
+        map,
+        title: '서울특별시청'
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+        content: '<strong>서울특별시청</strong><br>지도 연결 테스트가 완료되었습니다.'
+    });
+
+    marker.addListener('click', () => infoWindow.open({ anchor: marker, map }));
+    mapKeyInput.value = '';
+    mapLoader.hidden = true;
+}
