@@ -4,41 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Maps API 테스트</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: Arial, "Noto Sans KR", sans-serif;
-            background: #f5f7fa;
-            color: #202124;
-        }
-        .toolbar {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            padding: 12px;
-            background: white;
-            border-bottom: 1px solid #dadce0;
-        }
-        #api-key {
-            flex: 1;
-            min-width: 180px;
-            padding: 10px;
-            border: 1px solid #bdc1c6;
-            border-radius: 6px;
-        }
-        button {
-            padding: 10px 16px;
-            border: 0;
-            border-radius: 6px;
-            background: #1a73e8;
-            color: white;
-            cursor: pointer;
-        }
-        button:disabled { background: #9aa0a6; cursor: wait; }
-        #status { padding: 0 12px 12px; background: white; color: #5f6368; }
-        #map { width: 100%; height: calc(100vh - 103px); min-height: 420px; }
-    </style>
+    <link rel="stylesheet" href="../css/test_map.css">
 </head>
 <body>
     <div class="toolbar">
@@ -49,60 +15,6 @@
     <div id="status">키는 이 페이지나 저장소에 저장되지 않습니다.</div>
     <div id="map" aria-label="Google 지도"></div>
 
-    <script>
-        const button = document.querySelector('#load-map');
-        const keyInput = document.querySelector('#api-key');
-        const status = document.querySelector('#status');
-
-        button.addEventListener('click', loadGoogleMaps);
-        keyInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') loadGoogleMaps();
-        });
-
-        function loadGoogleMaps() {
-            const apiKey = keyInput.value.trim();
-            if (!apiKey) {
-                status.textContent = 'API 키를 입력하세요.';
-                keyInput.focus();
-                return;
-            }
-
-            button.disabled = true;
-            status.textContent = '지도를 불러오는 중입니다…';
-
-            window.initMap = initMap;
-            window.gm_authFailure = () => {
-                status.textContent = '인증에 실패했습니다. API 키와 키 제한 설정을 확인하세요.';
-                button.disabled = false;
-            };
-
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initMap&v=weekly`;
-            script.async = true;
-            script.defer = true;
-            script.onerror = () => {
-                status.textContent = 'Google Maps 스크립트를 불러오지 못했습니다.';
-                button.disabled = false;
-            };
-            document.head.appendChild(script);
-        }
-
-        function initMap() {
-            const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
-            const map = new google.maps.Map(document.querySelector('#map'), {
-                center: seoulCityHall,
-                zoom: 15,
-            });
-
-            new google.maps.Marker({
-                position: seoulCityHall,
-                map,
-                title: '서울특별시청',
-            });
-
-            status.textContent = '로드 성공: 서울특별시청을 표시하고 있습니다.';
-            keyInput.value = '';
-        }
-    </script>
+    <script src="../js/test_map.js"></script>
 </body>
 </html>

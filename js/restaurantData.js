@@ -60,3 +60,49 @@ window.restaurantData = {
         { name: '미니디저트바', img: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80', address: '강원특별자치도 춘천시 성심동 102-7', rating: 4.9, reviewCount: 410 }
     ]
 };
+
+// 카테고리별 임시 메뉴 데이터 (식당 개별 메뉴 정보는 아직 없어서 카테고리 기준으로 대체)
+window.menuTemplates = {
+    한식: [
+        { name: '춘천닭갈비 (1인분)', price: 13000 },
+        { name: '메밀막국수', price: 9000 },
+        { name: '보쌈정식', price: 22000 },
+        { name: '된장찌개', price: 8000 },
+        { name: '공기밥', price: 1000 },
+        { name: '순두부찌개', price: 8500 },
+        { name: '제육볶음', price: 11000 },
+        { name: '갈비탕', price: 12000 },
+        { name: '비빔밥', price: 9000 },
+        { name: '냉면', price: 9500 },
+        { name: '족발 (소)', price: 25000 },
+        { name: '전골정식', price: 20000 }
+    ],
+    일식: [
+        { name: '모둠초밥', price: 18000 },
+        { name: '돈코츠라멘', price: 11000 },
+        { name: '가츠동', price: 10000 },
+        { name: '우동', price: 8000 },
+        { name: '연어사시미', price: 24000 }
+    ],
+    중식: [
+        { name: '짜장면', price: 7000 },
+        { name: '짬뽕', price: 8500 },
+        { name: '탕수육 (소)', price: 18000 },
+        { name: '마파두부밥', price: 9000 },
+        { name: '군만두', price: 6000 }
+    ],
+    양식: [
+        { name: '토마토 파스타', price: 14000 },
+        { name: '안심 스테이크', price: 32000 },
+        { name: '리조또', price: 15000 },
+        { name: '수프 & 샐러드', price: 9000 },
+        { name: '하우스 와인 (글라스)', price: 8000 }
+    ],
+    디저트: [
+        { name: '아메리카노', price: 4500 },
+        { name: '수제 케이크', price: 7500 },
+        { name: '크로플', price: 6500 },
+        { name: '딸기라떼', price: 6000 },
+        { name: '마카롱 세트', price: 8000 }
+    ]
+};

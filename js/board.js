@@ -44,3 +44,52 @@ window.Board = {
         return board[restaurantId];
     }
 };
+
+// 리뷰(평점 + 내용 + 사진)도 같은 방식으로 localStorage에 흉내내어 저장
+const REVIEW_STORAGE_KEY = 'restaurantReviews';
+
+function loadReviewBoard() {
+    try {
+        return JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY)) || {};
+    } catch {
+        return {};
+    }
+}
+
+function saveReviewBoard(board) {
+    localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(board));
+}
+
+window.ReviewBoard = {
+    getReviews(restaurantId) {
+        const board = loadReviewBoard();
+        return board[restaurantId] || [];
+    },
+
+    addReview(restaurantId, rating, text, photo) {
+        const board = loadReviewBoard();
+        const reviews = board[restaurantId] || [];
+
+        reviews.push({
+            id: Date.now(),
+            rating,
+            text: text.trim(),
+            photo: photo || null,
+            createdAt: new Date().toISOString()
+        });
+
+        board[restaurantId] = reviews;
+        saveReviewBoard(board);
+        return reviews;
+    },
+
+    deleteReview(restaurantId, reviewId) {
+        const board = loadReviewBoard();
+        const reviews = board[restaurantId] || [];
+
+        board[restaurantId] = reviews.filter(review => review.id !== reviewId);
+        saveReviewBoard(board);
+        return board[restaurantId];
+    }
+};
+
