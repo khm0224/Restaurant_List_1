@@ -4,46 +4,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>카테고리 페이지</title>
+    <title>Document</title>
     <link rel="stylesheet" href="../css/food_page.css">
 </head>
 
 <body>
-    <div id="container">
-        <div id="top-bar">
-            <div class="top-left">
-                <img src="../img/mainLogo.png" alt="logo" class="logo-img">
-            </div>
-
-            <div class="top-center">
-                <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
-            </div>
-
-            <div class="top-right">
-                <button class="login-btn">로그인</button>
-            </div>
+<div id="container">
+    <div id="top-bar">
+        <div class="top-left">
+            <img src="../img/mainLogo.png" alt="logo" class="logo-img">
         </div>
 
-        <div id="function-bar">
-            <div class="category-wrap">
-                <button class="category-btn active" data-category="한식">한식</button>
-                <button class="category-btn" data-category="일식">일식</button>
-                <button class="category-btn" data-category="중식">중식</button>
-                <button class="category-btn" data-category="양식">양식</button>
-                <button class="category-btn" data-category="디저트">디저트</button>
-            </div>
+        <div class="top-center">
+            <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
         </div>
 
-        <div id="content">
-            <div id="side-bar">
-                <div id="store-list"></div>
-            </div>
-            <div id="map-api">지도</div>
+        <div class="top-right">
+            <button class="login-btn">로그인</button>
         </div>
     </div>
 
-    <script src="../js/restaurantData.js"></script>
-    <script src="../js/main.js"></script>
+    <div id="function-bar">
+        <div class="category-wrap">
+            <button class="category-btn active" data-category="한식">한식</button>
+            <button class="category-btn" data-category="일식">일식</button>
+            <button class="category-btn" data-category="중식">중식</button>
+            <button class="category-btn" data-category="양식">양식</button>
+            <button class="category-btn" data-category="디저트">디저트</button>
+        </div>
+    </div>
+
+    <div id="content">
+        <div id="side-bar">
+            <div id="store-list"></div>
+        </div>
+        <div id="map-api">지도</div>
+    </div>
+</div>
+
+<script src="../js/restaurantData.js"></script>
+<script>
+const categoryButtons = document.querySelectorAll('.category-btn');
+const storeList = document.getElementById('store-list');
+
+function renderStores(category) {
+    const stores = window.restaurantData[category] || [];
+
+    storeList.innerHTML = stores.map((store, index) => `
+        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
+            <article class="store-card">
+                <img src="${store.img}" alt="${store.name}" class="store-img">
+                <div class="store-info">
+                    <h3 class="store-name">${store.name}</h3>
+                    <p class="store-address">${store.address}</p>
+                    <div class="store-meta">
+                        <span>⭐ ${store.rating}</span>
+                        <span>리뷰 ${store.reviewCount}</span>
+                    </div>
+                </div>
+            </article>
+        </a>
+    `).join('');
+}
+
+categoryButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+        renderStores(button.dataset.category);
+    });
+});
+
+renderStores('한식');
+</script>
 </body>
 
 </html>
