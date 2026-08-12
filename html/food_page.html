@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>맛집 추천</title>
     <link rel="stylesheet" href="../css/food_page.css">
+    <link rel="stylesheet" href="../css/login_page.css">
 </head>
 <body>
 <div id="container">
@@ -18,7 +19,7 @@
         </div>
 
         <div class="top-right">
-            <button class="login-btn">로그인</button>
+            <button type="button" class="login-btn" data-login-open>로그인</button>
         </div>
     </div>
 
@@ -51,8 +52,11 @@
     </div>
 </div>
 
+<div id="login-modal-root"></div>
+
 <script src="../js/map-config.js"></script>
 <script src="../js/restaurantData.js"></script>
 <script src="../js/food_page.js"></script>
+<script src="../js/login_modal.js" data-login-component="./login_page.html"></script>
 </body>
 </html>

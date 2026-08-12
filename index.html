@@ -30,7 +30,7 @@
                 <input type="text" placeholder="메뉴를 검색하시오..">
                 <span class="search-btn">🔍</span>
             </div>
-            <span class="login-btn" id="loginBtn">🙎🏻‍♂️</span>
+            <button type="button" class="login-btn" data-login-open aria-label="로그인">🙎🏻‍♂️</button>
         </div>
     </header>
 
@@ -84,37 +84,12 @@
         </div>
     </section> 
 
-    <!-- ============ 로그인 모달 팝업 ============ -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeBtn">&times;</button>
-            <h2 class="modal-title">맛집리스트 로그인하기</h2>
-            
-            <form class="login-form" onsubmit="return false;">
-                <div class="input-group">
-                    <input type="email" placeholder="아이디" required>
-                    <span class="input-icon">😒</span>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" placeholder="비밀번호" required>
-                    <span class="input-icon">😒</span>
-                </div>
-                
-                <div class="find-link">
-                    <a href="#">아이디/비밀번호 찾기</a>
-                </div>
-                
-                <button type="submit" class="btn btn-login">로그인</button>
-                <button type="button" class="btn btn-signup">회원가입</button>
-            </form>
-        </div>
-    </div>
+    <div id="login-modal-root"></div>
 
     <!-- 스크립트 연결 -->
     <script src="./js/map-config.js"></script>
     <script src="./js/main.js"></script>
-    <script src="./js/login_modal.js"></script>
+    <script src="./js/login_modal.js" data-login-component="./html/login_page.html"></script>
 </body>
 
 </html>
