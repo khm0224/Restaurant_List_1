@@ -12,9 +12,11 @@
         <div class="top-left">
             <img src="../img/mainLogo.png" alt="logo" class="logo-img">
         </div>
+
         <div class="top-center">
             <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
         </div>
+
         <div class="top-right">
             <button class="login-btn">로그인</button>
         </div>
@@ -22,34 +24,22 @@
 
     <div id="function-bar">
         <div class="category-wrap">
-            <button class="category-btn active" data-category="한식" aria-pressed="true">한식</button>
-            <button class="category-btn" data-category="일식" aria-pressed="false">일식</button>
-            <button class="category-btn" data-category="중식" aria-pressed="false">중식</button>
-            <button class="category-btn" data-category="양식" aria-pressed="false">양식</button>
-            <button class="category-btn" data-category="디저트" aria-pressed="false">디저트</button>
+            <button class="category-btn active" data-category="한식">한식</button>
+            <button class="category-btn" data-category="일식">일식</button>
+            <button class="category-btn" data-category="중식">중식</button>
+            <button class="category-btn" data-category="양식">양식</button>
+            <button class="category-btn" data-category="디저트">디저트</button>
         </div>
     </div>
 
     <div id="content">
-        <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true" aria-controls="side-bar">
-            <span aria-hidden="true">☰</span>
-        </button>
         <div id="side-bar">
             <div id="store-list"></div>
         </div>
-        <div id="map-area">
-            <div id="map-api" aria-label="Google 지도"></div>
-            <div id="map-loader">
-                <div class="map-loader-card">
-                    <h2>Google 지도 연결</h2>
-                    <p id="map-status">지도를 불러오는 중입니다…</p>
-                </div>
-            </div>
-        </div>
+        <div id="map-api">지도</div>
     </div>
 </div>
 
-<script src="../js/map-config.js"></script>
 <script src="../js/restaurantData.js"></script>
 <script src="../js/food_page.js"></script>
 </body>

@@ -94,22 +94,12 @@ function renderStores(category) {
         button.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
-
-            const targetCategory = button.dataset.category;
-            const targetIndex = Number(button.dataset.index);
-            const selectedStore = window.getRestaurantData?.(targetCategory, targetIndex);
-
-            if (selectedStore) {
-                const destination = `${selectedStore.name} ${selectedStore.address}`;
-                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination)}`;
-                window.open(mapUrl, '_blank', 'noopener,noreferrer');
-            }
         });
     });
 
     storeList.querySelectorAll('.store-card').forEach(card => {
         card.addEventListener('click', (event) => {
-            if (event.target.closest('.detail-btn')) {
+            if (event.target.closest('.route-btn')) {
                 return;
             }
 
