@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>맛집 추천</title>
     <link rel="stylesheet" href="../css/food_page.css">
 </head>
 <body>
@@ -36,7 +36,20 @@
         <div id="side-bar">
             <div id="store-list"></div>
         </div>
-        <div id="map-api">지도</div>
+        <div id="map-area">
+            <div id="map-api" aria-label="Google 지도"></div>
+            <div id="map-loader">
+                <div class="map-loader-card">
+                    <h2>Google 지도 연결</h2>
+                    <p>테스트용 API 키를 입력하면 이 영역에 지도가 표시됩니다.</p>
+                    <div class="map-key-row">
+                        <input id="map-api-key" type="password" autocomplete="off" placeholder="Google Maps API 키">
+                        <button id="load-map-btn" type="button">지도 불러오기</button>
+                    </div>
+                    <p id="map-status">API 키는 파일이나 브라우저 저장소에 저장되지 않습니다.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -161,6 +174,10 @@ const restaurantData = {
 
 const categoryButtons = document.querySelectorAll('.category-btn');
 const storeList = document.getElementById('store-list');
+const mapKeyInput = document.getElementById('map-api-key');
+const loadMapButton = document.getElementById('load-map-btn');
+const mapLoader = document.getElementById('map-loader');
+const mapStatus = document.getElementById('map-status');
 
 function renderStores(category) {
     const stores = restaurantData[category] || [];
@@ -188,6 +205,64 @@ categoryButtons.forEach(button => {
 });
 
 renderStores('한식');
+
+loadMapButton.addEventListener('click', loadGoogleMaps);
+mapKeyInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter') loadGoogleMaps();
+});
+
+function loadGoogleMaps() {
+    const apiKey = mapKeyInput.value.trim();
+
+    if (!apiKey) {
+        mapStatus.textContent = 'API 키를 입력하세요.';
+        mapKeyInput.focus();
+        return;
+    }
+
+    loadMapButton.disabled = true;
+    mapStatus.textContent = '지도를 불러오는 중입니다…';
+
+    window.initFoodMap = initFoodMap;
+    window.gm_authFailure = () => {
+        mapStatus.textContent = '인증에 실패했습니다. API 키와 HTTP 리퍼러 제한을 확인하세요.';
+        loadMapButton.disabled = false;
+    };
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initFoodMap&v=weekly&language=ko&region=KR`;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+        mapStatus.textContent = 'Google Maps 스크립트를 불러오지 못했습니다.';
+        loadMapButton.disabled = false;
+    };
+    document.head.appendChild(script);
+}
+
+function initFoodMap() {
+    const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
+    const map = new google.maps.Map(document.getElementById('map-api'), {
+        center: seoulCityHall,
+        zoom: 13,
+        mapTypeControl: false,
+        streetViewControl: false
+    });
+
+    const marker = new google.maps.Marker({
+        position: seoulCityHall,
+        map,
+        title: '서울특별시청'
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+        content: '<strong>서울특별시청</strong><br>지도 연결 테스트가 완료되었습니다.'
+    });
+
+    marker.addListener('click', () => infoWindow.open({ anchor: marker, map }));
+    mapKeyInput.value = '';
+    mapLoader.hidden = true;
+}
 </script>
 </body>
 </html>
