@@ -1,0 +1,250 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 헤더 전체: 로고 / 메뉴 / 검색+로그인 을 양 끝과 가운데로 배치 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
+    border-bottom: 1px solid #EAEAEA;
+}
+
+/* 로고 영역 */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.logo-icon {
+    width: 34px;
+    height: 34px;
+    background: #F5821F;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+/* 상단 메뉴(카테고리) 영역 */
+.nav {
+    display: flex;
+    gap: 32px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.nav a {
+    color: #767676;
+    padding-bottom: 18px;
+}
+
+.nav a.active {
+    color: #F5821F;
+    font-weight: 700;
+    border-bottom: 2px solid #F5821F;
+}
+
+.nav a:hover {
+    color: #F5821F;
+}
+
+/* 검색창, 로그인 버튼아이콘 */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F5F5F5;
+    border-radius: 20px;
+    padding: 8px 16px;
+    width: 220px;
+}
+
+.search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    width: 100%;
+}
+
+.search-btn {
+    font-size: 15px;
+    color: #767676;
+    cursor: pointer;
+}
+
+.login-btn {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+/* =================================== 히어로 구역 */
+.hero {
+    position: relative;
+    /* 자식(점 인디케이터)을 절대 위치로 배치하기 위한 기준점 */
+    height: 340px;
+    /* 어두운 그라데이션을 이미지 위에 겹쳐서 흰 글씨가 잘 보이게 함 */
+    background-color: #C85D14;
+    display: flex;
+    align-items: center;
+    padding: 0 60px;
+    color: #fff;
+}
+
+.hero-content {
+    max-width: 520px;
+}
+
+.hero-eyebrow {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.hero-title {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    /* 줄 간격을 넉넉하게 줘서 가독성 향상 */
+    margin-bottom: 24px;
+    opacity: 0.95;
+}
+
+/* CTA 버튼: '맛집 추천 받기' */
+.hero-cta {
+    background: #F5821F;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 26px;
+    border-radius: 28px;
+    /* 알약 모양 */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.hero-cta:hover {
+    background: #C85D14;
+    /* 히어로 배경(#E06F0F)과 겹치지 않도록 더 어둡게 조정 */
+}
+
+
+
+
+/* ===================================카테고리2*/
+.category-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 40px;
+    border-bottom: 1px solid #EAEAEA;
+    overflow-x: auto;
+    /* 화면이 좁을 때 가로 스크롤 가능하게 */
+}
+
+/* 카테고리 버튼 하나하나 (칩 모양) */
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: 1px solid #767676;
+    border-radius: 24px;
+    /* 알약 모양 */
+    font-size: 14px;
+    font-weight: 600;
+    color: #767676;
+    white-space: nowrap;
+    /* 글자가 줄바꿈되지 않게 */
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.chip:hover {
+    color: #000
+}
+
+/* 초기화 버튼만 다른색 */
+.chip.active {
+    border-color: red;
+    color: blue;
+    background: #FFF1E4;
+}
+
+
+/* ===================================top list */
+.section {
+    padding: 32px 40px;
+}
+
+/* 섹션 제목 줄: 왼쪽엔 제목, 오른쪽엔 더보기 링크 */
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.section-head h2 {
+    font-size: 20px;
+    font-weight: 800;
+    border-bottom: 2px solid gray;
+    padding-bottom: 8px;
+}
+
+/* 더보기 링크 */
+.more-link {
+    font-size: 13px;
+    color: #767676;
+    cursor: pointer;
+}
+
+/* toplist 음식점 들어갈곳 위치 */
+.restaurant-grid {
+    display: flex;
+    gap: 20px;
+}
+
+.r-card-placeholder {
+    flex: 1;
+    /* 남은 공간을 5개가 똑같이 나눠 가짐 */
+}
