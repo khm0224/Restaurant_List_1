@@ -49,20 +49,27 @@ function renderStores(category) {
     const stores = window.restaurantData[category] || [];
 
     storeList.innerHTML = stores.map((store, index) => `
-        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
-            <article class="store-card">
-                <img src="${store.img}" alt="${store.name}" class="store-img">
-                <div class="store-info">
-                    <h3 class="store-name">${store.name}</h3>
-                    <p class="store-address">${store.address}</p>
-                    <div class="store-meta">
-                        <span>⭐ ${store.rating}</span>
-                        <span>리뷰 ${store.reviewCount}</span>
-                    </div>
+        <article class="store-card" data-category="${category}" data-index="${index}">
+            <img src="${store.img}" alt="${store.name}" class="store-img">
+            <div class="store-info">
+                <h3 class="store-name">${store.name}</h3>
+                <p class="store-address">${store.address}</p>
+                <div class="store-meta">
+                    <span>⭐ ${store.rating}</span>
+                    <span>리뷰 ${store.reviewCount}</span>
                 </div>
-            </article>
-        </a>
+            </div>
+        </article>
     `).join('');
+
+    storeList.querySelectorAll('.store-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const index = Number(card.dataset.index);
+            const store = stores[index];
+            sessionStorage.setItem('selectedRestaurant', JSON.stringify({ ...store, category, id: index }));
+            window.location.href = 'restaurant_detail.html';
+        });
+    });
 }
 
 categoryButtons.forEach(button => {
