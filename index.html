@@ -35,14 +35,62 @@
     </header>
 
 
-    <!-- ============ 히어로 섹션 ============ -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-eyebrow">히어로 텍스트 1</div>
-            <div class="hero-title">히어로 텍스트 2</div>
-            <p class="hero-desc">히어로 텍스트 3</p>
-            <a href="#" class="hero-cta">맛집으로 바로가기 버튼 ›</a>
+    <!-- ============ 히어로 섹션 (맛집 카드 캐러셀) ============ -->
+    <section class="hero" id="heroSlider">
+
+        <div class="hero-track" id="heroTrack">
+
+            <div class="hero-card">
+                <div class="hero-card-img" style="background-color: brown;"></div>
+                <div class="hero-card-info">
+                    <span class="hero-card-tag">임의</span>
+                    <h3 class="hero-card-name">임의</h3>
+                    <p class="hero-card-desc">임의</p>
+                    <div class="hero-card-rating">★ 임의</div>
+                    <a href="#" class="hero-cta">맛집으로 이동 ›</a>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="hero-card-img" style="background-color: red;"></div>
+                <div class="hero-card-info">
+                    <span class="hero-card-tag">임의</span>
+                    <h3 class="hero-card-name">임의</h3>
+                    <p class="hero-card-desc">임의</p>
+                    <div class="hero-card-rating">★ 임의</div>
+                    <a href="#" class="hero-cta">맛집으로 이동 ›</a>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="hero-card-img" style="background-color: blue;"></div>
+                <div class="hero-card-info">
+                    <span class="hero-card-tag">임의</span>
+                    <h3 class="hero-card-name">임의</h3>
+                    <p class="hero-card-desc">임의</p>
+                    <div class="hero-card-rating">★ 임의</div>
+                    <a href="#" class="hero-cta">맛집으로 이동 ›</a>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="hero-card-img" style="background-color: black;"></div>
+                <div class="hero-card-info">
+                    <span class="hero-card-tag">한식 · 고기</span>
+                    <h3 class="hero-card-name">우리동네 삼겹살</h3>
+                    <p class="hero-card-desc">숯불에 구운 국내산 삼겹살</p>
+                    <div class="hero-card-rating">★ 4.7</div>
+                    <a href="#" class="hero-cta">맛집으로 이동 ›</a>
+                </div>
+            </div>
+
         </div>
+
+        <button type="button" class="hero-arrow prev" id="heroPrev" aria-label="이전 맛집">‹</button>
+        <button type="button" class="hero-arrow next" id="heroNext" aria-label="다음 맛집">›</button>
+
+        <div class="hero-pagination" id="heroPagination"></div>
+
     </section>
 
     <!-- ============ 카테고리2 (중앙) ============ -->
@@ -90,6 +138,7 @@
     <!-- 스크립트 연결 -->
     <script src="./js/map-config.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/main_hero-slider.js"></script>
     <script src="./js/login_modal.js" data-login-component="./html/login_page.html"></script>
 </body>
 
