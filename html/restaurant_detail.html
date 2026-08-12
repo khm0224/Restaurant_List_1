@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식당 상세 페이지</title>
+    <link rel="stylesheet" href="../css/food_page.css">
+    <link rel="stylesheet" href="../css/restaurant_detail.css">
+</head>
+
+<body>
+    <div id="container">
+        <div id="top-bar">
+            <div class="top-left">
+                <img src="../img/mainLogo.png" alt="logo" class="logo-img">
+            </div>
+
+            <div class="top-center">
+                <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
+            </div>
+
+            <div class="top-right">
+                <button class="login-btn">로그인</button>
+            </div>
+        </div>
+
+        <div id="detail-shell">
+            <aside class="side-space"></aside>
+
+            <main class="detail-area">
+                <button class="back-btn" type="button" onclick="location.href='food_page.html'">목록으로</button>
+                <article class="detail-card" id="detail-card"></article>
+
+                <section class="review-section" id="review-section" hidden>
+                    <h2 class="review-title">리뷰</h2>
+                    <div class="review-photo-grid" id="review-photo-grid"></div>
+                    <button class="review-view-all-btn" id="review-view-all-btn" type="button" hidden>전체보기</button>
+                </section>
+
+                <section class="menu-section" id="menu-section" hidden>
+                    <h2 class="menu-title">메뉴</h2>
+                    <div class="menu-list" id="menu-list"></div>
+                </section>
+
+                <section class="comment-section" id="comment-section" hidden>
+                    <div class="comment-main">
+                        <h2 class="comment-title">댓글</h2>
+
+                        <form class="comment-form" id="comment-form">
+                            <textarea id="comment-text" placeholder="댓글을 입력하세요" maxlength="300" required></textarea>
+                            <button type="submit">등록</button>
+                        </form>
+
+                        <div class="comment-locked" id="comment-locked">
+                            <p>로그인 후 댓글을 작성할 수 있습니다.</p>
+                        </div>
+
+                        <ul class="comment-list" id="comment-list"></ul>
+
+                        <div class="comment-pagination" id="comment-pagination">
+                            <button type="button" class="page-btn" id="comment-page-prev">이전</button>
+                            <span class="page-info" id="comment-page-info"></span>
+                            <button type="button" class="page-btn" id="comment-page-next">다음</button>
+                        </div>
+                    </div>
+
+                    <div class="comment-map" id="comment-map"></div>
+                </section>
+            </main>
+
+            <aside class="side-space"></aside>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="review-modal-overlay" hidden>
+        <div class="modal" id="review-modal">
+            <button class="modal-close" id="review-modal-close" type="button" aria-label="닫기">✕</button>
+            <h2 class="modal-title">리뷰 작성</h2>
+
+            <form id="review-form">
+                <div class="modal-field">
+                    <label>평점</label>
+                    <div class="star-rating" id="star-rating">
+                        <button type="button" class="star-btn" data-value="1">★</button>
+                        <button type="button" class="star-btn" data-value="2">★</button>
+                        <button type="button" class="star-btn" data-value="3">★</button>
+                        <button type="button" class="star-btn" data-value="4">★</button>
+                        <button type="button" class="star-btn" data-value="5">★</button>
+                    </div>
+                </div>
+
+                <div class="modal-field">
+                    <label for="review-text">리뷰 내용</label>
+                    <textarea id="review-text" placeholder="솔직한 리뷰를 남겨주세요" maxlength="500" required></textarea>
+                </div>
+
+                <div class="modal-field">
+                    <label for="review-photo">사진 첨부</label>
+                    <input type="file" id="review-photo" accept="image/*">
+                    <img id="review-photo-preview" class="review-photo-preview" hidden>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-cancel" id="review-modal-cancel">취소</button>
+                    <button type="submit" class="modal-save">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="review-all-modal-overlay" hidden>
+        <div class="modal modal-wide" id="review-all-modal">
+            <button class="modal-close" id="review-all-modal-close" type="button" aria-label="닫기">✕</button>
+            <h2 class="modal-title">전체 리뷰</h2>
+
+            <ul class="review-list" id="review-all-list"></ul>
+
+            <div class="review-pagination" id="review-pagination">
+                <button type="button" class="page-btn" id="review-page-prev">이전</button>
+                <span class="page-info" id="review-page-info"></span>
+                <button type="button" class="page-btn" id="review-page-next">다음</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="review-photo-modal-overlay" hidden>
+        <div class="modal modal-photo" id="review-photo-modal">
+            <button class="modal-close" id="review-photo-modal-close" type="button" aria-label="닫기">✕</button>
+            <img class="review-photo-modal-img" id="review-photo-modal-img" alt="리뷰 사진">
+            <div class="review-meta">
+                <span class="review-stars" id="review-photo-modal-stars"></span>
+                <span class="review-date" id="review-photo-modal-date"></span>
+            </div>
+            <p class="review-text" id="review-photo-modal-text"></p>
+        </div>
+    </div>
+
+    <script src="../js/restaurantData.js"></script>
+    <script src="../js/board.js"></script>
+    <script src="../js/restaurantDetail.js"></script>
+</body>
+
+</html>

@@ -1,19 +1,18 @@
 function initHomepageMap() {
-    const chuncheon = {
-        lat: 37.8813,
-        lng: 127.7298
-    };
+    const mapElement = document.getElementById('homepage-map');
+    if (!mapElement || typeof google === 'undefined' || !google.maps) {
+        return;
+    }
 
-    const map = new google.maps.Map(
-        document.getElementById('homepage-map'),
-        {
-            center: chuncheon,
-            zoom: 13,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false
-        }
-    );
+    const chuncheon = { lat: 37.8813, lng: 127.7298 };
+
+    const map = new google.maps.Map(mapElement, {
+        center: chuncheon,
+        zoom: 13,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+    });
 
     new google.maps.Marker({
         map,
@@ -23,8 +22,14 @@ function initHomepageMap() {
 }
 
 function loadGoogleMaps() {
-    const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
     const mapStatus = document.getElementById('homepage-map-status');
+    const mapElement = document.getElementById('homepage-map');
+
+    if (!mapElement || !mapStatus) {
+        return;
+    }
+
+    const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
     const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
 
     if (!hasValidApiKeyFormat) {
@@ -50,4 +55,44 @@ function loadGoogleMaps() {
     document.head.appendChild(script);
 }
 
-loadGoogleMaps();
+const categoryButtons = document.querySelectorAll('.category-btn');
+const storeList = document.getElementById('store-list');
+
+function renderStores(category) {
+    if (!storeList) {
+        return;
+    }
+
+    const stores = window.restaurantData?.[category] || [];
+
+    storeList.innerHTML = stores.map((store, index) => `
+        <a class="store-card-link" href="restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}">
+            <article class="store-card">
+                <img src="${store.img}" alt="${store.name}" class="store-img">
+                <div class="store-info">
+                    <h3 class="store-name">${store.name}</h3>
+                    <p class="store-address">${store.address}</p>
+                    <div class="store-meta">
+                        <span>⭐ ${store.rating}</span>
+                        <span>리뷰 ${store.reviewCount}</span>
+                    </div>
+                </div>
+            </article>
+        </a>
+    `).join('');
+}
+
+if (categoryButtons.length && storeList) {
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+            renderStores(button.dataset.category);
+        });
+    });
+
+    renderStores('한식');
+}
+
+if (document.getElementById('homepage-map')) {
+    loadGoogleMaps();
+}
