@@ -9,7 +9,8 @@ const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 const CHUNCHEON_BOUNDARY_URL = '../data/area/chuncheon-admin-dong.geojson';
-let selectedDistrict = document.querySelector('.category-btn.active')?.dataset.category || '소양동';
+const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
+let selectedDistrict = document.querySelector('.category-btn.active')?.dataset.category || '전체';
 
 // 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(category, index) {
@@ -183,6 +184,7 @@ function getDistrictStyle(feature) {
 
     return {
         clickable: false,
+        visible: selectedDistrict !== '전체',
         fillColor: isSelected ? 'rgb(255, 255, 255)' : '#ffffff',
         fillOpacity: isSelected ? 0.28 : 0.02,
         strokeColor: isSelected ? '#ba0707' : '#64748b',
@@ -206,27 +208,53 @@ function highlightDistrict(districtName, moveMap = true) {
 
     selectedDistrict = districtName;
     map.data.setStyle(getDistrictStyle);
+    window.chuncheonCityBoundaryLayer?.setMap(districtName === '전체' ? map : null);
 
     let selectedFeature = null;
+    const allDistrictBounds = new google.maps.LatLngBounds();
     map.data.forEach(feature => {
-        if (feature.getProperty('ADM_NM') === districtName) {
+        if (districtName === '전체') {
+            feature.getGeometry().forEachLatLng(latLng => allDistrictBounds.extend(latLng));
+        } else if (feature.getProperty('ADM_NM') === districtName) {
             selectedFeature = feature;
         }
     });
 
-    if (moveMap && selectedFeature) {
-        map.fitBounds(getFeatureBounds(selectedFeature), 48);
+    if (moveMap) {
+        if (districtName === '전체' && !allDistrictBounds.isEmpty()) {
+            map.fitBounds(allDistrictBounds, 48);
+        } else if (selectedFeature) {
+            map.fitBounds(getFeatureBounds(selectedFeature), 48);
+        }
     }
 }
 
 async function loadChuncheonBoundaries(map) {
-    const response = await fetch(CHUNCHEON_BOUNDARY_URL);
-    if (!response.ok) {
-        throw new Error(`행정동 경계 파일을 불러오지 못했습니다. (${response.status})`);
+    const [districtResponse, cityResponse] = await Promise.all([
+        fetch(CHUNCHEON_BOUNDARY_URL),
+        fetch(CHUNCHEON_CITY_BOUNDARY_URL)
+    ]);
+    if (!districtResponse.ok || !cityResponse.ok) {
+        throw new Error('춘천시 경계 파일을 불러오지 못했습니다.');
     }
 
-    const geoJson = await response.json();
-    map.data.addGeoJson(geoJson);
+    const [districtGeoJson, cityGeoJson] = await Promise.all([
+        districtResponse.json(),
+        cityResponse.json()
+    ]);
+    map.data.addGeoJson(districtGeoJson);
+
+    const cityBoundaryLayer = new google.maps.Data();
+    cityBoundaryLayer.addGeoJson(cityGeoJson);
+    cityBoundaryLayer.setStyle({
+        clickable: false,
+        strokeColor: '#ba0707',
+        strokeOpacity: 1,
+        strokeWeight: 4,
+        zIndex: 2
+    });
+    window.chuncheonCityBoundaryLayer = cityBoundaryLayer;
+
     window.chuncheonBoundaryLoaded = true;
     highlightDistrict(selectedDistrict);
 }
