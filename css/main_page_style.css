@@ -487,16 +487,16 @@ a {
 .map-toplist-row {
     display: flex;
     align-items: flex-start;
-    gap: 32px;
+    gap: 40px;
 }
 
 .map-col {
-    flex: 1 1 60%;
+    flex: 1 1 50%;
     min-width: 0;
 }
 
 .toplist-col {
-    flex: 1 1 40%;
+    flex: 1 1 50%;
     min-width: 0;
 }
 
