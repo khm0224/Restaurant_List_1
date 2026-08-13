@@ -1,4 +1,6 @@
+// localStorage : 브라우저가 제공하는 간단한 데이터 저장 공간
 // 서버/DB 없이 브라우저 localStorage로 댓글을 흉내내는 간이 게시판 모듈
+
 const BOARD_STORAGE_KEY = 'restaurantComments';
 
 // 댓글 저장소에서 식당별 댓글 목록을 읽습니다.
