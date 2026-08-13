@@ -9,6 +9,7 @@ const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
 const CHUNCHEON_BOUNDARY_URL = '../data/area/chuncheon-admin-dong.geojson';
+const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
 let selectedDistrict = document.querySelector('.category-btn.active')?.dataset.category || '소양동';
 
 // 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
