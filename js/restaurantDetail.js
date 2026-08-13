@@ -45,15 +45,17 @@ let commentPage = 1;
 // 목록 페이지에서 선택한 식당을 복원하고, 직접 접속 시 URL로 보완합니다.
 let saved = sessionStorage.getItem('selectedRestaurant');
 const queryParams = new URLSearchParams(window.location.search);
+const districtParam = queryParams.get('district');
 const categoryParam = queryParams.get('category');
 const idParam = queryParams.get('id');
 
 if (!saved && categoryParam && idParam !== null) {
-    const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam));
+    const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam), districtParam || window.currentSelectedDistrict || '교동');
 
     if (fallbackStore) {
         saved = JSON.stringify({
             ...fallbackStore,
+            district: districtParam || window.currentSelectedDistrict || '교동',
             category: categoryParam,
             id: Number(idParam)
         });
