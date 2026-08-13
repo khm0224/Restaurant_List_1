@@ -178,9 +178,9 @@ function getDistrictStyle(feature) {
     const isSelected = feature.getProperty('ADM_NM') === selectedDistrict;
 
     return {
-        fillColor: isSelected ? '#22a06b' : '#ffffff',
+        fillColor: isSelected ? 'rgb(255, 255, 255)' : '#ffffff',
         fillOpacity: isSelected ? 0.28 : 0.02,
-        strokeColor: isSelected ? '#087f5b' : '#64748b',
+        strokeColor: isSelected ? '#ba0707' : '#64748b',
         strokeOpacity: isSelected ? 1 : 0.35,
         strokeWeight: isSelected ? 4 : 1,
         zIndex: isSelected ? 2 : 1
