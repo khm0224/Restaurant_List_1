@@ -1,5 +1,9 @@
 const categoryButtons = document.querySelectorAll('.category-btn');
+const categoryScroll = document.getElementById('category-scroll');
+const functionScrollPrev = document.getElementById('function-scroll-prev');
+const functionScrollNext = document.getElementById('function-scroll-next');
 const storeList = document.getElementById('store-list');
+const sidebarCategorySelect = document.getElementById('sidebar-category-select');
 const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
@@ -15,9 +19,7 @@ function openStoreDetail(category, index) {
 }
 
 // 현재 카테고리의 식당 목록과 클릭 이벤트를 화면에 만듭니다.
-function renderSelectedStores() {
-    const activeButton = [...categoryButtons].find(button => button.classList.contains('active'));
-    const selectedCategory = activeButton ? activeButton.dataset.category : '한식';
+function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
 
     const stores = (window.restaurantData?.[selectedCategory] || []).map((store, index) => ({
         ...store,
@@ -94,8 +96,39 @@ categoryButtons.forEach(button => {
             btn.setAttribute('aria-pressed', String(isActive));
         });
 
-        renderSelectedStores();
+        renderSelectedStores(sidebarCategorySelect.value);
     });
+});
+
+function updateFunctionScrollButtons() {
+    const maxScrollLeft = categoryScroll.scrollWidth - categoryScroll.clientWidth;
+    functionScrollPrev.disabled = categoryScroll.scrollLeft <= 0;
+    functionScrollNext.disabled = categoryScroll.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollFunctionBar(direction) {
+    categoryScroll.scrollBy({
+        left: direction * Math.max(240, categoryScroll.clientWidth * 0.7)
+    });
+    updateFunctionScrollButtons();
+}
+
+functionScrollPrev.addEventListener('click', () => scrollFunctionBar(-1));
+functionScrollNext.addEventListener('click', () => scrollFunctionBar(1));
+categoryScroll.addEventListener('scroll', updateFunctionScrollButtons);
+window.addEventListener('resize', updateFunctionScrollButtons);
+updateFunctionScrollButtons();
+
+sidebarCategorySelect.addEventListener('change', () => {
+    const selectedCategory = sidebarCategorySelect.value;
+
+    categoryButtons.forEach(button => {
+        const isActive = button.dataset.category === selectedCategory;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    renderSelectedStores(selectedCategory);
 });
 
 // 첫 화면에는 기본 카테고리인 한식을 표시합니다.

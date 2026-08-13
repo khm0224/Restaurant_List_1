@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>춘천 식당 Places API 테스트</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: "Malgun Gothic", sans-serif;
+            background: #f4f7f5;
+            color: #17342a;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        main {
+            box-sizing: border-box;
+            width: min(900px, 100%);
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .description,
+        .notice {
+            line-height: 1.6;
+        }
+
+        .notice {
+            padding: 14px 16px;
+            border-left: 4px solid #e59f23;
+            background: #fff6df;
+        }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .category-button {
+            padding: 10px 16px;
+            border: 0;
+            border-radius: 4px;
+            background: #0d6b4d;
+            color: #fff;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .category-button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        #status {
+            margin: 0 0 16px;
+            font-weight: 700;
+        }
+
+        #summary {
+            padding: 16px;
+            border-radius: 6px;
+            background: #e0f0e9;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        #result-list {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .place-item {
+            padding: 14px 16px;
+            border: 1px solid #d5dfd9;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .place-name {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .place-meta {
+            color: #52675e;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>후평1동 평점 4.0 이상 식당 테스트</h1>
+        <p class="description">Google Places API에서 춘천시 후평1동의 카테고리별 식당을 검색하고 평점 4.0 이상인 결과를 표시합니다.</p>
+        <p class="notice">한 번의 Places Text Search는 최대 20개 결과만 조회합니다. 따라서 표시되는 수는 후평1동 전체 식당 수가 아닌 현재 검색 결과 기준입니다.</p>
+
+        <div class="category-list" id="category-list" aria-label="식당 카테고리">
+            <button class="category-button" type="button" data-category="한식" disabled>한식</button>
+            <button class="category-button" type="button" data-category="일식" disabled>일식</button>
+            <button class="category-button" type="button" data-category="중식" disabled>중식</button>
+            <button class="category-button" type="button" data-category="양식" disabled>양식</button>
+            <button class="category-button" type="button" data-category="디저트" disabled>디저트</button>
+        </div>
+        <p id="status" aria-live="polite">Google Maps API를 불러오는 중입니다.</p>
+        <div id="summary" hidden></div>
+        <ul id="result-list"></ul>
+    </main>
+
+    <script src="../js/map-config.js"></script>
+    <script>
+        const CATEGORY_QUERIES = {
+            한식: '춘천시 후평1동 한식',
+            일식: '춘천시 후평1동 일식',
+            중식: '춘천시 후평1동 중식',
+            양식: '춘천시 후평1동 양식',
+            디저트: '춘천시 후평1동 카페 디저트'
+        };
+        const MINIMUM_RATING = 4.0;
+        const MAX_RESULTS = 20;
+
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const status = document.getElementById('status');
+        const summary = document.getElementById('summary');
+        const resultList = document.getElementById('result-list');
+        let Place;
+
+        function showError(message) {
+            status.textContent = message;
+            categoryButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        async function initializePlaces() {
+            try {
+                const { Place: PlaceConstructor } = await google.maps.importLibrary('places');
+                Place = PlaceConstructor;
+                categoryButtons.forEach(button => {
+                    button.disabled = false;
+                });
+                status.textContent = '준비되었습니다.';
+            } catch (error) {
+                console.error(error);
+                showError('Places API를 불러오지 못했습니다. Places API 활성화와 키 제한을 확인하세요.');
+            }
+        }
+
+        async function searchRestaurants(category) {
+            const textQuery = CATEGORY_QUERIES[category];
+
+            categoryButtons.forEach(button => {
+                button.disabled = true;
+            });
+            summary.hidden = true;
+            resultList.innerHTML = '';
+            status.textContent = `후평1동 ${category} 검색 결과를 불러오는 중입니다.`;
+
+            try {
+                const { places = [] } = await Place.searchByText({
+                    textQuery,
+                    maxResultCount: MAX_RESULTS,
+                    fields: ['displayName', 'formattedAddress', 'location', 'rating', 'userRatingCount']
+                });
+                const qualifiedPlaces = places.filter(place => place.rating >= MINIMUM_RATING);
+
+                summary.textContent = `${category}: 조회 결과 ${places.length}곳 중 평점 ${MINIMUM_RATING} 이상은 ${qualifiedPlaces.length}곳입니다.`;
+                summary.hidden = false;
+                status.textContent = '검색을 완료했습니다.';
+
+                resultList.innerHTML = qualifiedPlaces.length === 0
+                    ? '<li class="place-item">조건에 맞는 식당이 없습니다.</li>'
+                    : qualifiedPlaces.map(place => {
+                        const latitude = place.location?.lat()?.toFixed(5) ?? '-';
+                        const longitude = place.location?.lng()?.toFixed(5) ?? '-';
+                        const name = place.displayName ?? '이름 없음';
+                        const address = place.formattedAddress ?? '주소 정보 없음';
+                        const ratingCount = place.userRatingCount?.toLocaleString() ?? '0';
+
+                        return `
+                            <li class="place-item">
+                                <span class="place-name">${name}</span>
+                                <span class="place-meta">${address}<br>평점 ${place.rating} / 리뷰 ${ratingCount}개<br>좌표: ${latitude}, ${longitude}</span>
+                            </li>
+                        `;
+                    }).join('');
+            } catch (error) {
+                console.error(error);
+                showError('검색에 실패했습니다. 브라우저 콘솔에서 오류를 확인하세요.');
+            } finally {
+                categoryButtons.forEach(button => {
+                    button.disabled = !Place;
+                });
+            }
+        }
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => searchRestaurants(button.dataset.category));
+        });
+
+        function loadGoogleMaps() {
+            const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
+            const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
+
+            if (!hasValidApiKeyFormat) {
+                showError('유효한 Google Maps API 키가 없습니다.');
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&v=weekly&language=ko&region=KR&callback=initPlacesTest`;
+            script.async = true;
+            script.defer = true;
+            script.onerror = () => showError('Google Maps 스크립트를 불러오지 못했습니다.');
+            document.head.appendChild(script);
+        }
+
+        window.initPlacesTest = initializePlaces;
+        window.gm_authFailure = () => showError('Google Maps 인증에 실패했습니다. API 키 설정을 확인하세요.');
+        loadGoogleMaps();
+    </script>
+</body>
+</html>
