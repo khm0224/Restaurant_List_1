@@ -22,12 +22,16 @@ function openStoreDetail(category, index) {
 
 // 현재 카테고리의 식당 목록과 클릭 이벤트를 화면에 만듭니다.
 function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
-
-    const stores = (window.restaurantData?.[selectedCategory] || []).map((store, index) => ({
-        ...store,
-        category: selectedCategory,
-        index
-    }));
+    const restaurantData = window.restaurantData || {};
+    const stores = selectedCategory === '전체'
+        ? Object.entries(restaurantData).flatMap(([category, categoryStores]) =>
+            categoryStores.map((store, index) => ({ ...store, category, index }))
+        )
+        : (restaurantData[selectedCategory] || []).map((store, index) => ({
+            ...store,
+            category: selectedCategory,
+            index
+        }));
 
     if (stores.length === 0) {
         storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
