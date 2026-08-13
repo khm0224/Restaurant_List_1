@@ -19,7 +19,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 40px;
+    padding: 14px 40px 14px 16px;
     border-bottom: 1px solid #EAEAEA;
 }
 
@@ -32,16 +32,11 @@ a {
     font-size: 20px;
 }
 
-.logo-icon {
-    width: 34px;
-    height: 34px;
-    background: #F5821F;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+.logo img {
+    height: 70px;
+    width: 210px;
 }
+
 
 /* 상단 메뉴(카테고리) 영역 */
 .nav {
@@ -299,31 +294,25 @@ a {
     background: #FFF1E4;
 }
 
-/* 지역(동) 선택 - 5개씩 넘기는 히어로형 슬라이더 */
+/* 지역(동) 선택 - 5개씩 보여주고 1개씩 넘기는 슬라이더 */
 .region-slider {
     position: relative;
-    padding: 24px 64px;
+    padding: 12px 40px;
     border-bottom: 1px solid #EAEAEA;
     overflow: hidden;
 }
 
 .region-track {
     display: flex;
-    transition: transform 0.5s ease;
-}
-
-.region-slide {
-    flex: 0 0 100%;
-    display: flex;
-    justify-content: center;
     gap: 24px;
+    transition: transform 0.5s ease;
 }
 
 .region-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 auto;
+    flex: 0 0 calc((100% - 24px * 4) / 5);
     gap: 10px;
     padding: 0;
     background: none;
@@ -409,7 +398,7 @@ a {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 18px;
+    margin-top: 10px;
 }
 
 .region-pagination button {
@@ -487,16 +476,16 @@ a {
 .map-toplist-row {
     display: flex;
     align-items: flex-start;
-    gap: 32px;
+    gap: 40px;
 }
 
 .map-col {
-    flex: 1 1 60%;
+    flex: 1 1 50%;
     min-width: 0;
 }
 
 .toplist-col {
-    flex: 1 1 40%;
+    flex: 1 1 50%;
     min-width: 0;
 }
 

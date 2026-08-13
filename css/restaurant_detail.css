@@ -1,3 +1,7 @@
+#top-bar {
+    height: 90px;
+}
+
 #detail-shell {
     display: grid;
     grid-template-columns: 15% 70% 15%;
