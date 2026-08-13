@@ -98,7 +98,12 @@ a {
 }
 
 .login-btn {
-    font-size: 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #222;
+    color: white;
+    padding: 10px 18px;
+    font-size: 14px;
     cursor: pointer;
 }
 
@@ -107,47 +112,73 @@ a {
 
 
 
-/* =================================== 히어로 구역 */
+/* =================================== 히어로 구역 (맛집 카드 캐러셀) */
 .hero {
     position: relative;
-    /* 자식(점 인디케이터)을 절대 위치로 배치하기 위한 기준점 */
-    height: 340px;
-    /* 어두운 그라데이션을 이미지 위에 겹쳐서 흰 글씨가 잘 보이게 함 */
-    background-color: #C85D14;
+    width: 100%;
+    height: 360px;
+    overflow: hidden;
+    background: #FFF6EE;
+}
+
+.hero-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.75s ease;
+}
+
+.hero-card {
+    flex: 0 0 100%;
     display: flex;
     align-items: center;
-    padding: 0 60px;
-    color: #fff;
+    gap: 40px;
+    padding: 0 80px;
 }
 
-.hero-content {
-    max-width: 520px;
+.hero-card-img {
+    width: 260px;
+    height: 260px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
 }
 
-.hero-eyebrow {
-    font-size: 18px;
+.hero-card-info {
+    max-width: 480px;
+}
+
+.hero-card-tag {
+    display: inline-block;
+    background: #FFE1C7;
+    color: #C85D14;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
 }
 
-.hero-title {
-    font-size: 38px;
+.hero-card-name {
+    font-size: 30px;
     font-weight: 800;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    margin-bottom: 8px;
+    color: #222;
 }
 
-.hero-desc {
+.hero-card-desc {
     font-size: 15px;
-    line-height: 1.6;
-    /* 줄 간격을 넉넉하게 줘서 가독성 향상 */
-    margin-bottom: 24px;
-    opacity: 0.95;
+    color: #555;
+    margin-bottom: 10px;
 }
 
-/* CTA 버튼: '맛집 추천 받기' */
+.hero-card-rating {
+    font-size: 15px;
+    font-weight: 700;
+    color: #F5821F;
+    margin-bottom: 20px;
+}
+
 .hero-cta {
     background: #F5821F;
     color: #fff;
@@ -155,7 +186,6 @@ a {
     font-size: 15px;
     padding: 14px 26px;
     border-radius: 28px;
-    /* 알약 모양 */
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -164,8 +194,67 @@ a {
 
 .hero-cta:hover {
     background: #C85D14;
-    /* 히어로 배경(#E06F0F)과 겹치지 않도록 더 어둡게 조정 */
 }
+
+/* 좌우 화살표 */
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+}
+
+.hero-arrow.prev { left: 20px; }
+.hero-arrow.next { right: 20px; }
+.hero-arrow:hover { background: #F5821F; color: #fff; }
+
+/* 하단 점 인디케이터 */
+.hero-pagination {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 8px;
+}
+
+.hero-pagination button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #DDD;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.hero-pagination button.active {
+    width: 22px;
+    border-radius: 5px;
+    background: #F5821F;
+}
+
+@media (max-width: 768px) {
+    .hero { height: 440px; }
+    .hero-card { flex-direction: column; padding: 24px; gap: 16px; text-align: center; }
+    .hero-card-img { width: 160px; height: 160px; }
+    .hero-card-name { font-size: 22px; }
+}
+
 
 
 
