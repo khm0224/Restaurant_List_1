@@ -8,6 +8,8 @@ const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
+const CHUNCHEON_BOUNDARY_URL = '../data/area/chuncheon-admin-dong.geojson';
+let selectedDistrict = document.querySelector('.category-btn.active')?.dataset.category || '소양동';
 
 // 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(category, index) {
@@ -90,12 +92,15 @@ function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
 
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
+        selectedDistrict = button.dataset.category;
+
         categoryButtons.forEach(btn => {
             const isActive = btn === button;
             btn.classList.toggle('active', isActive);
             btn.setAttribute('aria-pressed', String(isActive));
         });
 
+        highlightDistrict(selectedDistrict);
         renderSelectedStores(sidebarCategorySelect.value);
     });
 });
@@ -121,13 +126,6 @@ updateFunctionScrollButtons();
 
 sidebarCategorySelect.addEventListener('change', () => {
     const selectedCategory = sidebarCategorySelect.value;
-
-    categoryButtons.forEach(button => {
-        const isActive = button.dataset.category === selectedCategory;
-        button.classList.toggle('active', isActive);
-        button.setAttribute('aria-pressed', String(isActive));
-    });
-
     renderSelectedStores(selectedCategory);
 });
 
@@ -176,29 +174,76 @@ function loadGoogleMaps() {
     document.head.appendChild(script);
 }
 
-// 지도 로드가 완료되면 기본 위치에 지도와 마커를 표시합니다.
-function initFoodMap() {
-    const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
+function getDistrictStyle(feature) {
+    const isSelected = feature.getProperty('ADM_NM') === selectedDistrict;
+
+    return {
+        fillColor: isSelected ? '#22a06b' : '#ffffff',
+        fillOpacity: isSelected ? 0.28 : 0.02,
+        strokeColor: isSelected ? '#087f5b' : '#64748b',
+        strokeOpacity: isSelected ? 1 : 0.35,
+        strokeWeight: isSelected ? 4 : 1,
+        zIndex: isSelected ? 2 : 1
+    };
+}
+
+function getFeatureBounds(feature) {
+    const bounds = new google.maps.LatLngBounds();
+    feature.getGeometry().forEachLatLng(latLng => bounds.extend(latLng));
+    return bounds;
+}
+
+function highlightDistrict(districtName, moveMap = true) {
+    const map = window.foodMap;
+    if (!map || !window.chuncheonBoundaryLoaded) {
+        return;
+    }
+
+    selectedDistrict = districtName;
+    map.data.setStyle(getDistrictStyle);
+
+    let selectedFeature = null;
+    map.data.forEach(feature => {
+        if (feature.getProperty('ADM_NM') === districtName) {
+            selectedFeature = feature;
+        }
+    });
+
+    if (moveMap && selectedFeature) {
+        map.fitBounds(getFeatureBounds(selectedFeature), 48);
+    }
+}
+
+async function loadChuncheonBoundaries(map) {
+    const response = await fetch(CHUNCHEON_BOUNDARY_URL);
+    if (!response.ok) {
+        throw new Error(`행정동 경계 파일을 불러오지 못했습니다. (${response.status})`);
+    }
+
+    const geoJson = await response.json();
+    map.data.addGeoJson(geoJson);
+    window.chuncheonBoundaryLoaded = true;
+    highlightDistrict(selectedDistrict);
+}
+
+// 지도 로드가 완료되면 춘천 행정동 경계를 표시합니다.
+async function initFoodMap() {
+    const chuncheon = { lat: 37.8813, lng: 127.7298 };
     const map = new google.maps.Map(document.getElementById('map-api'), {
-        center: seoulCityHall,
-        zoom: 13,
+        center: chuncheon,
+        zoom: 12,
         mapTypeControl: false,
         streetViewControl: false
     });
     window.foodMap = map;
 
-    const marker = new google.maps.Marker({
-        position: seoulCityHall,
-        map,
-        title: '서울특별시청'
-    });
-
-    const infoWindow = new google.maps.InfoWindow({
-        content: '<strong>서울특별시청</strong><br>지도 연결 테스트가 완료되었습니다.'
-    });
-
-    marker.addListener('click', () => infoWindow.open({ anchor: marker, map }));
-    mapLoader.hidden = true;
+    try {
+        await loadChuncheonBoundaries(map);
+        mapLoader.hidden = true;
+    } catch (error) {
+        mapStatus.textContent = error.message;
+        mapStatus.classList.add('is-error');
+    }
 }
 
 loadGoogleMaps();
