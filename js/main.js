@@ -130,6 +130,28 @@ if (categoryButtons.length && storeList) {
     renderStores('한식');
 }
 
+const regionButtons = document.querySelectorAll('.region-item');
+
+if (regionButtons.length) {
+    regionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            regionButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+        });
+    });
+}
+
 if (document.getElementById('homepage-map')) {
     loadGoogleMaps();
 }
+
+
+
+// 히어로에 맛집 이미지 끌어오기
+fetchNearbyRestaurantsWithPhotos(37.5563, 126.9236).then(restaurants => {
+    const cards = document.querySelectorAll('.hero-card-img');
+    restaurants.forEach((r, i) => {
+        if (cards[i] && r.photoUrl) {
+            cards[i].style.backgroundImage = `url('${r.photoUrl}')`;
+        }
+    });
+});
