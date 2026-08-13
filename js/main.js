@@ -75,7 +75,8 @@ function renderStores(category) {
         return;
     }
 
-    const stores = window.restaurantData?.[category] || [];
+    const district = window.currentSelectedDistrict || '교동';
+    const stores = window.restaurantData?.[district]?.[category] || [];
 
     storeList.innerHTML = stores.map((store, index) => `
         <article class="store-card" data-category="${category}" data-index="${index}" tabindex="0">
