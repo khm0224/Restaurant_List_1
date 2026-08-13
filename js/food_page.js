@@ -234,8 +234,16 @@ async function initFoodMap() {
         center: chuncheon,
         zoom: 12,
         mapTypeControl: false,
-        streetViewControl: false
+        streetViewControl: false,
+        //============== 기본 음식점 마커 표시 비활성화 코드 ==========//
+        styles: [
+            {
+                featureType: 'poi.business',
+                stylers: [{ visibility: 'off' }]
+            }
+        ]
     });
+    
     window.foodMap = map;
 
     try {
