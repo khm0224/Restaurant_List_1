@@ -528,6 +528,13 @@
     z-index: 1000;
 }
 
+#review-modal-overlay:not([hidden]),
+#review-all-modal-overlay:not([hidden]),
+#review-photo-modal-overlay:not([hidden]) {
+    opacity: 1;
+    visibility: visible;
+}
+
 .modal {
     position: relative;
     width: min(480px, 90vw);

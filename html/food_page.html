@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="../css/login_page.css">
 </head>
 <body>
+<!-- 식당 탐색 화면 전체 영역 -->
 <div id="container">
+    <!-- 로고, 검색, 로그인 버튼 -->
     <div id="top-bar">
         <div class="top-left">
             <a href="../index.html" class="logo-link" aria-label="메인 페이지로 이동">
@@ -25,21 +27,50 @@
         </div>
     </div>
 
+    <!-- 식당 카테고리 선택 버튼 -->
     <div id="function-bar">
-        <div class="category-wrap">
-            <button class="category-btn active" data-category="한식" aria-pressed="true">한식</button>
-            <button class="category-btn" data-category="일식" aria-pressed="false">일식</button>
-            <button class="category-btn" data-category="중식" aria-pressed="false">중식</button>
-            <button class="category-btn" data-category="양식" aria-pressed="false">양식</button>
-            <button class="category-btn" data-category="디저트" aria-pressed="false">디저트</button>
+        <div class="function-bar-nav">
+            <button class="function-scroll-btn" id="function-scroll-prev" type="button" aria-label="이전 동 보기">&lsaquo;</button>
+            <div class="category-scroll" id="category-scroll">
+                <div class="category-wrap">
+                    <button class="category-btn active" data-category="소양동" aria-pressed="true">소양동</button>
+                    <button class="category-btn" data-category="교동" aria-pressed="false">교동</button>
+                    <button class="category-btn" data-category="조운동" aria-pressed="false">조운동</button>
+                    <button class="category-btn" data-category="약사명동" aria-pressed="false">약사명동</button>
+                    <button class="category-btn" data-category="근화동" aria-pressed="false">근화동</button>
+                    <button class="category-btn" data-category="후평1동" aria-pressed="false">후평1동</button>
+                    <button class="category-btn" data-category="후평2동" aria-pressed="false">후평2동</button>
+                    <button class="category-btn" data-category="후평3동" aria-pressed="false">후평3동</button>
+                    <button class="category-btn" data-category="효자1동" aria-pressed="false">효자1동</button>
+                    <button class="category-btn" data-category="효자2동" aria-pressed="false">효자2동</button>
+                    <button class="category-btn" data-category="효자3동" aria-pressed="false">효자3동</button>
+                    <button class="category-btn" data-category="석사동" aria-pressed="false">석사동</button>
+                    <button class="category-btn" data-category="퇴계통" aria-pressed="false">퇴계통</button>
+                    <button class="category-btn" data-category="강남동" aria-pressed="false">강남동</button>
+                    <button class="category-btn" data-category="신사우동" aria-pressed="false">신사우동</button>
+                </div>
+            </div>
+            <button class="function-scroll-btn" id="function-scroll-next" type="button" aria-label="다음 동 보기">&rsaquo;</button>
         </div>
     </div>
-
+    <!-- 식당 목록과 Google 지도 영역 -->
     <div id="content">
-        <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true" aria-controls="side-bar">
-            <span aria-hidden="true">☰</span>
-        </button>
         <div id="side-bar">
+            <div class="sidebar-toolbar">
+                <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true" aria-controls="side-bar">
+                    <span aria-hidden="true">☰</span>
+                </button>
+                <div class="sidebar-category-control">
+                    <label for="sidebar-category-select">카테고리</label>
+                    <select id="sidebar-category-select" style="width: 300px;">
+                        <option value="한식">한식</option>
+                        <option value="일식">일식</option>
+                        <option value="중식">중식</option>
+                        <option value="양식">양식</option>
+                        <option value="디저트">디저트</option>
+                    </select>
+                </div>
+            </div>
             <div id="store-list"></div>
         </div>
         <div id="map-area">
@@ -54,8 +85,10 @@
     </div>
 </div>
 
+<!-- JavaScript가 로그인 모달을 삽입하는 위치 -->
 <div id="login-modal-root"></div>
 
+<!-- 페이지 기능에 필요한 스크립트 -->
 <script src="../js/map-config.js"></script>
 <script src="../js/restaurantData.js"></script>
 <script src="../js/food_page.js"></script>

@@ -1,3 +1,4 @@
+// 카테고리별 식당 목록을 전역 데이터로 제공합니다.
 window.restaurantData = {
     한식: [
         { name: '춘천 닭갈비 본점', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', address: '강원특별자치도 춘천시 중앙로 123', rating: 4.9, reviewCount: 382 },
@@ -61,6 +62,7 @@ window.restaurantData = {
     ]
 };
 
+// 카테고리와 인덱스로 식당 한 곳을 찾습니다.
 window.getRestaurantData = function (category, index) {
     if (!category || index === undefined || index === null) {
         return null;
@@ -70,6 +72,7 @@ window.getRestaurantData = function (category, index) {
     return window.restaurantData?.[category]?.[normalizedIndex] || null;
 };
 
+// 상세 페이지에서 사용할 식당 정보를 탭 단위 저장소에 보관합니다.
 window.setSelectedRestaurant = function (category, index) {
     const store = window.getRestaurantData(category, index);
     if (!store) {
