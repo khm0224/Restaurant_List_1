@@ -6,7 +6,7 @@ const BOARD_STORAGE_KEY = 'restaurantComments';
 // 댓글 저장소에서 식당별 댓글 목록을 읽습니다.
 function loadBoard() {
     try {
-        return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {};
+        return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {}; //localStorage 이 내장 브라우저에 저장시켜준다.(DB대신 사용)
     } catch {
         return {};
     }
