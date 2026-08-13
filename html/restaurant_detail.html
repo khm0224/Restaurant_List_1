@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>식당 상세 페이지</title>
     <link rel="stylesheet" href="../css/food_page.css">
-    <link rel="stylesheet" href="../css/restaurant_detail.css">
+    <link rel="stylesheet" href="../css/restaurant_detail.css?v=20260813">
     <link rel="stylesheet" href="../css/login_page.css">
 </head>
 
 <body>
+    <!-- 선택한 식당의 상세 정보, 메뉴, 리뷰 및 댓글 영역 -->
     <div id="container">
         <div id="top-bar">
             <div class="top-left">
@@ -33,17 +34,20 @@
                 <button class="back-btn" type="button" onclick="location.href='food_page.html'">목록으로</button>
                 <article class="detail-card" id="detail-card"></article>
 
+                <!-- 등록된 리뷰 사진과 전체 리뷰 목록 -->
                 <section class="review-section" id="review-section" hidden>
                     <h2 class="review-title">리뷰</h2>
                     <div class="review-photo-grid" id="review-photo-grid"></div>
                     <button class="review-view-all-btn" id="review-view-all-btn" type="button" hidden>전체보기</button>
                 </section>
 
+                <!-- 식당 카테고리에 맞춰 표시되는 메뉴 -->
                 <section class="menu-section" id="menu-section" hidden>
                     <h2 class="menu-title">메뉴</h2>
                     <div class="menu-list" id="menu-list"></div>
                 </section>
 
+                <!-- 식당별 댓글 작성과 목록 -->
                 <section class="comment-section" id="comment-section" hidden>
                     <div class="comment-main">
                         <h2 class="comment-title">댓글</h2>
@@ -74,6 +78,7 @@
         </div>
     </div>
 
+    <!-- 평점, 내용, 사진을 입력하는 리뷰 작성 모달 -->
     <div class="modal-overlay" id="review-modal-overlay" hidden>
         <div class="modal" id="review-modal">
             <button class="modal-close" id="review-modal-close" type="button" aria-label="닫기">✕</button>
@@ -111,6 +116,7 @@
         </div>
     </div>
 
+    <!-- 페이지 단위로 전체 리뷰를 보여주는 모달 -->
     <div class="modal-overlay" id="review-all-modal-overlay" hidden>
         <div class="modal modal-wide" id="review-all-modal">
             <button class="modal-close" id="review-all-modal-close" type="button" aria-label="닫기">✕</button>
@@ -126,6 +132,7 @@
         </div>
     </div>
 
+    <!-- 리뷰 사진과 작성 내용을 확대해서 보여주는 모달 -->
     <div class="modal-overlay" id="review-photo-modal-overlay" hidden>
         <div class="modal modal-photo" id="review-photo-modal">
             <button class="modal-close" id="review-photo-modal-close" type="button" aria-label="닫기">✕</button>
@@ -138,8 +145,10 @@
         </div>
     </div>
 
+    <!-- JavaScript가 로그인 모달을 삽입하는 위치 -->
     <div id="login-modal-root"></div>
 
+    <!-- 상세 화면 데이터 및 동작 스크립트 -->
     <script src="../js/restaurantData.js"></script>
     <script src="../js/board.js"></script>
     <script src="../js/restaurantDetail.js"></script>

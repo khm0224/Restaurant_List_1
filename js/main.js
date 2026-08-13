@@ -1,3 +1,4 @@
+// 메인 화면의 작은 Google 지도를 생성합니다.
 function initHomepageMap() {
     const mapElement = document.getElementById('homepage-map');
     if (!mapElement || typeof google === 'undefined' || !google.maps) {
@@ -21,6 +22,7 @@ function initHomepageMap() {
     });
 }
 
+// 유효한 API 키가 있을 때만 지도 스크립트를 불러옵니다.
 function loadGoogleMaps() {
     const mapStatus = document.getElementById('homepage-map-status');
     const mapElement = document.getElementById('homepage-map');
@@ -58,6 +60,7 @@ function loadGoogleMaps() {
 const categoryButtons = document.querySelectorAll('.category-btn');
 const storeList = document.getElementById('store-list');
 
+// 선택한 식당을 저장한 뒤 상세 화면으로 이동합니다.
 function openStoreDetail(category, index) {
     if (window.setSelectedRestaurant) {
         window.setSelectedRestaurant(category, index);
@@ -66,6 +69,7 @@ function openStoreDetail(category, index) {
     window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
 }
 
+// 선택 카테고리의 식당 카드를 만들고 이동 이벤트를 연결합니다.
 function renderStores(category) {
     if (!storeList) {
         return;
@@ -119,6 +123,7 @@ function renderStores(category) {
     });
 }
 
+// 카테고리 버튼이 있는 화면에서 목록 전환을 초기화합니다.
 if (categoryButtons.length && storeList) {
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -130,6 +135,28 @@ if (categoryButtons.length && storeList) {
     renderStores('한식');
 }
 
+const regionButtons = document.querySelectorAll('.region-item');
+
+if (regionButtons.length) {
+    regionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            regionButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+        });
+    });
+}
+
 if (document.getElementById('homepage-map')) {
     loadGoogleMaps();
 }
+
+
+
+// 히어로에 맛집 이미지 끌어오기
+fetchNearbyRestaurantsWithPhotos(37.5563, 126.9236).then(restaurants => {
+    const cards = document.querySelectorAll('.hero-card-img');
+    restaurants.forEach((r, i) => {
+        if (cards[i] && r.photoUrl) {
+            cards[i].style.backgroundImage = `url('${r.photoUrl}')`;
+        }
+    });
+});
