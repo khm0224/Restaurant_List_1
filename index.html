@@ -30,7 +30,8 @@
                 <input type="text" placeholder="메뉴를 검색하시오..">
                 <span class="search-btn">🔍</span>
             </div>
-            <button type="button" class="login-btn" data-login-open aria-label="로그인">로그인</button>
+            <button type="button" class="login" id="login_Btn" data-login-open aria-label="로그인">로그인</button>
+            <button type="button" class="login hidden" id="logout_Btn">로그아웃</button>
         </div>
     </header>
 
@@ -131,11 +132,13 @@
         <div id="homepage-map">
             <p id="homepage-map-status">지도를 불러오는 중입니다…</p>
         </div>
-    </section> 
+    </section>
 
     <div id="login-modal-root"></div>
 
     <!-- 스크립트 연결 -->
+    <script src="./js/auth.js"></script>
+    <script src="./js/login.js"></script>
     <script src="./js/map-config.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/main_hero-slider.js"></script>

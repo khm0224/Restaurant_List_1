@@ -59,5 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     form.addEventListener('submit', event => {
         event.preventDefault();
+        handleLogin();
     });
 });
