@@ -1,0 +1,179 @@
+/* ============ 회원가입 페이지 ============ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: #222;
+    background: #FFF6EE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ---------- 카드 ---------- */
+.signup-container {
+    width: 100%;
+    max-width: 460px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 44px 40px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.signup-container h2 {
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.signup-container h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #F5821F;
+    border-radius: 2px;
+    margin: 12px auto 32px;
+}
+
+/* ---------- 입력 영역 ---------- */
+.signup-container .input-group {
+    margin-bottom: 18px;
+}
+
+.signup-container .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.signup-container .input-group input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #EAEAEA;
+    border-radius: 10px;
+    background: #FAFAFA;
+    font-size: 14px;
+    color: #222;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.signup-container .input-group input::placeholder {
+    color: #AAA;
+}
+
+.signup-container .input-group input:focus {
+    border-color: #F5821F;
+    background: #fff;
+}
+
+/* ---------- 검증 메시지 ---------- */
+.msg {
+    display: block;
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 16px;
+    line-height: 1.4;
+}
+
+.msg.error {
+    color: #E03131;
+}
+
+.msg.success {
+    color: #2F9E44;
+}
+
+#signupMsg {
+    text-align: center;
+    font-size: 13px;
+    margin: 4px 0 16px;
+}
+
+/* ---------- 약관 동의 ---------- */
+.agree-group {
+    background: #FFF6EE;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 24px 0 20px;
+}
+
+.agree-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+}
+
+.agree-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #F5821F;
+    cursor: pointer;
+}
+
+.agree-group strong {
+    color: #F5821F;
+}
+
+/* ---------- 버튼 ---------- */
+.signup-container .btn {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    border: none;
+    border-radius: 28px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-signup {
+    background: #F5821F;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.btn-signup:hover {
+    background: #C85D14;
+}
+
+.btn-cancel {
+    background: #fff;
+    color: #767676;
+    border: 1px solid #EAEAEA;
+}
+
+.btn-cancel:hover {
+    background: #F5F5F5;
+    color: #222;
+}
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 480px) {
+    .signup-container {
+        padding: 32px 24px;
+        border-radius: 16px;
+    }
+}

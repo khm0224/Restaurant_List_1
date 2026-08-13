@@ -1,0 +1,175 @@
+/* ============ 계정 찾기 페이지 ============ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: #222;
+    background: #FFF6EE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ---------- 카드 ---------- */
+.find-container {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.find-container h2 {
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+/* ---------- 탭 ---------- */
+.tab-menu {
+    display: flex;
+    gap: 6px;
+    background: #F5F5F5;
+    border-radius: 24px;
+    padding: 5px;
+    margin-bottom: 28px;
+}
+
+.tab {
+    flex: 1;
+    padding: 11px 0;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: #767676;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, color 0.2s;
+}
+
+.tab:hover {
+    color: #222;
+}
+
+.tab.active {
+    background: #F5821F;
+    color: #fff;
+}
+
+/* ---------- 패널 ---------- */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* ---------- 입력 영역 ---------- */
+.find-container .input-group {
+    margin-bottom: 16px;
+}
+
+.find-container .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.find-container .input-group input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #EAEAEA;
+    border-radius: 10px;
+    background: #FAFAFA;
+    font-size: 14px;
+    color: #222;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.find-container .input-group input::placeholder {
+    color: #AAA;
+}
+
+.find-container .input-group input:focus {
+    border-color: #F5821F;
+    background: #fff;
+}
+
+/* ---------- 결과 메시지 ---------- */
+.msg {
+    display: block;
+    font-size: 13px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #FAFAFA;
+    line-height: 1.5;
+    min-height: 20px;
+}
+
+.msg:empty {
+    display: none;
+}
+
+/* ---------- 실행 버튼 ---------- */
+#findIdBtn,
+#resetPwBtn {
+    width: 100%;
+    padding: 14px 0;
+    margin-top: 8px;
+    border: none;
+    border-radius: 28px;
+    background: #F5821F;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+#findIdBtn:hover,
+#resetPwBtn:hover {
+    background: #C85D14;
+}
+
+/* ---------- 하단 링크 ---------- */
+.find-container > a {
+    display: block;
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13px;
+    color: #767676;
+}
+
+.find-container > a:hover {
+    color: #F5821F;
+}
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 480px) {
+    .find-container {
+        padding: 32px 24px;
+        border-radius: 16px;
+    }
+}

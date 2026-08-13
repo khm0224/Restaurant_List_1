@@ -7,21 +7,23 @@
         <!-- 현재는 화면 동작만 제공하는 로그인 입력 폼 -->
         <form class="login-form" data-login-form>
             <div class="input-group">
-                <input type="email" name="email" placeholder="아이디" autocomplete="username" required>
-                <span class="input-icon" aria-hidden="true"></span>
+                <input type="text" id="loginId" name="loginId" placeholder="아이디" autocomplete="username" required>
+                <span class="input-icon" aria-hidden="true">😒</span>
             </div>
 
             <div class="input-group">
-                <input type="password" name="password" placeholder="비밀번호" autocomplete="current-password" required>
-                <span class="input-icon" aria-hidden="true"></span>
+                <input type="password" id="loginPw" name="password" placeholder="비밀번호" autocomplete="current-password"
+                    required>
+                <span class="input-icon" aria-hidden="true">😒</span>
             </div>
 
             <div class="find-link">
-                <a href="#">아이디/비밀번호 찾기</a>
+                <a href="/html/find_account.html">아이디/비밀번호 찾기</a>
             </div>
 
+            <p id="loginMsg" style="color:red; font-size:0.9rem;"></p>
             <button type="submit" class="btn btn-login">로그인</button>
-            <button type="button" class="btn btn-signup">회원가입</button>
+            <a href="/html/signup_page.html" class="btn btn-signup">회원가입</a>
         </form>
     </div>
 </div>
