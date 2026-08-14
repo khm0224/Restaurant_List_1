@@ -1,15 +1,17 @@
 <!--  메인 홈페이지 설명 -->
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>봄내로그에 관하여</title>
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/main_page_style.css">
-    <link rel="stylesheet" href="../../css/login_page.css">
+    <link rel="stylesheet" href="../../css/auth/login_page.css">
     <link rel="stylesheet" href="../../css/main_info.css">
 </head>
+
 <body>
     <header class="header">
         <div class="logo">
@@ -97,6 +99,11 @@
         </div>
     </section>
 
-    <script src="../../js/login_modal.js" data-login-component="../login_page.html"></script>
+    <div id="login-modal-root"></div>
+    
+    <script src="../../js/auth/auth.js"></script>
+    <script src="../../js/auth/login.js"></script>
+    <script src="../../js/auth/login_modal.js" data-login-component="../auth/login_page.html"></script>
 </body>
+
 </html>

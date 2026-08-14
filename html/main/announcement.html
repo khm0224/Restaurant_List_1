@@ -7,7 +7,7 @@
     <title>공지사항</title>
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/announcement.css">
-    <link rel="stylesheet" href="../../css/login_page.css">
+    <link rel="stylesheet" href="../../css/auth/login_page.css">
 </head>
 
 <body>
@@ -53,7 +53,8 @@
         <div class="announcement-modal" role="dialog" aria-modal="true" aria-labelledby="announcementModalTitle">
             <div class="announcement-modal-header">
                 <h2 id="announcementModalTitle">새 공지사항 작성</h2>
-                <button type="button" class="announcement-modal-close" id="closeAnnouncementModal" aria-label="닫기">×</button>
+                <button type="button" class="announcement-modal-close" id="closeAnnouncementModal"
+                    aria-label="닫기">×</button>
             </div>
 
             <form id="announcementForm">
@@ -74,7 +75,8 @@
 
                 <div class="form-group">
                     <label for="announcementContent">내용</label>
-                    <textarea id="announcementContent" name="content" rows="6" placeholder="공지 내용을 입력하세요" required></textarea>
+                    <textarea id="announcementContent" name="content" rows="6" placeholder="공지 내용을 입력하세요"
+                        required></textarea>
                 </div>
 
                 <div class="modal-actions">
@@ -88,7 +90,9 @@
     <div id="login-modal-root"></div>
 
     <script src="../../js/announcement.js" defer></script>
-    <script src="../../js/login_modal.js" data-login-component="../login_page.html" defer></script>
+    <script src="../../js/auth/auth.js"></script>
+    <script src="../../js/auth/login.js"></script>
+    <script src="../../js/auth/login_modal.js" data-login-component="../auth/login_page.html" defer></script>
 </body>
 
 </html>
