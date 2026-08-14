@@ -519,8 +519,8 @@ a {
 }
 
 .r-card-img {
-    width: 80px;
-    height: 80px;
+    width: 110px;
+    height: 110px;
     flex-shrink: 0;
     background-size: cover;
     background-position: center;
@@ -530,17 +530,17 @@ a {
 .r-card-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     min-width: 0;
 }
 
 .r-card-tag {
-    font-size: 12px;
+    font-size: 14px;
     color: #767676;
 }
 
 .r-card-name {
-    font-size: 15px;
+    font-size: 19px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -548,7 +548,7 @@ a {
 }
 
 .r-card-rating {
-    font-size: 13px;
+    font-size: 16px;
     color: #333;
 }
 
