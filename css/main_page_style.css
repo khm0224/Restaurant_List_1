@@ -218,9 +218,8 @@
     /*중앙 정렬*/
     margin: 0 auto;
     /*슬라이더 길이 조절*/
-    width: 70%;
+    width: 60%;
     position: relative;
-    width: 100%;
     background-color: #f7f7f7;
     border-bottom: 1px solid #EAEAEA;
     overflow: hidden;
@@ -229,9 +228,7 @@
 .region-track {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 24px;
-    width: 60%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 12px 0;
@@ -243,9 +240,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 0 0 86px;
-    width: 86px;
-    min-width: 86px;
+    flex: 0 0 calc((100% - 24px * 4) / 5);
     gap: 10px;
     padding: 0;
     background: none;
