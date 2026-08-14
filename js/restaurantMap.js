@@ -66,7 +66,7 @@
         if (districtName === '전체' && !allDistrictBounds.isEmpty()) {
             map.fitBounds(allDistrictBounds, 48);
         } else if (selectedFeature) {
-            map.fitBounds(getFeatureBounds(selectedFeature), 48);
+            map.fitBounds(getFeatureBounds(selectedFeature), 24);
         }
     }
 
