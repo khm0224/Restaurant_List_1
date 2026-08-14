@@ -36,10 +36,7 @@ window.restaurantData.교동 = {
     일식: [
         { name: '도쿄라멘춘천한림대점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180827_164%2F1535346817088xXANi_JPEG%2FMberV62NSww70SV_Ol1AUdJE.jpg', address: '강원 춘천시 삭주로 69', rating: 4.3, reviewCount: 164 }, // Ok
         { name: '미성카츠', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAyNjA2MTlfMjk3%2FMDAxNzgxODMzMzcxNTU3.3xCnfQQCXdO6VQ3bk3BzJIQFkb32hahExtydjgb5GTkg.A1usIa7S185mM9Zag1mqr5sC-yShTHvfj348M6Y24O4g.JPEG%2FKakaoTalk_20260618_193918149_07.jpg%2F1081x1081', address: '강원 춘천시 삭주로 47 1,2층', rating: 4.7, reviewCount: 110 }, // Ok
-        { name: '오야초밥', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230419_275%2F1681877591722iv2wT_JPEG%2FA7CBCC0C-8D0B-49B9-BFED-C52E07FD92F9.jpeg', address: '강원 춘천시 삭주로 42 1층', rating: 4.6, reviewCount: 892 },
-        { name: '그래도 스시', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180607_116%2F1528337536274qop0t_JPEG%2FTdMLuIKMj_WPDVnvJMCRlCkF.jpg', address: '강원 춘천시 삭주로 96-1', rating: 4.5, reviewCount: 280 },
-        { name: '도쿄밥상', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyMzEwMjZfMTMg%2FMDAxNjk4MjUwODM0Nzc3.5YDsZjbw6VA9-pDyVpsHgGLy3AEuJyF7Xiv9XkdjS5Mg.PxAObvoCI8545DD-tdlBYfiIaFO4KFfA6AoZaql2Xisg.JPEG%2Fupload_a0ca8235f152196bcd4aa5526a45beac.jpeg', address: '강원 춘천시 삭주로 112', rating: 4.0, reviewCount: 84 },
-        { name: '미미카츠', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250811_96%2F1754889583709uxkxz_JPEG%2FKakaoTalk_20250811_133110404.jpg', address: '강원 춘천시 서부대성로 91 1,2층', rating: 4.3, reviewCount: 5 }
+        { name: '오야초밥', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230419_275%2F1681877591722iv2wT_JPEG%2FA7CBCC0C-8D0B-49B9-BFED-C52E07FD92F9.jpeg', address: '강원 춘천시 삭주로 42 1층', rating: 4.6, reviewCount: 892 }
     ],
     중식: [
         {

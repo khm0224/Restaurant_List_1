@@ -2,8 +2,8 @@
 
 function handleSignUp() {
     const id = document.querySelector('#signupId').value.trim();
-    const pw = document.querySelector('#signupPw').value;
-    const pw2 = document.querySelector('#signupPw2').value;
+    const pw = document.querySelector('#signupPw').value.trim();
+    const pw2 = document.querySelector('#signupPw2').value.trim();
     const name = document.querySelector('#signupName').value.trim();
     const email = document.querySelector('#signupEmail').value.trim();
     const agree = document.querySelector('#signupAgree').checked;
