@@ -9,6 +9,8 @@
     let cityBoundaryLayer = null;
     let boundaryLoaded = false;
     let selectedDistrict = '전체';
+    let restaurantMarkers = [];
+    let restaurantInfoWindow = null;
 
     function showMapError(message) {
         mapStatus.textContent = message;
@@ -99,6 +101,56 @@
         highlightDistrict(selectedDistrict);
     }
 
+    function escapeHtml(value = '') {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function createRestaurantMarkers(restaurants) {
+        restaurantMarkers.forEach(({ marker }) => marker.setMap(null));
+        restaurantMarkers = [];
+        restaurantInfoWindow?.close();
+        restaurantInfoWindow = new google.maps.InfoWindow();
+
+        restaurants.forEach(restaurant => {
+            const marker = new google.maps.Marker({
+                map,
+                position: {
+                    lat: restaurant.latitude,
+                    lng: restaurant.longitude
+                },
+                title: restaurant.name
+            });
+
+            marker.addListener('click', () => {
+                restaurantInfoWindow.setContent(`
+                    <div class="restaurant-map-info">
+                        <strong>${escapeHtml(restaurant.name)}</strong>
+                        <p>${escapeHtml(restaurant.category)}</p>
+                        <p>${escapeHtml(restaurant.address)}</p>
+                        <p>⭐ ${restaurant.rating} · 리뷰 ${restaurant.reviewCount}</p>
+                    </div>
+                `);
+                restaurantInfoWindow.open({ map, anchor: marker });
+            });
+
+            restaurantMarkers.push({ restaurant, marker });
+        });
+    }
+
+    async function loadRestaurantMarkers() {
+        if (!window.RestaurantService) {
+            throw new Error('식당 데이터 서비스를 불러오지 못했습니다.');
+        }
+
+        const restaurants = await window.RestaurantService.getRestaurants();
+        createRestaurantMarkers(restaurants);
+    }
+
     async function initFoodMap() {
         const chuncheon = { lat: 37.8813, lng: 127.7298 };
 
@@ -119,7 +171,10 @@
         window.foodMap = map;
 
         try {
-            await loadChuncheonBoundaries();
+            await Promise.all([
+                loadChuncheonBoundaries(),
+                loadRestaurantMarkers()
+            ]);
             mapLoader.hidden = true;
         } catch (error) {
             showMapError(error.message);
@@ -160,6 +215,7 @@
     window.RestaurantMap = {
         load: loadGoogleMaps,
         highlightDistrict,
+        setRestaurants: createRestaurantMarkers,
         resize,
         getMap: () => map
     };
