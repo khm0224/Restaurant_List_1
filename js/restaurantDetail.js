@@ -35,23 +35,27 @@ const commentPagePrev = document.getElementById('comment-page-prev');
 const commentPageNext = document.getElementById('comment-page-next');
 const commentPageInfo = document.getElementById('comment-page-info');
 
+// 현재는 로그인 여부와 관계없이 댓글 작성 폼을 표시합니다.
 commentForm.hidden = false;
 commentLocked.hidden = true;
 
 const COMMENTS_PER_PAGE = 5;
 let commentPage = 1;
 
+// 목록 페이지에서 선택한 식당을 복원하고, 직접 접속 시 URL로 보완합니다.
 let saved = sessionStorage.getItem('selectedRestaurant');
 const queryParams = new URLSearchParams(window.location.search);
+const districtParam = queryParams.get('district');
 const categoryParam = queryParams.get('category');
 const idParam = queryParams.get('id');
 
 if (!saved && categoryParam && idParam !== null) {
-    const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam));
+    const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam), districtParam || window.currentSelectedDistrict || '교동');
 
     if (fallbackStore) {
         saved = JSON.stringify({
             ...fallbackStore,
+            district: districtParam || window.currentSelectedDistrict || '교동',
             category: categoryParam,
             id: Number(idParam)
         });
@@ -90,6 +94,7 @@ if (!saved) {
     renderComments();
 }
 
+// 식당 카테고리에 맞는 임시 메뉴를 표시합니다.
 function renderMenu(category) {
     const menu = window.menuTemplates?.[category] || [];
 
@@ -121,6 +126,7 @@ function reviewItemHTML(review) {
     `;
 }
 
+// 저장된 리뷰에서 사진 미리보기와 전체보기 버튼을 갱신합니다.
 function renderReviews() {
     const reviews = ReviewBoard.getReviews(restaurantId).slice().reverse();
 
@@ -173,6 +179,7 @@ reviewPhotoModalOverlay.addEventListener('click', (event) => {
 const REVIEWS_PER_PAGE = 5;
 let reviewPage = 1;
 
+// 전체 리뷰를 페이지 단위로 표시하고 삭제 이벤트를 연결합니다.
 function renderReviewPage() {
     const reviews = ReviewBoard.getReviews(restaurantId).slice().reverse();
     const totalPages = Math.max(1, Math.ceil(reviews.length / REVIEWS_PER_PAGE));
@@ -226,6 +233,7 @@ reviewPageNext.addEventListener('click', () => {
 
 let selectedRating = 0;
 
+// 선택한 별점과 버튼의 강조 상태를 함께 갱신합니다.
 function setStarRating(value) {
     selectedRating = value;
     reviewRatingInput.value = value ? String(value) : '';
@@ -263,6 +271,7 @@ reviewModalOverlay.addEventListener('click', (event) => {
     }
 });
 
+// 선택한 사진을 Base64 미리보기로 변환합니다.
 reviewPhotoInput.addEventListener('change', () => {
     const file = reviewPhotoInput.files[0];
 
@@ -279,6 +288,7 @@ reviewPhotoInput.addEventListener('change', () => {
     reader.readAsDataURL(file);
 });
 
+// 유효성 검사 후 리뷰를 브라우저 저장소에 등록합니다.
 reviewForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -303,6 +313,7 @@ reviewForm.addEventListener('submit', (event) => {
 });
 
 
+// 식당별 댓글을 페이지 단위로 표시하고 삭제 이벤트를 연결합니다.
 function renderComments() {
     const comments = Board.getComments(restaurantId).slice().reverse();
 
@@ -353,6 +364,7 @@ commentPageNext.addEventListener('click', () => {
     renderComments();
 });
 
+// 입력한 댓글을 브라우저 저장소에 등록합니다.
 commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
 

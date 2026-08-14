@@ -1,27 +1,46 @@
 const categoryButtons = document.querySelectorAll('.category-btn');
+const categoryScroll = document.getElementById('category-scroll');
+const functionScrollPrev = document.getElementById('function-scroll-prev');
+const functionScrollNext = document.getElementById('function-scroll-next');
 const storeList = document.getElementById('store-list');
+const sidebarCategorySelect = document.getElementById('sidebar-category-select');
 const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 const mapLoader = document.getElementById('map-loader');
 const mapStatus = document.getElementById('map-status');
+const CHUNCHEON_BOUNDARY_URL = '../data/area/chuncheon-admin-dong.geojson';
+const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
+let selectedDistrict = document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category || '전체';
 
-function openStoreDetail(category, index) {
+// 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
+function openStoreDetail(district, category, index) {
     if (window.setSelectedRestaurant) {
-        window.setSelectedRestaurant(category, index);
+        window.setSelectedRestaurant(district, category, index);
     }
 
-    window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
+    window.location.href = `restaurant_detail.html?district=${encodeURIComponent(district)}&category=${encodeURIComponent(category)}&id=${index}`;
 }
 
-function renderSelectedStores() {
-    const activeButton = [...categoryButtons].find(button => button.classList.contains('active'));
-    const selectedCategory = activeButton ? activeButton.dataset.category : '한식';
+// 현재 카테고리의 식당 목록과 클릭 이벤트를 화면에 만듭니다.
+function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
+    const restaurantData = window.restaurantData || {};
+    const districts = selectedDistrict === '전체'
+        ? Object.entries(restaurantData)
+        : [[selectedDistrict, restaurantData[selectedDistrict] || {}]];
+    const stores = districts.flatMap(([district, districtData]) => {
+        const categories = selectedCategory === '전체'
+            ? Object.keys(districtData)
+            : [selectedCategory];
 
-    const stores = (window.restaurantData?.[selectedCategory] || []).map((store, index) => ({
-        ...store,
-        category: selectedCategory,
-        index
-    }));
+        return categories.flatMap(category =>
+            (districtData[category] || []).map((store, index) => ({
+                ...store,
+                district,
+                category,
+                index
+            }))
+        );
+    });
 
     if (stores.length === 0) {
         storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
@@ -29,7 +48,7 @@ function renderSelectedStores() {
     }
 
     storeList.innerHTML = stores.map(store => `
-        <article class="store-card" data-category="${store.category}" data-index="${store.index}" tabindex="0">
+        <article class="store-card" data-district="${store.district}" data-category="${store.category}" data-index="${store.index}" tabindex="0">
             <div class="store-main-row">
                 <img src="${store.img}" alt="${store.name}" class="store-img">
                 <div class="store-info">
@@ -69,16 +88,18 @@ function renderSelectedStores() {
             }
 
             const targetCategory = card.dataset.category;
+            const targetDistrict = card.dataset.district;
             const targetIndex = Number(card.dataset.index);
-            openStoreDetail(targetCategory, targetIndex);
+            openStoreDetail(targetDistrict, targetCategory, targetIndex);
         });
 
         card.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 const targetCategory = card.dataset.category;
+                const targetDistrict = card.dataset.district;
                 const targetIndex = Number(card.dataset.index);
-                openStoreDetail(targetCategory, targetIndex);
+                openStoreDetail(targetDistrict, targetCategory, targetIndex);
             }
         });
     });
@@ -86,16 +107,45 @@ function renderSelectedStores() {
 
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
+        selectedDistrict = button.dataset.category;
+        window.currentSelectedDistrict = selectedDistrict;
+
         categoryButtons.forEach(btn => {
             const isActive = btn === button;
             btn.classList.toggle('active', isActive);
             btn.setAttribute('aria-pressed', String(isActive));
         });
 
-        renderSelectedStores();
+        highlightDistrict(selectedDistrict);
+        renderSelectedStores(sidebarCategorySelect.value);
     });
 });
 
+function updateFunctionScrollButtons() {
+    const maxScrollLeft = categoryScroll.scrollWidth - categoryScroll.clientWidth;
+    functionScrollPrev.disabled = categoryScroll.scrollLeft <= 0;
+    functionScrollNext.disabled = categoryScroll.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollFunctionBar(direction) {
+    categoryScroll.scrollBy({
+        left: direction * Math.max(240, categoryScroll.clientWidth * 0.7)
+    });
+    updateFunctionScrollButtons();
+}
+
+functionScrollPrev.addEventListener('click', () => scrollFunctionBar(-1));
+functionScrollNext.addEventListener('click', () => scrollFunctionBar(1));
+categoryScroll.addEventListener('scroll', updateFunctionScrollButtons);
+window.addEventListener('resize', updateFunctionScrollButtons);
+updateFunctionScrollButtons();
+
+sidebarCategorySelect.addEventListener('change', () => {
+    const selectedCategory = sidebarCategorySelect.value;
+    renderSelectedStores(selectedCategory);
+});
+
+// 첫 화면에는 기본 카테고리인 한식을 표시합니다.
 renderSelectedStores();
 
 sidebarToggle.addEventListener('click', () => {
@@ -110,6 +160,7 @@ sidebarToggle.addEventListener('click', () => {
     }, 320);
 });
 
+// API 키를 확인한 뒤 Google 지도 스크립트를 불러옵니다.
 function loadGoogleMaps() {
     const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
     const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
@@ -139,28 +190,112 @@ function loadGoogleMaps() {
     document.head.appendChild(script);
 }
 
-function initFoodMap() {
-    const seoulCityHall = { lat: 37.5665, lng: 126.9780 };
-    const map = new google.maps.Map(document.getElementById('map-api'), {
-        center: seoulCityHall,
-        zoom: 13,
-        mapTypeControl: false,
-        streetViewControl: false
+function getDistrictStyle(feature) {
+    const isSelected = feature.getProperty('ADM_NM') === selectedDistrict;
+
+    return {
+        clickable: false,
+        visible: selectedDistrict !== '전체',
+        fillColor: isSelected ? 'rgb(255, 255, 255)' : '#ffffff',
+        fillOpacity: isSelected ? 0.28 : 0.02,
+        strokeColor: isSelected ? '#ba0707' : '#64748b',
+        strokeOpacity: isSelected ? 1 : 0.35,
+        strokeWeight: isSelected ? 4 : 1,
+        zIndex: isSelected ? 2 : 1
+    };
+}
+
+function getFeatureBounds(feature) {
+    const bounds = new google.maps.LatLngBounds();
+    feature.getGeometry().forEachLatLng(latLng => bounds.extend(latLng));
+    return bounds;
+}
+
+function highlightDistrict(districtName, moveMap = true) {
+    const map = window.foodMap;
+    if (!map || !window.chuncheonBoundaryLoaded) {
+        return;
+    }
+
+    selectedDistrict = districtName;
+    map.data.setStyle(getDistrictStyle);
+    window.chuncheonCityBoundaryLayer?.setMap(districtName === '전체' ? map : null);
+
+    let selectedFeature = null;
+    const allDistrictBounds = new google.maps.LatLngBounds();
+    map.data.forEach(feature => {
+        if (districtName === '전체') {
+            feature.getGeometry().forEachLatLng(latLng => allDistrictBounds.extend(latLng));
+        } else if (feature.getProperty('ADM_NM') === districtName) {
+            selectedFeature = feature;
+        }
     });
+
+    if (moveMap) {
+        if (districtName === '전체' && !allDistrictBounds.isEmpty()) {
+            map.fitBounds(allDistrictBounds, 48);
+        } else if (selectedFeature) {
+            map.fitBounds(getFeatureBounds(selectedFeature), 48);
+        }
+    }
+}
+
+async function loadChuncheonBoundaries(map) {
+    const [districtResponse, cityResponse] = await Promise.all([
+        fetch(CHUNCHEON_BOUNDARY_URL),
+        fetch(CHUNCHEON_CITY_BOUNDARY_URL)
+    ]);
+    if (!districtResponse.ok || !cityResponse.ok) {
+        throw new Error('춘천시 경계 파일을 불러오지 못했습니다.');
+    }
+
+    const [districtGeoJson, cityGeoJson] = await Promise.all([
+        districtResponse.json(),
+        cityResponse.json()
+    ]);
+    map.data.addGeoJson(districtGeoJson);
+
+    const cityBoundaryLayer = new google.maps.Data();
+    cityBoundaryLayer.addGeoJson(cityGeoJson);
+    cityBoundaryLayer.setStyle({
+        clickable: false,
+        strokeColor: '#ba0707',
+        strokeOpacity: 1,
+        strokeWeight: 4,
+        zIndex: 2
+    });
+    window.chuncheonCityBoundaryLayer = cityBoundaryLayer;
+
+    window.chuncheonBoundaryLoaded = true;
+    highlightDistrict(selectedDistrict);
+}
+
+// 지도 로드가 완료되면 춘천 행정동 경계를 표시합니다.
+async function initFoodMap() {
+    const chuncheon = { lat: 37.8813, lng: 127.7298 };
+    const map = new google.maps.Map(document.getElementById('map-api'), {
+        center: chuncheon,
+        zoom: 12,
+        mapTypeControl: false,
+        streetViewControl: false,
+        //============== 기본 음식점 마커 표시 비활성화 코드 ==========//
+        styles: [
+            {
+                featureType: 'poi.business',
+                stylers: [{ visibility: 'off' }]
+            }
+        ]
+    });
+    
     window.foodMap = map;
 
-    const marker = new google.maps.Marker({
-        position: seoulCityHall,
-        map,
-        title: '서울특별시청'
-    });
-
-    const infoWindow = new google.maps.InfoWindow({
-        content: '<strong>서울특별시청</strong><br>지도 연결 테스트가 완료되었습니다.'
-    });
-
-    marker.addListener('click', () => infoWindow.open({ anchor: marker, map }));
-    mapLoader.hidden = true;
+    try {
+        await loadChuncheonBoundaries(map);
+        mapLoader.hidden = true;
+    } catch (error) {
+        mapStatus.textContent = error.message;
+        mapStatus.classList.add('is-error');
+    }
 }
 
 loadGoogleMaps();

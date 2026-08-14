@@ -1,5 +1,7 @@
+// 각 페이지에서 전달한 로그인 모달 HTML 경로를 사용합니다.
 const loginComponentScript = document.currentScript;
 
+// 공통 로그인 모달을 불러오고 열기/닫기 이벤트를 연결합니다.
 document.addEventListener('DOMContentLoaded', async () => {
     const root = document.getElementById('login-modal-root');
     const componentUrl = loginComponentScript?.dataset.loginComponent;
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // 모달을 열 때 첫 입력칸으로 포커스를 이동합니다.
     function openModal() {
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');

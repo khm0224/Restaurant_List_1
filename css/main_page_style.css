@@ -19,7 +19,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 40px;
+    padding: 14px 40px 14px 16px;
     border-bottom: 1px solid #EAEAEA;
 }
 
@@ -32,16 +32,11 @@ a {
     font-size: 20px;
 }
 
-.logo-icon {
-    width: 34px;
-    height: 34px;
-    background: #F5821F;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+.logo img {
+    height: 70px;
+    width: 210px;
 }
+
 
 /* 상단 메뉴(카테고리) 영역 */
 .nav {
@@ -335,6 +330,130 @@ a {
     background: #FFF1E4;
 }
 
+/* 지역(동) 선택 - 5개씩 보여주고 1개씩 넘기는 슬라이더 */
+.region-slider {
+    position: relative;
+    padding: 12px 40px;
+    border-bottom: 1px solid #EAEAEA;
+    overflow: hidden;
+}
+
+.region-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s ease;
+}
+
+.region-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 calc((100% - 24px * 4) / 5);
+    gap: 10px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.region-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #F3F3F3;
+    color: #767676;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid transparent;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.region-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+    white-space: nowrap;
+    transition: color 0.2s, font-weight 0.2s;
+}
+
+.region-item:hover .region-icon {
+    background: #E9E9E9;
+}
+
+.region-item.active .region-icon {
+    background: #EAF2FF;
+    border-color: #3B82F6;
+    color: #3B82F6;
+}
+
+.region-item.active .region-label {
+    color: #000;
+    font-weight: 700;
+}
+
+/* 좌우 화살표 */
+.region-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s, color 0.2s, opacity 0.2s;
+}
+
+.region-arrow.prev { left: 16px; }
+.region-arrow.next { right: 16px; }
+.region-arrow:hover { background: #F5821F; color: #fff; }
+
+.region-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.region-arrow:disabled:hover {
+    background: #fff;
+    color: #222;
+}
+
+/* 하단 점 인디케이터 */
+.region-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.region-pagination button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #DDD;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.region-pagination button.active {
+    width: 22px;
+    border-radius: 5px;
+    background: #F5821F;
+}
+
 
 /* ===================================top list */
 .section {
@@ -363,15 +482,24 @@ a {
     cursor: pointer;
 }
 
-/* toplist 음식점 들어갈곳 위치 */
+/* toplist 음식점 들어갈곳 위치 - 지도 오른쪽에 세로로 나열 */
 .restaurant-grid {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 12px;
+    height: 420px;
 }
 
 .r-card-placeholder {
     flex: 1;
     /* 남은 공간을 5개가 똑같이 나눠 가짐 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F3F3F3;
+    border-radius: 12px;
+    color: #888;
+    font-weight: 600;
 }
 
 /*==========홈페이지 미니맵============*/
@@ -380,11 +508,28 @@ a {
     padding: 32px 40px;
 }
 
+/* 지도(왼쪽)와 top list(오른쪽)를 나란히 배치 */
+.map-toplist-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.map-col {
+    flex: 1 1 50%;
+    min-width: 0;
+}
+
+.toplist-col {
+    flex: 1 1 50%;
+    min-width: 0;
+}
+
 #homepage-map {
     position: relative;
     display: grid;
     place-items: center;
-    width: 43%;
+    width: 100%;
     height: 420px;
     background: #ddd;
     border-radius: 16px;
@@ -404,13 +549,32 @@ a {
     color: #b3261e;
 }
 
+@media (max-width: 900px) {
+    .map-toplist-row {
+        flex-direction: column;
+    }
+
+    .map-col,
+    .toplist-col {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .restaurant-grid {
+        height: auto;
+    }
+
+    .r-card-placeholder {
+        padding: 16px;
+    }
+}
+
 @media (max-width: 760px) {
     .homepage-map {
         padding: 24px 20px;
     }
 
     #homepage-map {
-        width: 100%;
         height: 320px;
     }
 }

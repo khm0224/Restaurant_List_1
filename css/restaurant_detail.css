@@ -1,3 +1,7 @@
+#top-bar {
+    height: 90px;
+}
+
 #detail-shell {
     display: grid;
     grid-template-columns: 15% 70% 15%;
@@ -526,6 +530,13 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
+}
+
+#review-modal-overlay:not([hidden]),
+#review-all-modal-overlay:not([hidden]),
+#review-photo-modal-overlay:not([hidden]) {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal {
