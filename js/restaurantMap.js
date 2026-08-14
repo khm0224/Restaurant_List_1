@@ -12,6 +12,18 @@
     let restaurantMarkers = [];
     let restaurantInfoWindow = null;
 
+    const RESTAURANT_MARKER_SVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="48" viewBox="0 0 44 48">
+            <path fill="#16845b" stroke="#ffffff" stroke-width="2"
+                d="M22 1C10.4 1 2 9.7 2 20.4C2 34 22 47 22 47S42 34 42 20.4C42 9.7 33.6 1 22 1Z"/>
+            <circle cx="22" cy="20" r="14" fill="#ffffff"/>
+            <g fill="none" stroke="#16845b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4">
+                <path d="M15 11v8M12 11v5c0 2 1.3 3 3 3s3-1 3-3v-5M15 19v10"/>
+                <path d="M25 11v18M25 11c4 1.5 5 6.5 0 10"/>
+            </g>
+        </svg>
+    `;
+
     function showMapError(message) {
         mapStatus.textContent = message;
         mapStatus.classList.add('is-error');
@@ -123,7 +135,12 @@
                     lat: restaurant.latitude,
                     lng: restaurant.longitude
                 },
-                title: restaurant.name
+                title: restaurant.name,
+                icon: {
+                    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(RESTAURANT_MARKER_SVG)}`,
+                    scaledSize: new google.maps.Size(44, 48),
+                    anchor: new google.maps.Point(22, 47)
+                }
             });
 
             marker.addListener('click', () => {
