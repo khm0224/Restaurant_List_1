@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modal = root.querySelector('#loginModal');
     const closeButton = root.querySelector('[data-login-close]');
     const form = root.querySelector('[data-login-form]');
-    const openButtons = document.querySelectorAll('[data-login-open]');
 
     // 모달 안의 링크는 모달 HTML 위치를 기준으로 경로를 다시 계산
     // 삽입된 페이지의 폴더 깊이가 달라도 링크가 깨지지 않게 하기 위함
@@ -66,8 +65,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         modal.setAttribute('aria-hidden', 'true');
     }
 
-    openButtons.forEach(button => button.addEventListener('click', openModal));
     closeButton.addEventListener('click', closeModal);
+
+    closeButton.addEventListener('click', closeModal);
+
+    // 로그인 버튼은 헤더 안에 있어 fetch로 나중에 생깁니다.
+    // 버튼에 직접 이벤트를 걸면 그 시점에 버튼이 없어 연결되지 않으므로,
+    // document에 걸어두고 클릭한 위치를 확인하는 방식(이벤트 위임)을 씁니다.
+    //      버튼이 나중에 생겨도(헤더가 fetch로 늦게 도착) 동작합니다.
+    //      profileMenu.js:55의 바깥클릭 감지와 같은 기법입니다.
+    document.addEventListener('click', (event) => {
+        if (event.target.closest('[data-login-open]')) openModal();
+    });
 
     // 어두운 배경을 클릭했을 때만 닫기 (모달 내용 클릭은 통과)
     modal.addEventListener('click', event => {
