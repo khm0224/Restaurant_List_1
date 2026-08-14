@@ -505,6 +505,53 @@ a {
     font-weight: 600;
 }
 
+/* 한림대 맛집 카드 - 이미지 + 정보 가로 배치 */
+.r-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #F3F3F3;
+    border-radius: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.r-card-img {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.r-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.r-card-tag {
+    font-size: 12px;
+    color: #767676;
+}
+
+.r-card-name {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.r-card-rating {
+    font-size: 13px;
+    color: #333;
+}
+
 /*==========홈페이지 미니맵============*/
 
 .homepage-map {
