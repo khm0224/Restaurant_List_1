@@ -1,4 +1,7 @@
-// 음식점 탐색 페이지의 Google 지도와 춘천 행정동 경계를 관리합니다.
+// 핵심 역할: Google Maps를 로드하고, 춘천 행정동 경계/식당 마커를 지도 위에 표시
+// 목적: 지도 페이지에서 동네 구역 강조, 식당 위치 마커 클릭, 정보창 표시 기능 제공
+// 구성: 경계 GeoJSON 로딩 + Google Maps 초기화 + 식당 마커 생성 + 마커 클릭 이벤트
+
 (function () {
     const CHUNCHEON_BOUNDARY_URL = '../data/area/chuncheon-admin-dong.geojson';
     const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
@@ -25,11 +28,13 @@
         </svg>
     `;
 
+    // 지도 로딩 실패 시 사용자에게 상태 메시지를 보여줍니다.
     function showMapError(message) {
         mapStatus.textContent = message;
         mapStatus.classList.add('is-error');
     }
 
+    // 선택된 동네를 강조하는 경계 스타일을 계산합니다.
     function getDistrictStyle(feature) {
         const isSelected = feature.getProperty('ADM_NM') === selectedDistrict;
 
@@ -67,6 +72,7 @@
         updateMarkerVisibility();
     }
 
+    // 동네를 선택하면 해당 구역을 하이라이트하고 지도를 해당 위치에 맞춥니다.
     function highlightDistrict(districtName, moveMap = true) {
         selectedDistrict = districtName;
         updateMarkerVisibility();
@@ -100,6 +106,7 @@
         }
     }
 
+    // 춘천 시/행정동 경계 GeoJSON 파일을 불러와 지도에 적용합니다.
     async function loadChuncheonBoundaries() {
         const [districtResponse, cityResponse] = await Promise.all([
             fetch(CHUNCHEON_BOUNDARY_URL),
@@ -131,6 +138,7 @@
         highlightDistrict(selectedDistrict);
     }
 
+    // 인포윈도우에 넣는 문자열을 안전하게 escape 처리합니다.
     function escapeHtml(value = '') {
         return String(value)
             .replace(/&/g, '&amp;')
@@ -140,6 +148,7 @@
             .replace(/'/g, '&#039;');
     }
 
+    // 식당 배열을 기반으로 지도 마커를 생성하고 클릭 이벤트를 연결합니다.
     function createRestaurantMarkers(restaurants) {
         restaurantMarkers.forEach(({ marker }) => marker.setMap(null));
         restaurantMarkers = [];
@@ -180,6 +189,7 @@
         });
     }
 
+    // RestaurantService에서 식당 좌표 데이터를 받아 지도 마커로 표시합니다.
     async function loadRestaurantMarkers() {
         if (!window.RestaurantService) {
             throw new Error('식당 데이터 서비스를 불러오지 못했습니다.');
@@ -189,6 +199,7 @@
         createRestaurantMarkers(restaurants);
     }
 
+    // Google Maps를 초기화하고 경계/마커를 함께 불러옵니다.
     async function initFoodMap() {
         const chuncheon = { lat: 37.8813, lng: 127.7298 };
 
@@ -219,6 +230,7 @@
         }
     }
 
+    // API 키가 있으면 Google Maps 스크립트를 동적으로 불러옵니다.
     function loadGoogleMaps() {
         const apiKey = window.GOOGLE_MAPS_API_KEY?.trim();
         const hasValidApiKeyFormat = /^AIza[0-9A-Za-z_-]{30,}$/.test(apiKey || '');
@@ -244,6 +256,7 @@
         document.head.appendChild(script);
     }
 
+    // 지도 레이아웃이 바뀌면 다시 그려서 깨짐을 방지합니다.
     function resize() {
         if (map && window.google?.maps) {
             google.maps.event.trigger(map, 'resize');

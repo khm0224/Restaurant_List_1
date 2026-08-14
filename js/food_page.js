@@ -8,7 +8,7 @@ const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 let selectedDistrict = document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category || '전체';
 
-// 선택한 식당 정보를 저장하고 상세 페이지로 이동합니다.
+// 선택한 식당 정보를 세션 스토리지에 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(district, category, index) {
     if (window.setSelectedRestaurant) {
         window.setSelectedRestaurant(district, category, index);
@@ -17,7 +17,7 @@ function openStoreDetail(district, category, index) {
     window.location.href = `restaurant_detail.html?district=${encodeURIComponent(district)}&category=${encodeURIComponent(category)}&id=${index}`;
 }
 
-// 현재 카테고리의 식당 목록과 클릭 이벤트를 화면에 만듭니다.
+// 현재 선택된 동네/카테고리에 맞는 식당 목록을 생성하고 카드 클릭 이벤트를 연결합니다.
 function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
     const restaurantData = window.restaurantData || {};
     const districts = selectedDistrict === '전체'
@@ -101,6 +101,7 @@ function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
     });
 }
 
+// 동네 버튼 클릭 시 선택 상태와 지도 강조, 목록 재렌더링을 함께 처리합니다.
 categoryButtons.forEach(button => {
     button.addEventListener('click', () => {
         selectedDistrict = button.dataset.category;
@@ -117,12 +118,14 @@ categoryButtons.forEach(button => {
     });
 });
 
+// 카테고리 가로 스크롤 상태에 따라 이전/다음 버튼의 활성/비활성 상태를 갱신합니다.
 function updateFunctionScrollButtons() {
     const maxScrollLeft = categoryScroll.scrollWidth - categoryScroll.clientWidth;
     functionScrollPrev.disabled = categoryScroll.scrollLeft <= 0;
     functionScrollNext.disabled = categoryScroll.scrollLeft >= maxScrollLeft - 1;
 }
 
+// 카테고리 바를 좌우로 이동시키고 버튼 상태를 다시 계산합니다.
 function scrollFunctionBar(direction) {
     categoryScroll.scrollBy({
         left: direction * Math.max(240, categoryScroll.clientWidth * 0.7)
@@ -136,44 +139,17 @@ categoryScroll.addEventListener('scroll', updateFunctionScrollButtons);
 window.addEventListener('resize', updateFunctionScrollButtons);
 updateFunctionScrollButtons();
 
+// 사이드바 카테고리 선택 값이 바뀌면 목록을 다시 그립니다.
 sidebarCategorySelect.addEventListener('change', () => {
     const selectedCategory = sidebarCategorySelect.value;
     window.RestaurantMap?.selectCategory(selectedCategory);
     renderSelectedStores(selectedCategory);
 });
 
-// 메인 화면의 지역 버튼에서 넘어온 district/category 파라미터를 반영합니다.
-function applyInitialParams() {
-    const params = new URLSearchParams(window.location.search);
-    const districtParam = params.get('district');
-    const categoryParam = params.get('category');
+// 첫 화면에는 기본 카테고리인 한식을 표시합니다.
+renderSelectedStores();
 
-    if (districtParam) {
-        const matchedButton = Array.from(categoryButtons).find(btn => btn.dataset.category === districtParam);
-
-        if (matchedButton) {
-            selectedDistrict = districtParam;
-            window.currentSelectedDistrict = selectedDistrict;
-
-            categoryButtons.forEach(btn => {
-                const isActive = btn === matchedButton;
-                btn.classList.toggle('active', isActive);
-                btn.setAttribute('aria-pressed', String(isActive));
-            });
-            matchedButton.scrollIntoView({ block: 'nearest', inline: 'center' });
-
-            window.RestaurantMap?.highlightDistrict(selectedDistrict);
-        }
-    }
-
-    if (categoryParam && Array.from(sidebarCategorySelect.options).some(option => option.value === categoryParam)) {
-        sidebarCategorySelect.value = categoryParam;
-    }
-}
-
-applyInitialParams();
-renderSelectedStores(sidebarCategorySelect.value);
-
+// 사이드바 접기/펼치기 토글을 처리하고 지도 크기를 다시 조정합니다.
 sidebarToggle.addEventListener('click', () => {
     const isCollapsed = content.classList.toggle('sidebar-collapsed');
     sidebarToggle.setAttribute('aria-expanded', String(!isCollapsed));
@@ -184,5 +160,5 @@ sidebarToggle.addEventListener('click', () => {
     }, 320);
 });
 
-// 지도 및 CSV 마커 관련 구현은 restaurantMap.js에서 관리합니다.
+// 지도의 초기화와 CSV 기반 식당 마커 생성은 restaurantMap.js에서 담당합니다.
 window.RestaurantMap?.load();
