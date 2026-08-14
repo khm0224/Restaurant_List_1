@@ -6,7 +6,23 @@ const storeList = document.getElementById('store-list');
 const sidebarCategorySelect = document.getElementById('sidebar-category-select');
 const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
-let selectedDistrict = document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category || '전체';
+const requestedDistrict = new URLSearchParams(window.location.search).get('district');
+let selectedDistrict = requestedDistrict || document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category || '전체';
+
+// 메인 페이지 지역 선택(카테고리2)에서 넘어온 경우, 해당 지역 버튼을 활성화하고 지역이동창에서 보이도록 스크롤합니다.
+if (requestedDistrict) {
+    const requestedButton = Array.from(categoryButtons).find(btn => btn.dataset.category === requestedDistrict);
+    if (requestedButton) {
+        categoryButtons.forEach(btn => {
+            const isActive = btn === requestedButton;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', String(isActive));
+        });
+        requestedButton.scrollIntoView({ inline: 'center', block: 'nearest' });
+        window.currentSelectedDistrict = requestedDistrict;
+        window.RestaurantMap?.highlightDistrict(requestedDistrict);
+    }
+}
 
 // 선택한 식당 정보를 세션 스토리지에 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(district, category, index) {

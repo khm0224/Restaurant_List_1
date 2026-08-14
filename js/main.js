@@ -144,7 +144,7 @@ if (regionButtons.length) {
             regionButtons.forEach(btn => btn.classList.toggle('active', btn === button));
 
             const district = button.dataset.region;
-            window.location.href = `./html/food_page.html?district=${encodeURIComponent(district)}&category=전체`;
+            window.location.href = `./html/food_page.html?district=${encodeURIComponent(district)}`;
         });
     });
 }
