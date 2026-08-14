@@ -9,6 +9,7 @@
     let cityBoundaryLayer = null;
     let boundaryLoaded = false;
     let selectedDistrict = '전체';
+    let selectedCategory = '전체';
     let restaurantMarkers = [];
     let restaurantInfoWindow = null;
 
@@ -50,8 +51,25 @@
         return bounds;
     }
 
+    function updateMarkerVisibility() {
+        restaurantInfoWindow?.close();
+
+        restaurantMarkers.forEach(({ restaurant, marker }) => {
+            const matchesDistrict = selectedDistrict === '전체' || restaurant.district === selectedDistrict;
+            const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
+            const shouldShow = matchesDistrict && matchesCategory;
+            marker.setMap(shouldShow ? map : null);
+        });
+    }
+
+    function selectCategory(categoryName) {
+        selectedCategory = categoryName;
+        updateMarkerVisibility();
+    }
+
     function highlightDistrict(districtName, moveMap = true) {
         selectedDistrict = districtName;
+        updateMarkerVisibility();
 
         if (!map || !boundaryLoaded) {
             return;
@@ -129,8 +147,11 @@
         restaurantInfoWindow = new google.maps.InfoWindow();
 
         restaurants.forEach(restaurant => {
+            const matchesDistrict = selectedDistrict === '전체' || restaurant.district === selectedDistrict;
+            const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
+            const shouldShow = matchesDistrict && matchesCategory;
             const marker = new google.maps.Marker({
-                map,
+                map: shouldShow ? map : null,
                 position: {
                     lat: restaurant.latitude,
                     lng: restaurant.longitude
@@ -232,6 +253,7 @@
     window.RestaurantMap = {
         load: loadGoogleMaps,
         highlightDistrict,
+        selectCategory,
         setRestaurants: createRestaurantMarkers,
         resize,
         getMap: () => map

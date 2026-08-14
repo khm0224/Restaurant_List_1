@@ -138,6 +138,7 @@ updateFunctionScrollButtons();
 
 sidebarCategorySelect.addEventListener('change', () => {
     const selectedCategory = sidebarCategorySelect.value;
+    window.RestaurantMap?.selectCategory(selectedCategory);
     renderSelectedStores(selectedCategory);
 });
 
