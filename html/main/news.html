@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공지사항</title>
+    <title>새로운 소식</title>
     <link rel="stylesheet" href="../../css/top-bar.css">
 </head>
 
@@ -19,8 +19,8 @@
         <!-- ============ 카테고리1 (상단) ============ -->
         <nav class="nav">
             <a href="./main_info.html">맛집리스트 소개</a>
-            <a href="./news.html">새로운 소식</a>
-            <a href="./announcement.html" class="active">공지사항</a>
+            <a href="./news.html" class="active">새로운 소식</a>
+            <a href="./announcement.html">공지사항</a>
         </nav>
         <div class="header-right">
             <div class="search-box">
@@ -36,7 +36,7 @@
         <main class="detail-space">
             <section class="announcement-wrap">
                 <div class="announcement-header">
-                    <h1>공지사항</h1>
+                    <h1>새로운 소식</h1>
                     <button type="button" class="announcement-write-btn" id="openAnnouncementModal">글쓰기</button>
                 </div>
 
@@ -50,29 +50,32 @@
     <div class="announcement-modal-overlay" id="announcementModal" aria-hidden="true">
         <div class="announcement-modal" role="dialog" aria-modal="true" aria-labelledby="announcementModalTitle">
             <div class="announcement-modal-header">
-                <h2 id="announcementModalTitle">새 공지사항 작성</h2>
-                <button type="button" class="announcement-modal-close" id="closeAnnouncementModal" aria-label="닫기">×</button>
+                <h2 id="announcementModalTitle">새로운 소식 작성</h2>
+                <button type="button" class="announcement-modal-close" id="closeAnnouncementModal"
+                    aria-label="닫기">×</button>
             </div>
 
             <form id="announcementForm">
                 <div class="form-group">
                     <label for="announcementTag">카테고리</label>
                     <select id="announcementTag" name="tag">
-                        <option value="공지">공지</option>
+                        <option value="신규">신규</option>
                         <option value="이벤트">이벤트</option>
-                        <option value="업데이트">업데이트</option>
-                        <option value="점검">점검</option>
+                        <option value="추천">추천</option>
+                        <option value="리뷰">리뷰</option>
+                        <option value="프로모션">프로모션</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="announcementTitle">제목</label>
-                    <input type="text" id="announcementTitle" name="title" placeholder="제목을 입력하세요" required>
+                    <input type="text" id="announcementTitle" name="title" placeholder="소식 제목을 입력하세요" required>
                 </div>
 
                 <div class="form-group">
                     <label for="announcementContent">내용</label>
-                    <textarea id="announcementContent" name="content" rows="6" placeholder="공지 내용을 입력하세요" required></textarea>
+                    <textarea id="announcementContent" name="content" rows="6" placeholder="새로운 소식 내용을 입력하세요"
+                        required></textarea>
                 </div>
 
                 <div class="modal-actions">
@@ -83,7 +86,7 @@
         </div>
     </div>
 
-    <script src="../../js/announcement.js" defer></script>
+    <script src="../../js/news.js" defer></script>
 </body>
 
 </html>

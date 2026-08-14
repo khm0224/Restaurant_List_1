@@ -7,6 +7,8 @@
 body {
     font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     color: #222;
+    min-height: 100vh;
+    background: #fafafa;
 }
 
 a {
@@ -33,10 +35,11 @@ a {
 }
 
 .logo img {
+    display: block;
     height: 70px;
     width: 210px;
+    object-fit: contain;
 }
-
 
 /* 상단 메뉴(카테고리) 영역 */
 .nav {

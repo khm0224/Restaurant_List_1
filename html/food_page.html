@@ -11,21 +11,27 @@
 <!-- 식당 탐색 화면 전체 영역 -->
 <div id="container">
     <!-- 로고, 검색, 로그인 버튼 -->
-    <div id="top-bar">
-        <div class="top-left">
-            <a href="../index.html" class="logo-link" aria-label="메인 페이지로 이동">
-                <img src="../img/logoimg.png" alt="맛집 추천 로고" class="logo-img">
+    <header class="header">
+        <div class="logo">
+            <a href="../../index.html" class="logo-link" aria-label="메인 페이지로 이동">
+                <img src="../img/logoimg.png" alt="logo">
             </a>
         </div>
 
-        <div class="top-center">
-            <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
+        <!-- ============ 카테고리1 (상단) ============ -->
+        <nav class="nav">
+            <a href="./main/main_info.html">맛집리스트 소개</a>
+            <a href="./main/news.html">새로운 소식</a>
+            <a href="./main/announcement.html"">공지사항</a>
+        </nav>
+        <div class="header-right">
+            <div class="search-box">
+                <input type="text" placeholder="메뉴를 검색하시오..">
+                <span class="search-btn">🔍</span>
+            </div>
+            <button type="button" class="login-btn" data-login-open aria-label="로그인">로그인</button>
         </div>
-
-        <div class="top-right">
-            <button type="button" class="login-btn" data-login-open>로그인</button>
-        </div>
-    </div>
+    </header>
 
     <!-- 식당 카테고리 선택 버튼 -->
     <div id="function-bar">
@@ -93,8 +99,6 @@
 <!-- 페이지 기능에 필요한 스크립트 -->
 <script src="../js/map-config.js"></script>
 <script src="../js/restaurantData.js"></script>
-<script src="../js/restaurantService.js"></script>
-<script src="../js/restaurantMap.js"></script>
 <script src="../js/food_page.js"></script>
 <script src="../js/login_modal.js" data-login-component="./login_page.html"></script>
 </body>

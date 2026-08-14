@@ -13,69 +13,78 @@
 <body>
     <!-- 선택한 식당의 상세 정보, 메뉴, 리뷰 및 댓글 영역 -->
     <div id="container">
-        <div id="top-bar">
-            <div class="top-left">
-                <img src="../img/logoimg.png" alt="logo" class="logo-img">
+        <!-- 로고, 검색, 로그인 버튼 -->
+        <header class="header">
+            <div class="logo">
+                <a href="../../index.html" class="logo-link" aria-label="메인 페이지로 이동">
+                    <img src="../img/logoimg.png" alt="logo">
+                </a>
             </div>
 
-            <div class="top-center">
-                <input type="text" class="search-box" placeholder="검색어를 입력하세요" aria-label="검색">
-            </div>
+            <!-- ============ 카테고리1 (상단) ============ -->
+            <nav class="nav">
+                <a href="./main/main_info.html">맛집리스트 소개</a>
+                <a href="./main/news.html">새로운 소식</a>
+                <a href="./main/announcement.html"">공지사항</a>
+        </nav>
+        <div class=" header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="메뉴를 검색하시오..">
+                        <span class="search-btn">🔍</span>
+                    </div>
+                    <button type="button" class="login-btn" data-login-open aria-label="로그인">로그인</button>
+    </div>
+    </header>
 
-            <div class="top-right">
-                <button type="button" class="login-btn" data-login-open>로그인</button>
-            </div>
-        </div>
+    <div id="detail-shell">
+        <aside class="side-space"></aside>
 
-        <div id="detail-shell">
-            <aside class="side-space"></aside>
+        <main class="detail-area">
+            <button class="back-btn" type="button" onclick="location.href='food_page.html'">목록으로</button>
+            <article class="detail-card" id="detail-card"></article>
 
-            <main class="detail-area">
-                <button class="back-btn" type="button" onclick="location.href='food_page.html'">목록으로</button>
-                <article class="detail-card" id="detail-card"></article>
+            <!-- 등록된 리뷰 사진과 전체 리뷰 목록 -->
+            <section class="review-section" id="review-section" hidden>
+                <h2 class="review-title">리뷰</h2>
+                <div class="review-photo-grid" id="review-photo-grid"></div>
+                <button class="review-view-all-btn" id="review-view-all-btn" type="button" hidden>전체보기</button>
+            </section>
 
-                <!-- 등록된 리뷰 사진과 전체 리뷰 목록 -->
-                <section class="review-section" id="review-section" hidden>
-                    <h2 class="review-title">리뷰</h2>
-                    <div class="review-photo-grid" id="review-photo-grid"></div>
-                    <button class="review-view-all-btn" id="review-view-all-btn" type="button" hidden>전체보기</button>
-                </section>
+            <!-- 식당 카테고리에 맞춰 표시되는 메뉴 -->
+            <section class="menu-section" id="menu-section" hidden>
+                <h2 class="menu-title">메뉴</h2>
+                <div class="menu-list" id="menu-list"></div>
+            </section>
 
-                <!-- 식당 카테고리에 맞춰 표시되는 메뉴 -->
-                <section class="menu-section" id="menu-section" hidden>
-                    <h2 class="menu-title">메뉴</h2>
-                    <div class="menu-list" id="menu-list"></div>
-                </section>
+            <!-- 식당별 댓글 작성과 목록 -->
+            <section class="comment-section" id="comment-section" hidden>
+                <div class="comment-main">
+                    <h2 class="comment-title">댓글</h2>
 
-                <!-- 식당별 댓글 작성과 목록 -->
-                <section class="comment-section" id="comment-section" hidden>
-                    <div class="comment-main">
-                        <h2 class="comment-title">댓글</h2>
+                    <form class="comment-form" id="comment-form">
+                        <textarea id="comment-text" placeholder="댓글을 입력하세요" maxlength="300" required></textarea>
+                        <button type="submit">등록</button>
+                    </form>
 
-                        <form class="comment-form" id="comment-form">
-                            <textarea id="comment-text" placeholder="댓글을 입력하세요" maxlength="300" required></textarea>
-                            <button type="submit">등록</button>
-                        </form>
-
-                        <div class="comment-locked" id="comment-locked">
-                            <p>로그인 후 댓글을 작성할 수 있습니다.</p>
-                        </div>
-
-                        <ul class="comment-list" id="comment-list"></ul>
-
-                        <div class="comment-pagination" id="comment-pagination">
-                            <button type="button" class="page-btn" id="comment-page-prev">이전</button>
-                            <span class="page-info" id="comment-page-info"></span>
-                            <button type="button" class="page-btn" id="comment-page-next">다음</button>
-                        </div>
+                    <div class="comment-locked" id="comment-locked">
+                        <p>로그인 후 댓글을 작성할 수 있습니다.</p>
                     </div>
 
-                    <div class="comment-map" id="comment-map"></div>
-                </section>
-            </main>
+                    <ul class="comment-list" id="comment-list"></ul>
 
-            <aside class="side-space"></aside>
-        </div>
+                    <div class="comment-pagination" id="comment-pagination">
+                        <button type="button" class="page-btn" id="comment-page-prev">이전</button>
+                        <span class="page-info" id="comment-page-info"></span>
+                        <button type="button" class="page-btn" id="comment-page-next">다음</button>
+                    </div>
+                </div>
+
+                <div class="comment-map" id="comment-map"></div>
+            </section>
+        </main>
+
+        <aside class="side-space"></aside>
+    </div>
     </div>
 
     <!-- 평점, 내용, 사진을 입력하는 리뷰 작성 모달 -->
