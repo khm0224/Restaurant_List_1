@@ -62,7 +62,7 @@ function handleSignUp() {
     saveUsers();
 
     alert('회원가입이 완료되었습니다.');
-    location.href = '../index.html';
+    location.href = '../../index.html';
 }
 
 // 폼 제출 시 기본 새로고침을 막고 직접 검증합니다.
