@@ -232,7 +232,6 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 12px 0;
-    transition: transform 0.5s ease;
 }
 
 .region-item {
@@ -315,42 +314,6 @@
 .region-arrow.prev { left: 16px; }
 .region-arrow.next { right: 16px; }
 .region-arrow:hover { background: #F5821F; color: #fff; }
-
-.region-arrow:disabled {
-    opacity: 0.35;
-    cursor: default;
-}
-
-.region-arrow:disabled:hover {
-    background: #fff;
-    color: #222;
-}
-
-/* 하단 점 인디케이터 */
-.region-pagination {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.region-pagination button {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #DDD;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
-
-.region-pagination button.active {
-    width: 22px;
-    border-radius: 5px;
-    background: #F5821F;
-}
-
 
 /* ===================================top list */
 .section {
