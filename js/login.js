@@ -52,9 +52,14 @@ function handleLogout() {
 
 
 function updateHeader() {
-    const user = getCookie('loginUser');
     const loginBtn = document.querySelector('#login_Btn');
     const logoutBtn = document.querySelector('#logout_Btn');
+
+    if (!loginBtn || !logoutBtn) {
+        console.warn('헤더에 #login_Btn 또는 #logout_Btn이 없습니다.');
+        return
+    }
+    const user = getCookie('loginUser');
 
     if (user) {
         loginBtn.classList.add('hidden');
@@ -67,6 +72,9 @@ function updateHeader() {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('#logout_Btn').addEventListener('click', handleLogout);
+    const logout_Btn = document.querySelector('#logout_Btn');
+    if (logout_Btn) {
+        logout_Btn.addEventListener('click', handleLogout);
+    }
     updateHeader();
 });
