@@ -335,6 +335,10 @@ a {
 
 /* 지역(동) 선택 - 5개씩 보여주고 1개씩 넘기는 슬라이더 */
 .region-slider {
+    /*중앙 정렬*/
+    margin: 0 auto;
+    /*슬라이더 길이 조절*/
+    width: 70%;
     position: relative;
     padding: 12px 40px;
     border-bottom: 1px solid #EAEAEA;
