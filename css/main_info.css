@@ -1,0 +1,93 @@
+/* 봄내로그 소개 페이지 전용 스타일 */
+
+.info-hero {
+    padding: 64px 16px 48px;
+    text-align: center;
+    background: #FFF6EE;
+}
+
+.info-hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #222;
+}
+
+.info-hero h1 span {
+    color: #F5821F;
+}
+
+.info-hero p {
+    margin-top: 14px;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.info-section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 16px;
+}
+
+.info-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 12px;
+}
+
+.info-section > p {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.feature-card {
+    padding: 28px 24px;
+    border: 1px solid #EAEAEA;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.feature-card .feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #FFE1C7;
+    color: #C85D14;
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.feature-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: #767676;
+    line-height: 1.6;
+}
+
+.info-section.alt {
+    background: #F5F5F5;
+    max-width: none;
+}
+
+.info-section.alt .info-section-inner {
+    max-width: 960px;
+    margin: 0 auto;
+}
