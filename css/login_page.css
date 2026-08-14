@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    
+
     /* 기본 숨김 처리 */
     opacity: 0;
     visibility: hidden;
@@ -113,7 +113,8 @@
     opacity: 0.85;
 }
 
-.btn-login, .btn-signup {
+.btn-login,
+.btn-signup {
     background-color: #e0e0e0;
     color: #333;
 }

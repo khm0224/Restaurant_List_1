@@ -102,7 +102,19 @@ a {
     cursor: pointer;
 }
 
+.login {
+    border: none;
+    border-radius: 20px;
+    background-color: #222;
+    color: white;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+}
 
+.hidden {
+    display: none;
+}
 
 
 
@@ -211,9 +223,18 @@ a {
     z-index: 4;
 }
 
-.hero-arrow.prev { left: 20px; }
-.hero-arrow.next { right: 20px; }
-.hero-arrow:hover { background: #F5821F; color: #fff; }
+.hero-arrow.prev {
+    left: 20px;
+}
+
+.hero-arrow.next {
+    right: 20px;
+}
+
+.hero-arrow:hover {
+    background: #F5821F;
+    color: #fff;
+}
 
 /* 하단 점 인디케이터 */
 .hero-pagination {
@@ -244,10 +265,25 @@ a {
 }
 
 @media (max-width: 768px) {
-    .hero { height: 440px; }
-    .hero-card { flex-direction: column; padding: 24px; gap: 16px; text-align: center; }
-    .hero-card-img { width: 160px; height: 160px; }
-    .hero-card-name { font-size: 22px; }
+    .hero {
+        height: 440px;
+    }
+
+    .hero-card {
+        flex-direction: column;
+        padding: 24px;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .hero-card-img {
+        width: 160px;
+        height: 160px;
+    }
+
+    .hero-card-name {
+        font-size: 22px;
+    }
 }
 
 
