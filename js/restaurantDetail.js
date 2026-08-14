@@ -49,7 +49,7 @@ const districtParam = queryParams.get('district');
 const categoryParam = queryParams.get('category');
 const idParam = queryParams.get('id');
 
-if (!saved && categoryParam && idParam !== null) {
+if (categoryParam && idParam !== null) {
     const fallbackStore = window.getRestaurantData?.(categoryParam, Number(idParam), districtParam || window.currentSelectedDistrict || '교동');
 
     if (fallbackStore) {
