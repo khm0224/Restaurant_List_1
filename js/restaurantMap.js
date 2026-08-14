@@ -208,6 +208,7 @@
             zoom: 12,
             mapTypeControl: false,
             streetViewControl: false,
+            // 구글 제공하는 마커 끄는 코드 //
             styles: [
                 {
                     featureType: 'poi.business',

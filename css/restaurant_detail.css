@@ -190,6 +190,17 @@
     min-height: 320px;
     border-radius: 16px;
     background-color: #e0e0e0;
+    overflow: hidden;
+}
+
+.comment-map.is-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    color: #666;
+    text-align: center;
 }
 
 .comment-pagination {

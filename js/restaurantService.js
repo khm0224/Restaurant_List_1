@@ -4,6 +4,7 @@
 
 (function () {
     const RESTAURANT_CSV_URL = '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv';
+    let restaurantsPromise = null;
 
     // CSV 한 줄을 쉼표 기준으로 분리하고, 따옴표 안의 값은 유지합니다.
     function parseCsvLine(line) {
@@ -83,7 +84,7 @@
     }
 
     // 서버에서 CSV를 불러와 식당 데이터 배열을 반환합니다.
-    async function getRestaurants() {
+    async function loadRestaurants() {
         const response = await fetch(RESTAURANT_CSV_URL, { cache: 'no-store' });
 
         if (!response.ok) {
@@ -97,7 +98,31 @@
             .filter(Boolean);
     }
 
+    function getRestaurants() {
+        if (!restaurantsPromise) {
+            restaurantsPromise = loadRestaurants().catch(error => {
+                restaurantsPromise = null;
+                throw error;
+            });
+        }
+
+        return restaurantsPromise;
+    }
+
+    async function findRestaurant({ id, district, name } = {}) {
+        const restaurants = await getRestaurants();
+
+        return restaurants.find(restaurant => {
+            if (typeof id === 'string' && restaurant.id === id) {
+                return true;
+            }
+
+            return restaurant.district === district && restaurant.name === name;
+        }) || null;
+    }
+
     window.RestaurantService = {
-        getRestaurants
+        getRestaurants,
+        findRestaurant
     };
 })();
