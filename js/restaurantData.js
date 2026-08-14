@@ -1,8 +1,11 @@
-// 동네별 식당 데이터를 전역으로 제공합니다.
-// 지금은 교동만 실제 데이터가 채워져 있고, 나머지 동네는 구조만 준비해 두어 나중에 쉽게 추가할 수 있습니다.
+// 핵심 역할: 식당 목록 데이터와 카테고리별 임시 메뉴 정보를 전역으로 제공
+// 목적: 페이지 간 이동 시 선택된 식당 정보를 유지하고, 상세 페이지에서 식당명/주소/평점/메뉴를 표시함
+// 특이점: 실제 DB 대신 자바스크립트 객체 배열을 사용하고, 교동 데이터만 채워진 상태
+
 const districtNames = ['소양동', '교동', '조운동', '약사명동', '근화동', '후평1동', '후평2동', '후평3동', '효자1동', '효자2동', '효자3동', '석사동', '퇴계동', '강남동', '신사우동'];
 const cuisineCategories = ['한식', '일식', '중식', '양식', '디저트'];
 
+// 동네별 식당 정보를 구조화해서 전역 객체에 저장합니다.
 window.restaurantData = Object.fromEntries(
     districtNames.map((district) => [
         district,
@@ -85,6 +88,7 @@ window.restaurantData.교동 = {
 
 window.currentSelectedDistrict = '교동';
 
+// 카테고리와 인덱스를 받아 특정 식당 정보를 조회합니다.
 window.getRestaurantData = function (category, index, district = window.currentSelectedDistrict || '교동') {
     if (!category || index === undefined || index === null) {
         return null;
@@ -100,6 +104,7 @@ window.getRestaurantData = function (category, index, district = window.currentS
     return null;
 };
 
+// 선택한 식당 정보를 세션 스토리지에 저장해서 상세 페이지에서 복원할 수 있게 합니다.
 window.setSelectedRestaurant = function (districtOrCategory, categoryOrIndex, maybeIndex) {
     let district = window.currentSelectedDistrict || '교동';
     let category = districtOrCategory;
@@ -127,7 +132,7 @@ window.setSelectedRestaurant = function (districtOrCategory, categoryOrIndex, ma
     return selected;
 };
 
-// 카테고리별 임시 메뉴 데이터 (식당 개별 메뉴 정보는 아직 없어서 카테고리 기준으로 대체)
+// 카테고리별 임시 메뉴 데이터입니다. 식당마다 메뉴가 따로 없어서 카테고리 기준으로 대체합니다.
 window.menuTemplates = {
     한식: [
         { name: '춘천닭갈비 (1인분)', price: 13000 },

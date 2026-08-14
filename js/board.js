@@ -1,9 +1,10 @@
-// localStorage : 브라우저가 제공하는 간단한 데이터 저장 공간
-// 서버/DB 없이 브라우저 localStorage로 댓글을 흉내내는 간이 게시판 모듈
+// 핵심 역할: 브라우저의 localStorage를 이용해 댓글과 리뷰를 임시 저장하는 간이 데이터 저장소
+// 목적: 서버 없이도 식당 상세 페이지에서 댓글/리뷰를 추가, 조회, 삭제할 수 있게 만들기
+// 동작 방식: 각 식당별로 고유 키를 두고, JSON 객체 형태로 데이터를 저장/불러오기
 
 const BOARD_STORAGE_KEY = 'restaurantComments';
 
-// 댓글 저장소에서 식당별 댓글 목록을 읽습니다.
+// localStorage에서 식당별 댓글 데이터를 읽어오는 함수입니다.
 function loadBoard() {
     try {
         return JSON.parse(localStorage.getItem(BOARD_STORAGE_KEY)) || {}; //localStorage 이 내장 브라우저에 저장시켜준다.(DB대신 사용)
@@ -12,11 +13,12 @@ function loadBoard() {
     }
 }
 
-// 변경된 댓글 목록을 브라우저에 저장합니다.
+// 변경된 댓글 목록을 브라우저에 저장하는 함수입니다.
 function saveBoard(board) {
     localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(board));
 }
 
+// 댓글 관련 전역 API를 제공해 상세 페이지에서 조회/추가/삭제를 쉽게 수행합니다.
 window.Board = {
     getComments(restaurantId) {
         const board = loadBoard();
@@ -52,7 +54,7 @@ window.Board = {
 // 리뷰(평점 + 내용 + 사진)도 같은 방식으로 localStorage에 흉내내어 저장
 const REVIEW_STORAGE_KEY = 'restaurantReviews';
 
-// 리뷰 저장소에서 식당별 리뷰 목록을 읽습니다.
+// localStorage에서 식당별 리뷰 데이터를 가져오는 함수입니다.
 function loadReviewBoard() {
     try {
         return JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY)) || {};
@@ -61,11 +63,12 @@ function loadReviewBoard() {
     }
 }
 
-// 변경된 리뷰 목록을 브라우저에 저장합니다.
+// 수정된 리뷰 목록을 browser storage에 저장합니다.
 function saveReviewBoard(board) {
     localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(board));
 }
 
+// 리뷰 전용 전역 API를 제공해 평점, 텍스트, 사진 데이터를 관리합니다.
 window.ReviewBoard = {
     getReviews(restaurantId) {
         const board = loadReviewBoard();

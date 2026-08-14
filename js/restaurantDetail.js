@@ -1,3 +1,7 @@
+// 핵심 역할: 식당 상세 페이지의 화면 구성, 리뷰 작성, 댓글 목록, 사진 모달을 제어
+// 목적: 사용자가 선택한 식당 정보를 렌더링하고, 평점/사진/댓글을 남기고 확인할 수 있게 함
+// 저장 방식: 리뷰와 댓글은 localStorage 기반의 Board/ReviewBoard를 통해 브라우저에 보관
+
 const detailCard = document.getElementById('detail-card');
 const reviewSection = document.getElementById('review-section');
 const reviewPhotoGrid = document.getElementById('review-photo-grid');
@@ -126,7 +130,7 @@ function reviewItemHTML(review) {
     `;
 }
 
-// 저장된 리뷰에서 사진 미리보기와 전체보기 버튼을 갱신합니다.
+// 저장된 리뷰를 기준으로 썸네일과 전체보기 버튼 상태를 갱신합니다.
 function renderReviews() {
     const reviews = ReviewBoard.getReviews(restaurantId).slice().reverse();
 
@@ -158,6 +162,7 @@ function renderReviews() {
     reviewViewAllBtn.hidden = reviews.length === 0;
 }
 
+// 클릭한 리뷰 사진을 큰 모달로 열어 상세 내용을 보여줍니다.
 function openReviewPhotoModal(review) {
     reviewPhotoModalImg.src = review.photo;
     reviewPhotoModalStars.textContent = `${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}`;
@@ -179,7 +184,7 @@ reviewPhotoModalOverlay.addEventListener('click', (event) => {
 const REVIEWS_PER_PAGE = 5;
 let reviewPage = 1;
 
-// 전체 리뷰를 페이지 단위로 표시하고 삭제 이벤트를 연결합니다.
+// 전체 리뷰를 페이지 단위로 나누어 목록을 렌더링하고 삭제 버튼을 연결합니다.
 function renderReviewPage() {
     const reviews = ReviewBoard.getReviews(restaurantId).slice().reverse();
     const totalPages = Math.max(1, Math.ceil(reviews.length / REVIEWS_PER_PAGE));
@@ -205,6 +210,7 @@ function renderReviewPage() {
     reviewPageNext.disabled = reviewPage >= totalPages;
 }
 
+// 전체 리뷰 모달을 열고 첫 페이지를 기본으로 보여줍니다.
 reviewViewAllBtn.addEventListener('click', () => {
     reviewPage = 1;
     renderReviewPage();
@@ -233,7 +239,7 @@ reviewPageNext.addEventListener('click', () => {
 
 let selectedRating = 0;
 
-// 선택한 별점과 버튼의 강조 상태를 함께 갱신합니다.
+// 사용자가 고른 별점을 상태값과 UI에 동시에 반영합니다.
 function setStarRating(value) {
     selectedRating = value;
     reviewRatingInput.value = value ? String(value) : '';
@@ -251,6 +257,7 @@ reviewText.addEventListener('input', () => {
     reviewText.setCustomValidity('');
 });
 
+// 리뷰 작성 모달을 열고 닫는 동작을 제어합니다.
 function openReviewModal() {
     reviewModalOverlay.hidden = false;
 }
@@ -272,6 +279,7 @@ reviewModalOverlay.addEventListener('click', (event) => {
 });
 
 // 선택한 사진을 Base64 미리보기로 변환합니다.
+// 선택한 이미지를 Base64로 읽어서 미리보기로 보여줍니다.
 reviewPhotoInput.addEventListener('change', () => {
     const file = reviewPhotoInput.files[0];
 
@@ -313,7 +321,7 @@ reviewForm.addEventListener('submit', (event) => {
 });
 
 
-// 식당별 댓글을 페이지 단위로 표시하고 삭제 이벤트를 연결합니다.
+// 식당별 댓글을 페이지 단위로 표시하고 삭제 버튼 이벤트를 연결합니다.
 function renderComments() {
     const comments = Board.getComments(restaurantId).slice().reverse();
 
@@ -354,6 +362,7 @@ function renderComments() {
     commentPageNext.disabled = commentPage >= totalPages;
 }
 
+// 댓글 페이지 이동 버튼으로 이전/다음 페이지를 순회합니다.
 commentPagePrev.addEventListener('click', () => {
     commentPage -= 1;
     renderComments();
@@ -364,7 +373,7 @@ commentPageNext.addEventListener('click', () => {
     renderComments();
 });
 
-// 입력한 댓글을 브라우저 저장소에 등록합니다.
+// 입력한 댓글을 localStorage에 저장하고 목록을 다시 렌더링합니다.
 commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
