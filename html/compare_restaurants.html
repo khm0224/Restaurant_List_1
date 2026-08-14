@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>교동 음식점 비교</title>
+    <!-- ====================================이 파일은 오직 값 비교만을 의해 만든 것으로 그냥 냅둬도 상관 없음.==================================-->
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f3f3;
+        }
+    </style>
+</head>
+<body>
+    <h1>교동 음식점 중복 비교</h1>
+
+    <p id="summary">CSV를 불러오는 중입니다.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>음식점명</th>
+                <th>카테고리</th>
+                <th>restaurantData.js 주소</th>
+                <th>CSV 주소</th>
+                <th>위도</th>
+                <th>경도</th>
+            </tr>
+        </thead>
+
+        <tbody id="comparison-result"></tbody>
+    </table>
+
+    <!-- 반드시 restaurantData.js를 먼저 불러옵니다. -->
+    <script src="../js/restaurantData.js"></script>
+    <script src="../js/compareRestaurants.js"></script>
+</body>
+</html>
