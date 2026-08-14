@@ -1,5 +1,15 @@
-// ===== 회원가입 =====
+/**
+ * signup.js — 회원가입 화면
+ *
+ * 가입 폼의 입력값을 순서대로 검증하고, 통과하면 users 배열에 추가한 뒤 저장합니다.
+ * 아이디와 비밀번호 확인란은 입력하는 동안 실시간으로 안내 문구를 갱신합니다.
+ *
+ * 의존: auth.js (검증 패턴 / isDuplicateId / users / saveUsers)
+ */
 
+
+// 가입 폼 전체를 검증하고 통과 시 회원을 등록합니다.
+// 검증은 위에서부터 순서대로 진행하며, 하나라도 실패하면 메시지를 남기고 즉시 종료합니다.
 function handleSignUp() {
     const id = document.querySelector('#signupId').value.trim();
     const pw = document.querySelector('#signupPw').value;
@@ -9,6 +19,7 @@ function handleSignUp() {
     const agree = document.querySelector('#signupAgree').checked;
     const msg = document.querySelector('#signupMsg');
 
+    // 아래 검증은 모두 실패 메시지이므로 색을 미리 지정
     msg.style.color = 'red';
 
     if (!ID_PATTERN.test(id)) {
@@ -54,11 +65,13 @@ function handleSignUp() {
     location.href = '../index.html';
 }
 
+// 폼 제출 시 기본 새로고침을 막고 직접 검증합니다.
 document.querySelector('#signupForm').addEventListener('submit', (event) => {
     event.preventDefault();
     handleSignUp();
 });
 
+// 아이디를 입력하는 동안 형식과 중복 여부를 실시간으로 안내합니다.
 document.querySelector('#signupId').addEventListener('input', (e) => {
     const value = e.target.value.trim();
     const idMsg = document.querySelector('#idMsg');
@@ -75,6 +88,7 @@ document.querySelector('#signupId').addEventListener('input', (e) => {
     }
 });
 
+// 비밀번호 확인란을 입력하는 동안 일치 여부를 실시간으로 안내합니다.
 document.querySelector('#signupPw2').addEventListener('input', (e) => {
     const pw = document.querySelector('#signupPw').value;
     const pw2Msg = document.querySelector('#pw2Msg');
@@ -82,4 +96,4 @@ document.querySelector('#signupPw2').addEventListener('input', (e) => {
 
     pw2Msg.textContent = isMatch ? '일치합니다' : '일치하지 않습니다';
     pw2Msg.style.color = isMatch ? 'green' : 'red';
-});
+}); 
