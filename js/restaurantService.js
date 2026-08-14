@@ -1,6 +1,7 @@
 // CSV에서 지도에 표시할 식당 좌표 데이터를 읽어 제공합니다.
 (function () {
     const RESTAURANT_CSV_URL = '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv';
+    let restaurantsPromise = null;
 
     function parseCsvLine(line) {
         const values = [];
@@ -76,7 +77,7 @@
         };
     }
 
-    async function getRestaurants() {
+    async function loadRestaurants() {
         const response = await fetch(RESTAURANT_CSV_URL, { cache: 'no-store' });
 
         if (!response.ok) {
@@ -90,7 +91,31 @@
             .filter(Boolean);
     }
 
+    function getRestaurants() {
+        if (!restaurantsPromise) {
+            restaurantsPromise = loadRestaurants().catch(error => {
+                restaurantsPromise = null;
+                throw error;
+            });
+        }
+
+        return restaurantsPromise;
+    }
+
+    async function findRestaurant({ id, district, name } = {}) {
+        const restaurants = await getRestaurants();
+
+        return restaurants.find(restaurant => {
+            if (typeof id === 'string' && restaurant.id === id) {
+                return true;
+            }
+
+            return restaurant.district === district && restaurant.name === name;
+        }) || null;
+    }
+
     window.RestaurantService = {
-        getRestaurants
+        getRestaurants,
+        findRestaurant
     };
 })();
