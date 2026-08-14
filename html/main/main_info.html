@@ -1,12 +1,100 @@
 <!--  메인 홈페이지 설명 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>봄내로그에 관하여</title>
+    <link rel="stylesheet" href="../../css/main_page_style.css">
+    <link rel="stylesheet" href="../../css/login_page.css">
+    <link rel="stylesheet" href="../../css/main_info.css">
 </head>
 <body>
-    
+    <header class="header">
+        <div class="logo">
+            <a href="../../index.html" aria-label="메인 페이지로 이동">
+                <img src="../../img/logoimg.png" alt="봄내로그 로고">
+            </a>
+        </div>
+
+        <nav class="nav">
+            <a href="./main_info.html">봄내로그 소개</a>
+            <a href="./main_news.html">새로운 소식</a>
+            <a href="./announcement.html">공지사항</a>
+        </nav>
+        <div class="header-right">
+            <div class="search-box">
+                <input type="text" placeholder="메뉴를 검색하시오..">
+                <span class="search-btn">🔍</span>
+            </div>
+            <button type="button" class="login-btn" data-login-open aria-label="로그인">로그인</button>
+        </div>
+    </header>
+
+    <!-- ============ 소개 인트로 ============ -->
+    <section class="info-hero">
+        <h1>춘천 맛집을 가장 쉽게 찾는 방법, <span>봄내로그</span></h1>
+        <p>
+            봄내로그는 춘천 곳곳의 맛집 정보를 지도와 함께 한눈에 보여주는 맛집 리스트 웹페이지입니다.<br>
+            동네별로 맛집을 둘러보고, 지도로 위치를 확인하고, 마음에 드는 곳을 저장까지 할 수 있어요.
+        </p>
+    </section>
+
+    <!-- ============ 서비스 소개 ============ -->
+    <section class="info-section">
+        <h2>봄내로그는 이런 서비스예요</h2>
+        <p>
+            "봄내"는 춘천의 옛 이름입니다. 봄내로그는 춘천 지역 맛집을 동네(행정동) 단위로 정리하고,
+            지도 기반으로 위치를 확인할 수 있게 만들어 여러 사이트를 오가지 않고도 춘천 맛집을 빠르게 탐색할 수 있도록 돕는 서비스입니다.
+        </p>
+    </section>
+
+    <!-- ============ 주요 기능 ============ -->
+    <section class="info-section alt">
+        <div class="info-section-inner">
+            <h2>주요 기능</h2>
+            <p>봄내로그에서 제공하는 핵심 기능을 소개합니다.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>추천 맛집 슬라이더</h3>
+                    <p>메인 화면 상단에서 리뷰와 평점이 좋은 맛집을 카드 형태로 빠르게 둘러볼 수 있습니다.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📍</span>
+                    <h3>동네별 맛집 탐색</h3>
+                    <p>소양동, 후평동, 효자동 등 춘천의 행정동을 선택해 원하는 지역의 맛집만 골라볼 수 있습니다.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🗺️</span>
+                    <h3>지도 연동</h3>
+                    <p>구글 지도와 연결되어 맛집의 실제 위치를 확인하고 길찾기까지 이어갈 수 있습니다.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🔍</span>
+                    <h3>메뉴 검색</h3>
+                    <p>먹고 싶은 메뉴나 상호명을 검색해 원하는 맛집을 바로 찾을 수 있습니다.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⭐</span>
+                    <h3>맛집 상세 정보</h3>
+                    <p>리뷰 수, 평점, 카테고리 등 방문 전에 참고할 수 있는 정보를 상세 페이지에서 확인할 수 있습니다.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">👤</span>
+                    <h3>회원 기능</h3>
+                    <p>회원가입 후 로그인하면 관심 있는 맛집을 저장하고 나만의 맛집 리스트를 만들 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="../../js/login_modal.js" data-login-component="../login_page.html"></script>
 </body>
 </html>

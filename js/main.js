@@ -66,8 +66,18 @@ function openStoreDetail(category, index) {
         window.setSelectedRestaurant(category, index);
     }
 
-    window.location.href = `restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
+    window.location.href = `./html/restaurant_detail.html?category=${encodeURIComponent(category)}&id=${index}`;
 }
+
+// 히어로 섹션의 "맛집으로 이동" 버튼을 누르면 해당 식당의 상세 페이지로 이동합니다.
+document.querySelectorAll('.hero-cta').forEach(link => {
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const category = link.dataset.category;
+        const index = Number(link.dataset.index);
+        openStoreDetail(category, index);
+    });
+});
 
 // 선택 카테고리의 식당 카드를 만들고 이동 이벤트를 연결합니다.
 function renderStores(category) {
@@ -149,15 +159,3 @@ if (regionButtons.length) {
 if (document.getElementById('homepage-map')) {
     loadGoogleMaps();
 }
-
-
-
-// 히어로에 맛집 이미지 끌어오기
-fetchNearbyRestaurantsWithPhotos(37.5563, 126.9236).then(restaurants => {
-    const cards = document.querySelectorAll('.hero-card-img');
-    restaurants.forEach((r, i) => {
-        if (cards[i] && r.photoUrl) {
-            cards[i].style.backgroundImage = `url('${r.photoUrl}')`;
-        }
-    });
-});

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항</title>
+    <link rel="stylesheet" href="../../css/announcement.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="../../index.html" class="logo-link" aria-label="메인 페이지로 이동">
+                <span>로고이름</span> <!--상단 로고 텍스트 -->
+            </a>
+        </div>
+
+        <!-- ============ 카테고리1 (상단) ============ -->
+        <nav class="nav">
+            <a href="#">맛집리스트 소개</a> <!-- 상단 카테고리 버튼1-->
+            <a href="#">새로운 소식</a>
+            <a href="#">공지사항</a>
+            <a href="#">게시판</a>
+        </nav>
+        <div class="header-right">
+            <div class="search-box">
+                <input type="text" placeholder="메뉴를 검색하시오..">
+                <span class="search-btn">🔍</span>
+            </div>
+            <button type="button" class="login-btn" data-login-open aria-label="로그인">로그인</button>
+        </div>
+    </header>
+    <div id="announcement-page">
+        <aside class="side-space"></aside>
+        <main class="detail-space">
+            <section class="announcement-wrap">
+                <div class="announcement-header">
+                    <h1>공지사항</h1>
+                    <button type="button" class="announcement-write-btn" id="openAnnouncementModal">글쓰기</button>
+                </div>
+
+                <div class="announcement-list" id="announcementList"></div>
+                <div class="announcement-pagination" id="announcementPagination"></div>
+            </section>
+        </main>
+        <aside class="side-space"></aside>
+    </div>
+
+    <div class="announcement-modal-overlay" id="announcementModal" aria-hidden="true">
+        <div class="announcement-modal" role="dialog" aria-modal="true" aria-labelledby="announcementModalTitle">
+            <div class="announcement-modal-header">
+                <h2 id="announcementModalTitle">새 공지사항 작성</h2>
+                <button type="button" class="announcement-modal-close" id="closeAnnouncementModal" aria-label="닫기">×</button>
+            </div>
+
+            <form id="announcementForm">
+                <div class="form-group">
+                    <label for="announcementTag">카테고리</label>
+                    <select id="announcementTag" name="tag">
+                        <option value="공지">공지</option>
+                        <option value="이벤트">이벤트</option>
+                        <option value="업데이트">업데이트</option>
+                        <option value="점검">점검</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="announcementTitle">제목</label>
+                    <input type="text" id="announcementTitle" name="title" placeholder="제목을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="announcementContent">내용</label>
+                    <textarea id="announcementContent" name="content" rows="6" placeholder="공지 내용을 입력하세요" required></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" id="cancelAnnouncementModal">취소</button>
+                    <button type="submit" class="submit-btn">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/announcement.js" defer></script>
+</body>
+
+</html>
