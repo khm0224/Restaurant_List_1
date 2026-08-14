@@ -50,8 +50,18 @@
         return bounds;
     }
 
+    function updateMarkerVisibility(districtName) {
+        restaurantInfoWindow?.close();
+
+        restaurantMarkers.forEach(({ restaurant, marker }) => {
+            const shouldShow = districtName === '전체' || restaurant.district === districtName;
+            marker.setMap(shouldShow ? map : null);
+        });
+    }
+
     function highlightDistrict(districtName, moveMap = true) {
         selectedDistrict = districtName;
+        updateMarkerVisibility(districtName);
 
         if (!map || !boundaryLoaded) {
             return;
@@ -129,8 +139,9 @@
         restaurantInfoWindow = new google.maps.InfoWindow();
 
         restaurants.forEach(restaurant => {
+            const shouldShow = selectedDistrict === '전체' || restaurant.district === selectedDistrict;
             const marker = new google.maps.Marker({
-                map,
+                map: shouldShow ? map : null,
                 position: {
                     lat: restaurant.latitude,
                     lng: restaurant.longitude
