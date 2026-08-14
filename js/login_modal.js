@@ -5,6 +5,7 @@ const loginComponentScript = document.currentScript;
 document.addEventListener('DOMContentLoaded', async () => {
     const root = document.getElementById('login-modal-root');
     const componentUrl = loginComponentScript?.dataset.loginComponent;
+    let componentBaseUrl;
 
     if (!root || !componentUrl) {
         return;
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error(`로그인 모달 로드 실패 (${response.status})`);
         }
 
+        componentBaseUrl = response.url;
         root.innerHTML = await response.text();
     } catch (error) {
         console.error(error);
@@ -27,6 +29,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeButton = root.querySelector('[data-login-close]');
     const form = root.querySelector('[data-login-form]');
     const openButtons = document.querySelectorAll('[data-login-open]');
+
+    root.querySelectorAll('[data-auth-page]').forEach(link => {
+        link.href = new URL(link.dataset.authPage, componentBaseUrl).href;
+    });
 
     if (!modal || !closeButton || !form) {
         console.error('로그인 모달 구성 요소를 찾지 못했습니다.');
