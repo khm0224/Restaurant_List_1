@@ -441,11 +441,13 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0px;
 }
 
 .r-card-rating {
     font-size: 16px;
     color: #333;
+    margin: 0px;
 }
 
 /*==========홈페이지 미니맵============*/
