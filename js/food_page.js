@@ -141,8 +141,37 @@ sidebarCategorySelect.addEventListener('change', () => {
     renderSelectedStores(selectedCategory);
 });
 
-// 첫 화면에는 기본 카테고리인 한식을 표시합니다.
-renderSelectedStores();
+// 메인 화면의 지역 버튼에서 넘어온 district/category 파라미터를 반영합니다.
+function applyInitialParams() {
+    const params = new URLSearchParams(window.location.search);
+    const districtParam = params.get('district');
+    const categoryParam = params.get('category');
+
+    if (districtParam) {
+        const matchedButton = Array.from(categoryButtons).find(btn => btn.dataset.category === districtParam);
+
+        if (matchedButton) {
+            selectedDistrict = districtParam;
+            window.currentSelectedDistrict = selectedDistrict;
+
+            categoryButtons.forEach(btn => {
+                const isActive = btn === matchedButton;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-pressed', String(isActive));
+            });
+            matchedButton.scrollIntoView({ block: 'nearest', inline: 'center' });
+
+            window.RestaurantMap?.highlightDistrict(selectedDistrict);
+        }
+    }
+
+    if (categoryParam && Array.from(sidebarCategorySelect.options).some(option => option.value === categoryParam)) {
+        sidebarCategorySelect.value = categoryParam;
+    }
+}
+
+applyInitialParams();
+renderSelectedStores(sidebarCategorySelect.value);
 
 sidebarToggle.addEventListener('click', () => {
     const isCollapsed = content.classList.toggle('sidebar-collapsed');
