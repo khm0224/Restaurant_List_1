@@ -95,7 +95,7 @@ if (!saved) {
     detailCard.innerHTML = '<div class="detail-empty"><h2>선택된 식당 정보가 없습니다</h2></div>';
 } else {
     const store = JSON.parse(saved);
-    // 동·카테고리·목록 인덱스를 합쳐 식당별 리뷰와 댓글 저장 공간을 구분합니다.
+// 동·카테고리·목록 인덱스를 합쳐 식당별 리뷰와 댓글 저장 공간을 구분합니다.
     restaurantId = `${store.district}_${store.category}_${store.id}`;
 
     detailCard.innerHTML = `

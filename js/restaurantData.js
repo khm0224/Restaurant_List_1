@@ -13,12 +13,6 @@ window.restaurantData = Object.fromEntries(
     ])
 );
 
-window.restaurantData.소양동 = {
-    한식: [
-        {name: "식당이름임", img: "../", address: "주소임", rating: 4.0, reviewCount: 125}
-    ]
-}
-
 window.restaurantData.교동 = {
     한식: [
         {
