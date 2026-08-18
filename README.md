@@ -51,7 +51,7 @@ API 키가 없거나 유효하지 않으면 지도 영역에는 비활성화 안
 	-> 음식점 마커 표시
 
 js/restaurantData.js
-	-> js/food_page.js, js/restaurantDetail.js
+	-> js/headerSearch.js, js/restaurantExplorer.js, js/restaurantDetail.js
 	-> 목록 및 상세 화면 표시
 
 data/area/*.geojson
@@ -60,6 +60,75 @@ data/area/*.geojson
 ```
 
 현재 CSV 기반 지도 데이터는 교동 음식점을 대상으로 하며, 목록과 상세 화면은 `js/restaurantData.js`에 정의된 데이터를 사용합니다.
+
+## 헤더 검색 기능
+
+모든 공통 헤더 화면의 검색창은 식당명 또는 음식 종류를 입력받아 적절한 화면으로 이동합니다. 헤더 UI는 `html/components/header.html`에 한 번만 정의하고, 검색 동작은 `js/headerSearch.js`에서 공통으로 처리합니다.
+
+```text
+헤더 검색창 입력
+	-> js/headerSearch.js
+	-> js/restaurantData.js에서 업종 또는 식당명 검색
+	-> 탐색 화면 또는 상세 화면으로 URL 이동
+	-> js/restaurantExplorer.js가 URL 필터를 적용
+```
+
+### 검색 대상과 결과
+
+| 입력 | 검색 방식 | 결과 |
+| --- | --- | --- |
+| `한식`, `일식`, `중식`, `양식`, `디저트` | 등록된 업종명과 완전 일치 | 전체 지역의 해당 업종 목록 화면으로 이동 |
+| 식당명 | 정확히 일치하는 이름을 우선하고, 없으면 이름에 입력어가 포함된 첫 식당을 선택 | 해당 식당 상세 화면으로 이동 |
+| 빈 값 | 검색하지 않음 | 현재 화면 유지 |
+| 일치하는 식당 없음 | `restaurantData.js`에서 검색 실패 | `검색 결과가 없습니다.` 알림 표시 |
+
+음식 종류 검색은 다음과 같은 URL을 만듭니다.
+
+```text
+html/food_page.html?district=전체&category=일식
+```
+
+식당명 검색은 식당이 속한 동네, 업종, 배열 인덱스를 URL에 전달합니다.
+
+```text
+html/restaurant_detail.html?district=교동&category=한식&id=0
+```
+
+### 파일별 역할
+
+| 파일 | 역할 |
+| --- | --- |
+| `html/components/header.html` | 검색 입력창과 검색 버튼을 포함한 공통 헤더 마크업 |
+| `js/headerSearch.js` | 클릭 및 Enter 입력을 감지하고, 검색어에 따라 탐색/상세 화면 URL 생성 |
+| `js/restaurantData.js` | 검색 및 목록 표시에 사용하는 동네별 음식점 데이터 제공 |
+| `js/restaurantExplorer.js` | 탐색 화면 URL의 `district`, `category` 값을 읽어 동네 버튼, 업종 선택, 목록, 지도 마커를 동기화 |
+| `js/food_page.js` | 탐색 화면의 동네 바 가로 스크롤, 사이드바 접기, 지도 초기화 담당 |
+
+### 탐색 화면 필터 적용
+
+`js/restaurantExplorer.js`는 URL을 읽어 초기 선택 상태를 만듭니다.
+
+- `district`: 선택한 행정동입니다. 값이 없으면 화면의 기본 동네 버튼을 사용합니다.
+- `category`: 사이드바에 등록된 업종 값일 때만 적용합니다. 올바르지 않은 값이면 기본 업종 선택을 유지합니다.
+- 동네를 바꾸면 음식점 목록을 다시 만들고, Google Maps의 행정동 강조와 마커 표시를 갱신합니다.
+- 업종을 바꾸면 음식점 목록과 지도 마커를 같은 업종으로 다시 필터링합니다.
+- 목록 카드를 클릭하거나 Enter/Space 키를 누르면 해당 식당의 상세 화면으로 이동합니다. 길찾기와 즐겨찾기 버튼은 카드 이동 이벤트를 막습니다.
+
+### 스크립트 연결 규칙
+
+`headerSearch.js`는 검색 데이터가 준비된 뒤에 불러와야 합니다. 헤더는 `header.js`가 비동기로 삽입하지만, 검색 모듈은 `document`에 이벤트를 위임하므로 헤더가 삽입된 후에도 클릭과 Enter를 정상적으로 처리합니다.
+
+맛집 탐색 화면의 권장 로드 순서는 다음과 같습니다.
+
+```html
+<script src="../js/restaurantData.js"></script>
+<script src="../js/restaurantMap.js"></script>
+<script src="../js/restaurantExplorer.js"></script>
+<script src="../js/food_page.js"></script>
+<script src="../js/headerSearch.js"></script>
+```
+
+다른 헤더 사용 페이지에서도 `restaurantData.js` 다음에 `headerSearch.js`를 추가해야 합니다. 이전 페이지별 검색 구현은 사용하지 않으며, 공통 검색은 `headerSearch.js` 하나만 유지합니다.
 
 ## 주요 디렉터리
 
