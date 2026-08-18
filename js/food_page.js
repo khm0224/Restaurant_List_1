@@ -24,6 +24,16 @@ if (requestedDistrict) {
     }
 }
 
+// 메인 페이지 검색창에서 음식 카테고리(한식/일식/...)로 넘어온 경우, 사이드바 드롭다운에 반영합니다.
+const requestedCategory = new URLSearchParams(window.location.search).get('category');
+if (requestedCategory) {
+    const optionExists = Array.from(sidebarCategorySelect.options).some(option => option.value === requestedCategory);
+    if (optionExists) {
+        sidebarCategorySelect.value = requestedCategory;
+        window.RestaurantMap?.selectCategory(requestedCategory);
+    }
+}
+
 // 선택한 식당 정보를 세션 스토리지에 저장하고 상세 페이지로 이동합니다.
 function openStoreDetail(district, category, index) {
     if (window.setSelectedRestaurant) {
@@ -178,3 +188,73 @@ sidebarToggle.addEventListener('click', () => {
 
 // 지도의 초기화와 CSV 기반 식당 마커 생성은 restaurantMap.js에서 담당합니다.
 window.RestaurantMap?.load();
+
+// ===== 헤더 검색창 =====
+// 헤더는 header.js가 fetch로 나중에 삽입하므로, 요소가 아직 없어도 걸리도록
+// document에 이벤트 위임을 걸어둡니다.
+
+const CUISINE_CATEGORIES = ['한식', '일식', '중식', '양식', '디저트'];
+
+// 모든 동네·카테고리를 뒤져 이름이 일치하는 식당 한 곳을 찾습니다.
+// 정확히 일치하는 식당을 우선하고, 없으면 부분 일치로 한 번 더 찾습니다.
+function findRestaurantByName(keyword) {
+    const restaurantData = window.restaurantData || {};
+    const entries = Object.entries(restaurantData).flatMap(([district, districtData]) =>
+        Object.entries(districtData).flatMap(([category, stores]) =>
+            stores.map((store, index) => ({ store, district, category, index }))
+        )
+    );
+
+    return entries.find(entry => entry.store.name === keyword)
+        || entries.find(entry => entry.store.name.includes(keyword))
+        || null;
+}
+
+function runHeaderSearch() {
+    const input = document.querySelector('#header-root .search-box input');
+    if (!input) return;
+
+    const keyword = input.value.trim();
+    if (!keyword) return;
+
+    // 음식 카테고리명을 그대로 입력한 경우: 전체 지역으로 전환해 해당 카테고리만 보여줍니다.
+    if (CUISINE_CATEGORIES.includes(keyword)) {
+        const allButton = Array.from(categoryButtons).find(btn => btn.dataset.category === '전체');
+        selectedDistrict = '전체';
+        window.currentSelectedDistrict = selectedDistrict;
+
+        categoryButtons.forEach(btn => {
+            const isActive = btn === allButton;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', String(isActive));
+        });
+
+        window.RestaurantMap?.highlightDistrict(selectedDistrict);
+        sidebarCategorySelect.value = keyword;
+        window.RestaurantMap?.selectCategory(keyword);
+        renderSelectedStores(keyword);
+        return;
+    }
+
+    // 그 외에는 음식점 이름 검색: 찾으면 해당 상세 페이지로 이동
+    const found = findRestaurantByName(keyword);
+    if (found) {
+        openStoreDetail(found.district, found.category, found.index);
+        return;
+    }
+
+    alert('검색 결과가 없습니다.');
+}
+
+document.addEventListener('click', (event) => {
+    if (event.target.closest('#header-root .search-btn')) {
+        runHeaderSearch();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && event.target.matches('#header-root .search-box input')) {
+        event.preventDefault();
+        runHeaderSearch();
+    }
+});
