@@ -220,6 +220,54 @@ window.restaurantData.조운동 = {
 };
 
 
+window.restaurantData.약사명동 = {
+    한식: [
+        {
+            name: '풍년소갈비살', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20231209_96%2F1702096812572vpNng_JPEG%2FIMG_0297.jpeg',
+            address: '강원 춘천시 중앙로107번길 15-6', rating: 4.2, reviewCount: 568
+        }, // Ok
+        {
+            name: '남부막국수본관', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20150925_157%2F1443161688671LaYB8_JPEG%2F166875554466908_0.jpg',
+            address: '강원 춘천시 춘천로81번길 16', rating: 4.4, reviewCount: 963
+        }, // OK
+        {
+            name: '와송칼국수', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20170414_9%2F1492149361842Pq3xY_JPEG%2F1.jpg',
+            address: '강원 춘천시 명동길 46-1', rating: 4.4, reviewCount: 196
+        }
+    ],
+    일식: [
+        { name: '은은', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230119_9%2F1674100692545USlRa_JPEG%2F97F97A7C-0F56-48C6-B4A0-D71C677D9F50.jpeg',
+             address: '강원 춘천시 망대길37번길 19', rating: 4.8, reviewCount: 435 }, // Ok
+        { name: '수제돈까스', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180610_148%2F1528613403580pDV9p_JPEG%2F8T0rxrULPUhIZbKlqljyfpXP.jpg', 
+            address: '강원 춘천시 명동길 43', rating: 4.7, reviewCount: 322 }
+    ],
+    중식: [
+        {
+            name: '보문각', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190110_21%2F15471131309374jNFa_JPEG%2FZ3AGKKmXNfFWntwz7EeGPb6x.jpg', // OK
+            address: '강원 춘천시 약사고개길 42', rating: 4.3, reviewCount: 2.230
+        }
+    ],
+    양식: [
+        { name: '함지레스토랑', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190107_131%2F1546840851597EpzRs_JPEG%2FDiYsr2pD5121OlGxTX6QaFLU.jpg', 
+            address: '강원 춘천시 중앙로 101', rating: 4.3, reviewCount: 1.120 },
+        { name: '뽁밥 춘천본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240503_227%2F17146990046716euga_JPEG%2FIMG_2862.jpeg', 
+            address: '강원 춘천시 중앙로 125 1층 뽁밥', rating: 4.6, reviewCount: 350 }
+    ],
+    디저트: [
+        {
+            name: '모민', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260812_258%2F1786511373646VkjOp_JPEG%2FIMG_0121.jpg',  // Ok
+            address: '강원 춘천시 망대길 13 momin', rating: 4, reviewCount: 410
+        },
+        {
+            name: '풍경1961', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250321_289%2F1742547501083r6T8V_JPEG%2F1000051489.jpg',
+            address: '강원 춘천시 방송길7번길 10 1층', rating: 4.1, reviewCount: 29
+        },
+        {
+            name: '훗', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260814_160%2F1786658383546hXOSl_JPEG%2FIMG_3536.jpg',
+            address: '강원 춘천시 명동길 51-1 1층 Hoot', rating: 4.5, reviewCount: 93
+        }
+    ]
+};
 
 
 window.currentSelectedDistrict = '교동';
