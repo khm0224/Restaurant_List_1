@@ -369,6 +369,21 @@
                         <button type="button" id="rankingNext" aria-label="다음 지역">›</button>
                     </div>
 
+                    <div class="nearby-controls" id="nearby-controls" hidden>
+                        <p class="nearby-location-status" id="nearby-location-status">현재 위치를 확인해 주세요.</p>
+                        <span class="nearby-control-label">반경 설정</span>
+                        <div class="nearby-radius-options" aria-label="주변 맛집 검색 반경">
+                            <button type="button" data-radius="0.25">250m</button>
+                            <button type="button" class="active" data-radius="0.5">500m</button>
+                            <button type="button" data-radius="1">1km</button>
+                            <button type="button" id="nearby-custom-radius">직접설정</button>
+                        </div>
+                        <div class="nearby-summary-row">
+                            <p id="nearby-summary">현재 위치 기준 500m 이내 맛집입니다.</p>
+                            <span>평점순</span>
+                        </div>
+                    </div>
+
                     <!-- JavaScript가 음식점 카드 3개를 삽입 -->
                     <div class="ranking-list" id="homepage-ranking"></div>
 
@@ -405,6 +420,9 @@
 
     <!-- 음식점 데이터 관련 js -->
     <script src="./js/restaurantData.js"></script>
+    <script src="./js/restaurantService.js"></script>
+    <script src="./js/geolocationService.js"></script>
+    <script src="./js/nearbyRestaurantService.js"></script>
     <script src="./js/homepageRestaurantRanking.js"></script>
 
     <!-- 검색 관련 js -->
