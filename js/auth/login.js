@@ -1,43 +1,39 @@
 /**
  * login.js — 로그인 / 로그아웃 처리
  *
- * 로그인 폼의 입력값을 검증하고, 성공 시 loginUser 쿠키를 심거나 지웁니다.
- * 쿠키가 바뀐 뒤에는 항상 updateHeader()로 헤더를 다시 그립니다.
+ * loginUser 쿠키를 심고 지움. 쿠키가 바뀌면 반드시 refreshAuthUI()를 거침.
  *
- * 의존: auth.js (getCookie / setCookie / deleteCookie / findUserById)
+ * 의존: auth.js (setCookie / deleteCookie / getCurrentUser / findUserById)
+ * 발행: auth:changed
  */
 
 
-// 상태값 상수
 const LOGIN_RESULT = {
     EMPTY_INPUT: 'EMPTY_INPUT',
     MISMATCH: 'MISMATCH',
     SUCCESS: 'SUCCESS',
 };
 
-// 문구 모음
 const LOGIN_MESSAGE = {
     [LOGIN_RESULT.EMPTY_INPUT]: '아이디와 비밀번호를 입력하세요.',
     [LOGIN_RESULT.MISMATCH]: '아이디 또는 비밀번호가 일치하지 않습니다.',
     [LOGIN_RESULT.SUCCESS]: '',
 };
 
-// 입력값을 검사해 로그인 가능 여부를 상태값으로 반환합니다.
-// 화면을 직접 건드리지 않고 결과만 돌려주므로 테스트하기 쉽습니다.
+// 화면을 건드리지 않고 결과만 반환 — 테스트하기 쉬운 형태로 분리
 function validateLogin(id, pw) {
     if (id === '' || pw === '') return LOGIN_RESULT.EMPTY_INPUT;
 
     const user = findUserById(id);
 
-    // 아이디가 없는 경우와 비밀번호가 틀린 경우를 같은 메시지로 처리
-    // (어느 쪽이 틀렸는지 알려주면 아이디 존재 여부가 노출됨)
+    // 아이디 없음과 비밀번호 틀림을 같은 메시지로 처리
+    // 어느 쪽인지 알려주면 아이디 존재 여부가 노출됨
     if (!user || user.pw !== pw) return LOGIN_RESULT.MISMATCH;
 
     return LOGIN_RESULT.SUCCESS;
 }
 
 
-// 로그인 폼 제출을 처리합니다. 실패하면 메시지만 표시하고 종료합니다.
 function handleLogin() {
     const idInput = document.querySelector('#loginId');
     const pwInput = document.querySelector('#loginPw');
@@ -54,43 +50,34 @@ function handleLogin() {
         return;
     }
 
-    // 로그인 상태 기록 → 모달 닫기 → 헤더 갱신 순서로 마무리
     setCookie('loginUser', id, 1);
     document.querySelector('#loginModal').classList.remove('active');
-    updateHeader();
+    refreshAuthUI();
 }
 
 
-// 로그인 상태를 해제합니다. 헤더의 로그아웃 진입점은 모두 이 함수를 거칩니다.
+// 로그아웃 진입점은 모두 이 함수를 거침 (경로가 갈라지면 화면이 어긋남)
 function handleLogout() {
     deleteCookie('loginUser');
-    updateHeader();
+    refreshAuthUI();
 }
 
 
-// 로그인 여부에 따라 헤더를 다시 그립니다.
-// 로그인 / 로그아웃 / 페이지 로드 세 경우 모두 이 함수 하나로 처리해
-// 화면 갱신 경로가 갈라지지 않도록 합니다.
-function updateHeader() {
+// 로그인 상태 변경의 단일 통로. 로그인 / 로그아웃 / 페이지 진입 모두 여기를 거침.
+// 로그인 버튼만 직접 갱신하고 나머지 화면은 auth:changed를 구독해 각자 처리.
+// 구독자가 늘어도 이 파일은 수정하지 않음.
+function refreshAuthUI() {
     const loginBtn = document.querySelector('#login_Btn');
-    if (!loginBtn) return;
 
-    const user = getCurrentUser();
+    // 헤더는 fetch로 나중에 삽입됨. 없더라도 이벤트는 나가야 하므로 return 하지 않음
+    if (loginBtn) {
+        loginBtn.classList.toggle('hidden', Boolean(getCurrentUser()));
+    }
 
-    // 로그인 상태면 로그인 버튼을 감추고, 비로그인 상태면 다시 보여줌
-    loginBtn.classList.toggle('hidden', Boolean(user));
-
-    // 프로필 메뉴 갱신은 profileMenu.js에 위임
-    // 헤더가 없는 페이지에는 해당 스크립트가 없으므로 ?. 로 안전하게 호출
-    window.renderUserMenu?.();
-
-    // 댓글·리뷰 작성 영역 갱신은 restaurantDetail.js에 위임
-    // 상세 페이지에만 존재하므로 ?. 로 안전하게 호출
-    window.updateBoardAuthState?.();
+    document.dispatchEvent(new CustomEvent('auth:changed'));
 }
 
 
-// 첫 진입 시에도 쿠키를 보고 헤더 상태를 맞춰 줍니다.
 window.addEventListener('DOMContentLoaded', () => {
-    updateHeader();
+    refreshAuthUI();
 });

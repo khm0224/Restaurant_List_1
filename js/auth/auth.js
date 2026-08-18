@@ -39,6 +39,38 @@ function deleteCookie(name) {
     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 }
 
+// ===== 권한 =====
+
+// 서버가 없어 관리자를 코드에 고정. 진짜 권한 검사가 아니라 화면 분기용.
+// 실제 서비스라면 DB의 role 컬럼을 서버가 검사함.
+const ADMIN_IDS = ['admin'];
+
+// 인자를 생략하면 현재 로그인한 사람을 검사.
+// 나중에 "이 글쓴이가 관리자인가"를 물을 수 있게 인자를 받는 형태로 둠.
+function isAdmin(user = getCurrentUser()) {
+    // 비로그인이면 user가 null이라 user.id를 읽는 순간 터짐.
+    // && 는 왼쪽이 false면 오른쪽을 실행하지 않아 이를 막아줌.
+    return Boolean(user) && ADMIN_IDS.includes(user.id);
+}
+
+// 초기 관리자 계정. 회원가입으로는 만들 수 없어 코드가 대신 심어줌.
+// 서버 환경의 시딩(Spring CommandLineRunner, Flyway 마이그레이션)에 해당하는 자리.
+const ADMIN_SEED = {
+    id: 'admin',
+    pw: 'admin1234',
+    name: '관리자',
+    email: 'admin@bomnaelog.kr',
+};
+
+function seedAdmin() {
+    // 이미 있으면 손대지 않음.
+    // 덮어쓰면 관리자가 바꾼 비밀번호가 새로고침마다 되돌아감.
+    if (findUserById(ADMIN_SEED.id)) return;
+
+    // 원본을 그대로 넣으면 이후 수정이 상수까지 바꾸므로 복사본을 넣음
+    users.push({ ...ADMIN_SEED });
+    saveUsers();
+}
 
 // ===== 회원 저장소 =====
 
@@ -47,6 +79,7 @@ function deleteCookie(name) {
 //   2) 쿠키는 모든 HTTP 요청에 실려 나감 — 회원 목록은 보낼 이유 없음
 //   3) 값에 세미콜론이 들어가면 쿠키 파싱이 깨지던 문제 해소
 // loginUser는 쿠키 유지 — 만료 기능이 필요하고 localStorage엔 없음
+
 const USERS_STORAGE_KEY = 'userAccounts';
 
 let users = [];
@@ -120,3 +153,4 @@ function getCurrentUser() {
 
 
 loadUsers();
+seedAdmin();

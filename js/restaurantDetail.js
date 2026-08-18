@@ -39,29 +39,28 @@ const commentPagePrev = document.getElementById('comment-page-prev');
 const commentPageNext = document.getElementById('comment-page-next');
 const commentPageInfo = document.getElementById('comment-page-info');
 
-// 로그인 상태에 따라 댓글 폼·리뷰쓰기 버튼·삭제 버튼 노출을 전환.
-// 로그인은 모달로 이뤄져 새로고침이 없으므로, 로그인/로그아웃 때마다 다시 불려야 함.
+// 로그인 상태에 따라 댓글 폼 · 리뷰쓰기 버튼 · 삭제 버튼 노출을 전환.
+// 로그인은 모달로 이뤄져 새로고침이 없으므로 상태가 바뀔 때마다 다시 불려야 함.
 function updateBoardAuthState() {
     const isLoggedIn = Boolean(getCurrentUser());
 
     commentForm.hidden = !isLoggedIn;
     commentLocked.hidden = isLoggedIn;
 
-    // 리뷰쓰기 버튼은 detailCard를 그린 뒤에 생기므로 없을 수 있음
+    // detailCard를 그린 뒤에 생기는 요소라 아직 없을 수 있음
     const reviewWriteBtn = document.getElementById('review-write-btn');
     if (reviewWriteBtn) {
         reviewWriteBtn.hidden = !isLoggedIn;
     }
 
-    // 삭제 버튼 노출이 로그인 상태에 따라 달라지므로 목록도 다시 그림
+    // 삭제 버튼 노출이 로그인 상태를 타므로 목록도 다시 그림
     if (restaurantId) {
         renderComments();
         renderReviewPage();
     }
 }
 
-// login.js의 updateHeader가 호출. 화면 갱신 경로를 하나로 유지하기 위함.
-window.updateBoardAuthState = updateBoardAuthState;
+document.addEventListener('auth:changed', updateBoardAuthState);
 
 const COMMENTS_PER_PAGE = 5;
 let commentPage = 1;
@@ -152,7 +151,7 @@ function reviewItemHTML(review) {
             </div>
             <p class="review-text">${review.text}</p>
             ${review.photo ? `<img class="review-photo" src="${review.photo}" alt="리뷰 사진">` : ''}
-            ${isMyPost(review) ? `<button class="review-delete" type="button" data-id="${review.id}">삭제</button>` : ''}
+            ${canDelete(review) ? `<button class="review-delete" type="button" data-id="${review.id}">삭제</button>` : ''}
         </li>
     `;
 }
@@ -338,7 +337,7 @@ reviewForm.addEventListener('submit', (event) => {
         return;
     }
 
-    // 댓글과 같은 이유로 제출 시점에 로그인 상태를 다시 확인
+    // 댓글과 동일 — 제출 시점에 다시 확인
     const user = getCurrentUser();
 
     if (!user) {
@@ -353,22 +352,25 @@ reviewForm.addEventListener('submit', (event) => {
     closeReviewModal();
 });
 
-// 저장된 건 아이디뿐. 표시할 이름은 매번 users에서 조회.
+// 저장된 건 아이디뿐. 이름은 바뀔 수 있어 표시 시점에 조회.
 function getAuthorName(item) {
-    // 구버전 데이터에는 authorId가 없고 author에 문자열이 들어 있음
+    // 로그인 연동 전 데이터에는 authorId가 없고 author에 문자열이 들어 있음
     if (!item.authorId) {
         return item.author || '익명';
     }
 
-    // 탈퇴했거나 데이터가 깨지면 findUserById가 undefined를 반환
+    // 탈퇴·데이터 손상이면 findUserById가 undefined
     return findUserById(item.authorId)?.name || '탈퇴한 사용자';
 }
 
-// 현재 로그인한 사람이 쓴 글인지 판단. 삭제 버튼 노출 기준.
-// 화면에서 감출 뿐이므로 진짜 권한 검사는 아님 (서버가 없어 한계)
 function isMyPost(item) {
     const user = getCurrentUser();
     return Boolean(user) && item.authorId === user.id;
+}
+
+// 삭제 버튼 노출 기준. 화면에서 감출 뿐이라 진짜 권한 검사는 아님(서버 부재).
+function canDelete(item) {
+    return isMyPost(item) || isAdmin();
 }
 
 // 식당별 댓글을 페이지 단위로 표시하고 삭제 버튼 이벤트를 연결합니다.
@@ -396,7 +398,7 @@ function renderComments() {
                 <span class="comment-date">${new Date(comment.createdAt).toLocaleString()}</span>
             </div>
             <p class="comment-text">${comment.text}</p>
-            ${isMyPost(comment) ? `<button class="comment-delete" type="button" data-id="${comment.id}">삭제</button>` : ''}
+            ${canDelete(comment) ? `<button class="comment-delete" type="button" data-id="${comment.id}">삭제</button>` : ''}
         </li>
     `).join('');
 
@@ -431,11 +433,11 @@ commentForm.addEventListener('submit', (event) => {
         return;
     }
 
-    // 쿠키는 1일 만료. 댓글 쓰는 동안 로그인이 풀릴 수 있음
+    // loginUser 쿠키는 1일 만료 — 쓰는 동안 풀릴 수 있음
     const user = getCurrentUser();
 
     if (!user) {
-        // 화면을 잠금 상태로 되돌림. 입력값은 지우지 않아 다시 로그인하면 남아 있음
+        // 아래 value 초기화까지 가지 않으므로 쓰던 글은 그대로 남음
         updateBoardAuthState();
         return;
     }
