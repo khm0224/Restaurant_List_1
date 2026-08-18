@@ -25,11 +25,6 @@
 
 이 프로젝트는 별도 빌드 과정이나 패키지 설치가 필요 없는 HTML, CSS, JavaScript 기반 정적 사이트입니다. CSV, GeoJSON, HTML 컴포넌트를 `fetch`로 불러오기 때문에 브라우저에서 파일을 직접 열지 말고 로컬 HTTP 서버로 실행해야 합니다.
 
-```powershell
-cd c:\Users\hmv23\OneDrive\Documents\GitHub\Restaurant_List
-py -m http.server 8000
-```
-
 서버 실행 후 브라우저에서 `http://127.0.0.1:5500/index.html`에 접속합니다.
 
 ## 지도 설정
