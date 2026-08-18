@@ -15,6 +15,9 @@ const mockReviews = [
 // 리뷰 카드가 들어갈 DOM 컨테이너.
 // HTML의 <div id="reviewList"></div> 와 연결되어 있다.
 const reviewList = document.getElementById('reviewList');
+const reviewPagination = document.getElementById('reviewPagination');
+const reviewPageSize = 5;
+let currentReviewPage = 1;
 
 // 별점 문자열 생성 함수.
 // rating: 1~5, 5점 만점 기준으로 별을 채운다.
@@ -22,6 +25,33 @@ function renderStars(rating) {
   const filled = '★'.repeat(rating);
   const empty = '☆'.repeat(5 - rating);
   return `${filled}${empty}`;
+}
+
+// 현재 페이지에 표시할 리뷰 범위를 계산합니다.
+function getPaginatedReviews() {
+  const start = (currentReviewPage - 1) * reviewPageSize;
+  return mockReviews.slice(start, start + reviewPageSize);
+}
+
+// 리뷰가 여러 페이지일 때만 페이지 번호 버튼을 표시합니다.
+function renderReviewPagination() {
+  if (!reviewPagination) return;
+
+  const totalPages = Math.ceil(mockReviews.length / reviewPageSize);
+  reviewPagination.innerHTML = '';
+  reviewPagination.hidden = totalPages <= 1;
+
+  for (let page = 1; page <= totalPages; page += 1) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `announcement-page-btn ${page === currentReviewPage ? 'active' : ''}`;
+    button.textContent = page;
+    button.addEventListener('click', () => {
+      currentReviewPage = page;
+      renderReviewCards();
+    });
+    reviewPagination.appendChild(button);
+  }
 }
 
 // 리뷰 리스트를 HTML 카드 형태로 렌더링한다.
@@ -41,12 +71,13 @@ function renderReviewCards() {
         </div>
       </article>
     `;
+    if (reviewPagination) reviewPagination.hidden = true;
     return;
   }
 
   // 카드 생성: 각 리뷰 객체를 article로 변환한다.
   // TODO: 삭제 버튼 클릭 시 실제 삭제 로직 연결 예정.
-  reviewList.innerHTML = mockReviews.map((review) => {
+  reviewList.innerHTML = getPaginatedReviews().map((review) => {
     // 사진이 등록된 리뷰에만 이미지 태그를 추가하고, 없으면 카드 영역을 비워 둔다.
     const photoHtml = review.photo
       ? `<img class="review-card__photo" src="${review.photo}" alt="${review.restaurant} 리뷰 사진">`
@@ -68,6 +99,8 @@ function renderReviewCards() {
     </article>
     `;
   }).join('');
+
+  renderReviewPagination();
 }
 
 
