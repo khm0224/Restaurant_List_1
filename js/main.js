@@ -89,10 +89,6 @@ if (regionButtons.length) {
     });
 }
 
-if (document.getElementById('homepage-map')) {
-    loadGoogleMaps();
-}
-
 // ===== 헤더 검색창 =====
 // 헤더는 header.js가 fetch로 나중에 삽입하므로, 요소가 아직 없어도 걸리도록
 // document에 이벤트 위임을 걸어둡니다. (login_modal.js의 로그인 버튼과 같은 방식)

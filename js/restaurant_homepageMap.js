@@ -1,4 +1,4 @@
-// 메인 화면의 작은 Google 지도를 생성합니다.
+// 메인 화면의 작은 Google 지도r기능을 이 js 파일로 이관.
 function initHomepageMap() {
     const mapElement = document.getElementById('homepage-map');
     if (!mapElement || typeof google === 'undefined' || !google.maps) {
