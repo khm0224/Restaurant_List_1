@@ -187,10 +187,6 @@ window.restaurantData.조운동 = {
             address: '강원 춘천시 금강로62번길 15 2층 대화관', rating: 4.2, reviewCount: 506
         },
         {
-            name: '니뽕내뽕 춘천명동점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20241022_234%2F1729579564810f8bDe_JPEG%2FKakaoTalk_20240924_103350466.jpg',
-            address: '강원 춘천시 중앙로67번길 18 브라운가', rating: 4.5, reviewCount: 1.401
-        },
-        {
             name: '샹츠마라', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAyNjA4MTJfMTcx%2FMDAxNzg2NTI2MTM0ODg2.XhoZTiYRB_oPwFydPKcYwaSo7nAy4LtBQaXjcyiZFQYg.SOGKhlTGSqFY44MFU5fvNKllNUnKm5vQ4_zv182h6Mog.JPEG%2F900_1786524149595.jpg%2F900x675', // OK
             address: '강원 춘천시 명동길 17-1', rating: 4.2, reviewCount: 117
         }
@@ -198,8 +194,6 @@ window.restaurantData.조운동 = {
     양식: [
         { name: '빌리비 브런치카페', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240318_253%2F1710726993876DgaYB_JPEG%2FIMG_1440.jpeg', 
             address: '강원 춘천시 시청길10번길 11 1층', rating: 4.9, reviewCount: 465 },
-        { name: '바른양식당', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20221021_133%2F1666352221183WJRQL_JPEG%2FA86569DE-305A-407F-B812-829EF7163CDA.jpeg', 
-            address: '강원 춘천시 중앙로67번길 18 4동 2층 4205호', rating: 4.6, reviewCount: 3.330 },  // Ok
         { name: '미스터봉', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20231018_229%2F1697593216604WkGTU_JPEG%2FKakaoTalk_20231018_103043752.jpg', 
             address: '강원 춘천시 명동길 3 2층', rating: 4.8, reviewCount: 69 }
     ],
@@ -245,13 +239,19 @@ window.restaurantData.약사명동 = {
         {
             name: '보문각', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190110_21%2F15471131309374jNFa_JPEG%2FZ3AGKKmXNfFWntwz7EeGPb6x.jpg', // OK
             address: '강원 춘천시 약사고개길 42', rating: 4.3, reviewCount: 2.230
+        },
+        {
+            name: '니뽕내뽕 춘천명동점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20241022_234%2F1729579564810f8bDe_JPEG%2FKakaoTalk_20240924_103350466.jpg',
+            address: '강원 춘천시 중앙로67번길 18 브라운가', rating: 4.5, reviewCount: 1.401
         }
     ],
     양식: [
         { name: '함지레스토랑', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190107_131%2F1546840851597EpzRs_JPEG%2FDiYsr2pD5121OlGxTX6QaFLU.jpg', 
             address: '강원 춘천시 중앙로 101', rating: 4.3, reviewCount: 1.120 },
         { name: '뽁밥 춘천본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240503_227%2F17146990046716euga_JPEG%2FIMG_2862.jpeg', 
-            address: '강원 춘천시 중앙로 125 1층 뽁밥', rating: 4.6, reviewCount: 350 }
+            address: '강원 춘천시 중앙로 125 1층 뽁밥', rating: 4.6, reviewCount: 350 },
+        { name: '바른양식당', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20221021_133%2F1666352221183WJRQL_JPEG%2FA86569DE-305A-407F-B812-829EF7163CDA.jpeg',
+            address: '강원 춘천시 중앙로67번길 18 4동 2층 4205호', rating: 4.6, reviewCount: 3.330 }
     ],
     디저트: [
         {

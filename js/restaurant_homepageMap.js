@@ -1,6 +1,6 @@
 (function () {
     const CHUNCHEON_CENTER = { lat: 37.8813, lng: 127.7298 };
-    const COORDINATE_CSV_URL = './전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv';
+    const COORDINATE_CSV_URL = './전국_음식점_정보csv/res_Food_List_geocoded.csv';
 
     let map = null;
     let restaurantMarkers = [];
@@ -68,7 +68,7 @@
                 }
 
                 const headers = parseCsvLine(lines[0]);
-                const nameIndex = headers.indexOf('사업장명');
+                const nameIndex = headers.indexOf('음식점명');
                 const latitudeIndex = headers.indexOf('위도');
                 const longitudeIndex = headers.indexOf('경도');
                 const statusIndex = headers.indexOf('지오코딩상태');

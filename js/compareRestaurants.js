@@ -1,5 +1,5 @@
 const CSV_PATH =
-    '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv';
+    '../전국_음식점_정보csv/res_Food_List_geocoded.csv';
 
 // 공백, 괄호, 특수문자, 대소문자 차이를 제거합니다.
 function normalizeRestaurantName(name = '') {
@@ -87,12 +87,12 @@ async function compareRestaurants() {
         const csvRestaurants = parseCsv(csvText);
         const jsRestaurants = getGyodongRestaurants();
 
-        // CSV 사업장명을 검색하기 쉽게 Map으로 만듭니다.
+        // CSV 음식점명을 검색하기 쉽게 Map으로 만듭니다.
         const csvRestaurantMap = new Map();
 
         csvRestaurants.forEach(restaurant => {
             const normalizedName =
-                normalizeRestaurantName(restaurant['사업장명']);
+                normalizeRestaurantName(restaurant['음식점명']);
 
             if (!csvRestaurantMap.has(normalizedName)) {
                 csvRestaurantMap.set(normalizedName, []);
@@ -116,8 +116,8 @@ async function compareRestaurants() {
                     category: jsRestaurant.category,
                     jsAddress: jsRestaurant.address,
                     csvAddress:
-                        csvRestaurant['변환주소'] ||
-                        csvRestaurant['지번주소'],
+                        csvRestaurant['주소'] ||
+                        csvRestaurant['변환주소'],
                     latitude: csvRestaurant['위도'],
                     longitude: csvRestaurant['경도']
                 });
