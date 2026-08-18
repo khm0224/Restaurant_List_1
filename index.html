@@ -347,35 +347,38 @@
             </div>
 
             <div class="toplist-col">
-                <div class="section-head">
-                    <h2>한림대 맛집</h2>
-                </div>
-                <div class="restaurant-grid">
-                    <a href="./html/restaurant_detail.html?district=교동&category=한식&id=1" class="r-card">
-                        <div class="r-card-img" style="background-image: url('https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190116_54%2F15476330411692TtTa_JPEG%2Ff0RIjYBtUbr7cIpTzNMJNpzh.jpg');"></div>
-                        <div class="r-card-info">
-                            <span class="r-card-tag">한식</span>
-                            <h1 class="r-card-name">대암감자탕 한림대점</h1>
-                            <p class="r-card-rating">★ 3.6 · 리뷰 201</p>
+                <section class="ranking-panel" aria-labelledby="ranking-title">
+                    <div class="ranking-tabs">
+                        <button type="button" class="ranking-tab active" data-ranking-mode="district">
+                            지역별 맛집
+                        </button>
+                        <button type="button" class="ranking-tab" data-ranking-mode="nearby">
+                            내 주변 맛집
+                        </button>
+                    </div>
+
+                    <div class="ranking-header">
+                        <button type="button" id="rankingPrev" aria-label="이전 지역">‹</button>
+
+                        <div>
+                            <h2 id="ranking-title">춘천 전체 맛집</h2>
+                            <p>TOP 3</p>
                         </div>
+
+                        <button type="button" id="rankingNext" aria-label="다음 지역">›</button>
+                    </div>
+
+                    <!-- JavaScript가 음식점 카드 3개를 삽입 -->
+                    <div class="ranking-list" id="homepage-ranking"></div>
+
+                    <a
+                        href="./html/food_page.html?district=전체"
+                        class="ranking-more"
+                        id="ranking-more"
+                    >
+                        춘천 맛집 전체보기 ›
                     </a>
-                    <a href="./html/restaurant_detail.html?district=교동&category=일식&id=0" class="r-card">
-                        <div class="r-card-img" style="background-image: url('https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180827_164%2F1535346817088xXANi_JPEG%2FMberV62NSww70SV_Ol1AUdJE.jpg');"></div>
-                        <div class="r-card-info">
-                            <span class="r-card-tag">일식</span>
-                            <h3 class="r-card-name">도쿄라멘춘천한림대점</h3>
-                            <p class="r-card-rating">★ 4.3 · 리뷰 164</p>
-                        </div>
-                    </a>
-                    <a href="./html/restaurant_detail.html?district=교동&category=디저트&id=0" class="r-card">
-                        <div class="r-card-img" style="background-image: url('https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230103_192%2F1672725994779YEyys_JPEG%2F20221125_190125.jpg');"></div>
-                        <div class="r-card-info">
-                            <span class="r-card-tag">디저트</span>
-                            <h3 class="r-card-name">와플칸 한림대점</h3>
-                            <p class="r-card-rating">★ 4.0 · 리뷰 212</p>
-                        </div>
-                    </a>
-                </div>
+                </section>
             </div>
         </div>
     </section>
