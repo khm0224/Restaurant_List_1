@@ -12,7 +12,14 @@ function initHomepageMap() {
         zoom: 13,
         mapTypeControl: false,
         streetViewControl: false,
-        fullscreenControl: false
+        fullscreenControl: false,
+        // ====== 홈페이지 미니맵 기본 음식점 마커 지우기 ====== //
+            styles: [
+                {
+                    featureType: 'poi.business',
+                    stylers: [{ visibility: 'off' }]
+                }
+            ]
     });
 
     new google.maps.Marker({
