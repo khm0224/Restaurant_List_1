@@ -157,7 +157,7 @@ function renderAnnouncements() {
       <p>${item.content}</p>
       <div class="announcement-meta">
         <span>${item.date}</span>
-        ${item.updatedAt ? `<span class="announcement-updated">· 수정 ${item.updatedAt}</span>` : ''} 
+        ${item.updatedAt ? `<span class="announcement-updated">· 수정 ${item.updatedAt}</span>` : ''}  
         ${isAdmin() ? `<button class="announcement-edit" type="button" data-id="${item.id}">수정</button>` : ''}
         ${isAdmin() ? `<button class="announcement-delete" type="button" data-id="${item.id}">삭제</button>` : ''}
       </div>

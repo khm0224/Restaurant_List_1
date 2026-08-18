@@ -121,3 +121,23 @@ body {
 .form-message.error {
     color: #d44333;
 }
+
+.avatar-preview {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e6e6e6;
+    background: #fafafa;
+}
+
+.field-hint {
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+}
+
+.login-required-card .submit-btn {
+    margin-top: 20px;
+    padding: 12px 28px;
+}

@@ -84,9 +84,19 @@ const USERS_STORAGE_KEY = 'userAccounts';
 
 let users = [];
 
+// 성공 여부를 돌려줌. 프로필 사진이 들어가면서 용량 한도에 걸릴 수 있게 됨.
+// setItem은 한도를 넘으면 QuotaExceededError를 던지고 아무것도 저장하지 않음 —
+// 잡지 않으면 화면은 "저장됨"이라 말하고 새로고침하면 값이 사라짐.
+// 기존 호출부는 반환값을 안 읽으므로 그대로 둬도 동작함.
 function saveUsers() {
-    // localStorage는 문자열만 저장 가능
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    try {
+        // localStorage는 문자열만 저장 가능
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+        return true;
+    } catch (error) {
+        console.error('회원 목록을 저장하지 못했습니다.', error);
+        return false;
+    }
 }
 
 function loadUsers() {

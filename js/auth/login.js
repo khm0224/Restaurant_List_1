@@ -63,10 +63,15 @@ function handleLogout() {
 }
 
 
-// 로그인 상태 변경의 단일 통로. 로그인 / 로그아웃 / 페이지 진입 모두 여기를 거침.
+// 현재 사용자에 관한 변경의 단일 통로. 로그인 / 로그아웃 / 정보 수정 / 페이지 진입이 모두 여기를 거침.
 // 로그인 버튼만 직접 갱신하고 나머지 화면은 auth:changed를 구독해 각자 처리.
 // 구독자가 늘어도 이 파일은 수정하지 않음.
-function refreshAuthUI() {
+//
+// reason: 무엇 때문에 갱신하는지. 지금 구독자 넷은 전부 "다시 읽고 다시 그린다"라
+// 구분할 필요가 없어 아무도 읽지 않음. 나중에 "로그인/로그아웃일 때만" 반응해야 하는
+// 구독자가 생기면 detail.reason으로 분기할 수 있게 자리만 만들어 둠.
+// 기본값을 둔 이유는 기존 호출부(인자 없이 부르는 곳)를 안 고치기 위함.
+function refreshAuthUI(reason = 'auth') {
     const loginBtn = document.querySelector('#login_Btn');
 
     // 헤더는 fetch로 나중에 삽입됨. 없더라도 이벤트는 나가야 하므로 return 하지 않음
@@ -74,7 +79,7 @@ function refreshAuthUI() {
         loginBtn.classList.toggle('hidden', Boolean(getCurrentUser()));
     }
 
-    document.dispatchEvent(new CustomEvent('auth:changed'));
+    document.dispatchEvent(new CustomEvent('auth:changed', { detail: { reason } }));
 }
 
 

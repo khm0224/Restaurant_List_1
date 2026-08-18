@@ -12,19 +12,39 @@
 </head>
 
 <body>
-    <div id="header-root" data-active="info">
+    <!-- 상단 메뉴 중 해당 항목이 없는 페이지라 빈 값 -->
+    <div id="header-root" data-active="">
         <a href="../../index.html" aria-label="메인 페이지로 이동">봄내로그</a>
     </div>
 
     <main class="my-info-page">
-        <!-- 이 창은 로그인 상태가 아닐때 나오는 화면 -->
-        <!-- 지금은 hidden을 넣었는데 로그인 상태가 아니면 hidden 지우면됨 -->
-        <section class="login-required-card hidden" aria-labelledby="loginRequiredTitle"> 
-            <h1 id="loginRequiredTitle">로그인 하시오</h1>
+        <!-- 카드 셋 중 하나만 보임. 전환은 my_info.js가 담당 (auth:changed 구독) -->
+        <!--   비로그인 → loginRequiredCard / 로그인·미인증 → verifyCard / 인증 → myInfoCard -->
+        <!-- hidden 속성을 씀 — .hidden 클래스와 달리 CSS 로드 실패 시에도 유지됨 -->
+        <section class="login-required-card" id="loginRequiredCard" aria-labelledby="loginRequiredTitle" hidden>
+            <h1 id="loginRequiredTitle">로그인이 필요합니다</h1>
             <p>개인정보를 확인하거나 변경하려면 로그인해주세요.</p>
+            <button type="button" class="submit-btn" data-login-open>로그인</button>
         </section>
-        
-        <section class="my-info-card "> <!-- 로그인 상태가 아니면 class=""안에 hidden를 추가하면 됨  -->
+
+        <!-- 로그인 쿠키만으로는 부족한 화면이라 비밀번호를 한 번 더 확인 -->
+        <section class="my-info-card" id="verifyCard" hidden>
+            <h1>본인 확인</h1>
+            <p class="field-hint">개인정보를 보려면 현재 비밀번호를 입력하세요.</p>
+
+            <form id="verifyForm" class="my-info-form">
+                <div class="field-group">
+                    <label for="verifyPasswordInput">현재 비밀번호</label>
+                    <input id="verifyPasswordInput" type="password" autocomplete="current-password"
+                        placeholder="현재 비밀번호">
+                </div>
+
+                <button class="submit-btn" type="submit">확인</button>
+                <p id="verifyMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="my-info-card" id="myInfoCard" hidden>
             <h1>개인정보 변경</h1>
 
             <div class="profile-summary">
@@ -48,18 +68,27 @@
 
             <form id="myInfoForm" class="my-info-form">
                 <div class="field-group">
+                    <label for="avatarInput">프로필 사진</label>
+                    <!-- hidden 시작 — 등록된 사진이 있을 때만 my_info.js가 보여줌 -->
+                    <img class="avatar-preview" id="avatarPreview" alt="프로필 사진 미리보기" hidden>
+                    <input id="avatarInput" type="file" accept="image/*">
+                    <p class="field-hint">200KB 이하 이미지만 등록됩니다.</p>
+                </div>
+
+                <div class="field-group">
                     <label for="nameInput">이름</label>
                     <input id="nameInput" type="text" placeholder="변경할 이름을 입력하세요. 비워두면 유지됩니다.">
                 </div>
 
                 <div class="field-group">
-                    <label for="passwordInput">비밀번호</label>
-                    <input id="passwordInput" type="password" placeholder="변경할 비밀번호를 입력하세요. 비워두면 유지됩니다.">
+                    <label for="emailInput">이메일</label>
+                    <input id="emailInput" type="email" placeholder="변경할 이메일을 입력하세요. 비워두면 유지됩니다.">
                 </div>
 
                 <div class="field-group">
-                    <label for="emailInput">이메일</label>
-                    <input id="emailInput" type="email" placeholder="변경할 이메일을 입력하세요. 비워두면 유지됩니다.">
+                    <label for="passwordInput">새 비밀번호</label>
+                    <input id="passwordInput" type="password" autocomplete="new-password"
+                        placeholder="변경할 비밀번호를 입력하세요. 비워두면 유지됩니다.">
                 </div>
 
                 <button class="submit-btn" type="submit">저장하기</button>
