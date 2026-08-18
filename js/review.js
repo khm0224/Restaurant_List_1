@@ -1,6 +1,7 @@
 // 리뷰 목록 페이지용 샘플 데이터.
 // 이후 실제 서버/DB 연동 시 이 배열을 API 응답으로 교체하면 된다.
 // 필수 필드: id, restaurant, rating, text, createdAt
+// 선택 필드: photo (리뷰 사진 URL 또는 Base64 데이터 URL)
 const mockReviews = [
   {
     id: 1,
@@ -45,7 +46,13 @@ function renderReviewCards() {
 
   // 카드 생성: 각 리뷰 객체를 article로 변환한다.
   // TODO: 삭제 버튼 클릭 시 실제 삭제 로직 연결 예정.
-  reviewList.innerHTML = mockReviews.map((review) => `
+  reviewList.innerHTML = mockReviews.map((review) => {
+    // 사진이 등록된 리뷰에만 이미지 태그를 추가하고, 없으면 카드 영역을 비워 둔다.
+    const photoHtml = review.photo
+      ? `<img class="review-card__photo" src="${review.photo}" alt="${review.restaurant} 리뷰 사진">`
+      : '';
+
+    return `
     <article class="announcement-card review-card" data-review-id="${review.id}">
       <div class="announcement-tag">리뷰</div>
       <div class="review-card__header">
@@ -54,12 +61,15 @@ function renderReviewCards() {
       </div>
       <p class="review-card__rating">${renderStars(review.rating)}</p>
       <p>${review.text}</p>
+      ${photoHtml}
       <div class="announcement-meta">
         <span>${new Date(review.createdAt).toLocaleDateString('ko-KR')}</span>
       </div>
     </article>
-  `).join('');
+    `;
+  }).join('');
 }
+
 
 // 초기 렌더 실행.
 renderReviewCards();
