@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새로운 소식</title>
+    <title>내가 쓴 리뷰</title>
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/announcement.css">
     <link rel="stylesheet" href="../../css/auth/login_page.css">
@@ -12,7 +12,8 @@
 </head>
 
 <body>
-    <div id="header-root" data-active="news">
+    <!-- 상단 메뉴 중 해당 항목이 없는 페이지라 빈 값 -->
+    <div id="header-root" data-active="">
         <a href="../../index.html" aria-label="메인 페이지로 이동">봄내로그</a>
     </div>
 
@@ -24,8 +25,17 @@
                     <h1>내가 쓴 리뷰</h1>
                 </div>
 
-                <div class="announcement-list" id="reviewList"></div>
-                <div class="announcement-pagination" id="reviewPagination"></div>
+                <!-- 두 영역의 전환은 review.js가 담당 (auth:changed 구독) -->
+                <div class="login-required-card" id="loginRequiredCard" hidden>
+                    <h2>로그인이 필요합니다</h2>
+                    <p>내가 쓴 리뷰를 보려면 로그인해주세요.</p>
+                    <button type="button" class="submit-btn" data-login-open>로그인</button>
+                </div>
+
+                <div id="reviewContent" hidden>
+                    <div class="announcement-list" id="reviewList"></div>
+                    <div class="announcement-pagination" id="reviewPagination"></div>
+                </div>
             </section>
         </main>
         <aside class="side-space"></aside>
@@ -33,7 +43,11 @@
 
     <div id="login-modal-root"></div>
 
-    <script src="../../js/review.js"></script>
+    <!-- 순서 주의: review.js가 아래 셋의 함수를 씀 -->
+    <!--   auth.js         → getCurrentUser -->
+    <!--   restaurantData.js → getRestaurantData -->
+    <!--   board.js        → ReviewBoard -->
+    <!-- 먼저 두면 ReferenceError로 review.js 전체가 죽음 -->
     <script src="../../js/auth/auth.js"></script>
     <script src="../../js/auth/login.js"></script>
     <script src="../../js/auth/profileMenu.js"></script>
@@ -41,6 +55,8 @@
     <script src="../../js/auth/login_modal.js" data-login-component="../auth/login_page.html"></script>
     <script src="../../js/restaurantData.js"></script>
     <script src="../../js/headerSearch.js"></script>
+    <script src="../../js/board.js"></script>
+    <script src="../../js/review.js"></script>
 </body>
 
 </html>
