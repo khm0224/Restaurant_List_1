@@ -441,6 +441,11 @@
     letter-spacing: 1px;
 }
 
+.review-author {
+    font-weight: 700;
+    font-size: 14px;
+}
+
 .review-date {
     font-size: 12px;
     color: #999;

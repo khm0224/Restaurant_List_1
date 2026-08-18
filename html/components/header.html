@@ -20,8 +20,9 @@
 
     <div class="header-right">
         <div class="search-box">
-            <input type="text" placeholder="식당, 음식종류를 입력하세요. ">
+            <input type="text" placeholder="식당, 음식종류를 입력하세요. " autocomplete="off">
             <span class="search-btn">🔍</span>
+            <ul class="search-dropdown" id="searchDropdown" hidden></ul>
         </div>
 
         <!-- 비로그인 상태에서만 표시. 토글은 login.js updateHeader() 담당 -->
