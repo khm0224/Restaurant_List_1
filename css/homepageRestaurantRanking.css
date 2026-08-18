@@ -1,0 +1,57 @@
+.ranking-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px 12px 0 0;
+    background: #fff;
+}
+
+.ranking-tab {
+    position: relative;
+    padding: 18px 12px;
+    border: 0;
+    background: #fff;
+    color: #555;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.ranking-tab + .ranking-tab {
+    border-left: 1px solid #eee;
+}
+
+.ranking-tab:hover {
+    background: #fffaf5;
+}
+
+.ranking-tab.active {
+    color: #f5821f;
+}
+
+.ranking-tab.active::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #f5821f;
+}
+
+.ranking-tab:focus-visible {
+    z-index: 1;
+    outline: 3px solid rgba(245, 130, 31, 0.3);
+    outline-offset: -3px;
+}
+
+@media (max-width: 760px) {
+    .ranking-tab {
+        padding: 14px 8px;
+        font-size: 16px;
+    }
+}
