@@ -76,7 +76,10 @@ window.ReviewBoard = {
         return board[restaurantId] || [];
     },
 
-    addReview(restaurantId, rating, text, photo, authorId) {
+    // district는 맨 뒤에 추가한 인자.
+    // 중간에 끼우면 기존 호출부의 순서가 밀려 photo 자리에 authorId가 들어감.
+    // 맨 뒤면 안 넘기는 쪽은 undefined가 될 뿐 그대로 동작함.
+    addReview(restaurantId, rating, text, photo, authorId, district) {
         const board = loadReviewBoard();
         const reviews = board[restaurantId] || [];
 
@@ -86,6 +89,9 @@ window.ReviewBoard = {
             text: text.trim(),
             photo: photo || null,
             authorId: authorId || null,
+            // restaurantId는 "일식_0" 형태로 동네가 빠져 있음.
+            // 동네를 모르면 restaurantData에서 식당을 찾을 수 없어 따로 저장.
+            district: district || null,
             createdAt: new Date().toISOString()
         });
 
@@ -101,6 +107,25 @@ window.ReviewBoard = {
         board[restaurantId] = reviews.filter(review => review.id !== reviewId);
         saveReviewBoard(board);
         return board[restaurantId];
+    },
+
+    // "내가 쓴 리뷰" 화면용. 저장소는 식당별로 나뉘어 있어 전체 키를 훑어야 함.
+    // 이 함수를 여기 두는 이유: REVIEW_STORAGE_KEY와 loadReviewBoard가 이 파일 밖으로
+    // 나가지 않음. 밖에서 localStorage를 직접 읽으면 키 이름이 두 곳에 생겨,
+    // 저장 구조가 바뀔 때 에러 없이 빈 배열만 돌려주며 조용히 깨짐.
+    getReviewsByAuthor(authorId) {
+        if (!authorId) return [];
+
+        const board = loadReviewBoard();
+
+        // restaurantId를 리뷰에 붙여서 내보냄.
+        // 삭제하려면 deleteReview(restaurantId, reviewId)가 필요한데,
+        // 안 붙이면 부르는 쪽이 전체를 다시 훑어야 함.
+        return Object.entries(board).flatMap(([restaurantId, reviews]) =>
+            (Array.isArray(reviews) ? reviews : [])
+                .filter(review => review.authorId === authorId)
+                .map(review => ({ ...review, restaurantId }))
+        );
     }
 };
 
