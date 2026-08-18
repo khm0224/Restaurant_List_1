@@ -2,7 +2,8 @@
 // 목적: 정적인 콘텐츠를 카드 형태로 렌더링하고, 사용자 입력으로 새 소식을 추가 가능하게 함
 // 흐름: 기사 배열 -> 페이지별 분할 -> HTML 생성 -> 모달 제출 -> 목록 갱신
 
-const newsItems = [
+// 초기 소식. 저장소가 비어 있을 때 한 번만 심는 씨앗 데이터.
+const INITIAL_NEWS = [
   {
     tag: '신규',
     title: '춘천 동네 맛집 10곳을 새로 소개합니다',
@@ -65,6 +66,39 @@ const newsItems = [
   }
 ];
 
+// 화면에 쓰이는 목록. loadPosts()가 저장소 값으로 통째로 교체하므로 let.
+let newsItems = [];
+
+// 공지사항과 키가 겹치면 두 페이지의 글이 섞임
+const POSTS_STORAGE_KEY = 'newsPosts';
+
+function savePosts() {
+  localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(newsItems));
+}
+
+function loadPosts() {
+  const saved = localStorage.getItem(POSTS_STORAGE_KEY);
+
+  // null = 키 자체가 없음(첫 방문). '[]' = 저장 후 전부 삭제한 상태.
+  // !saved로 검사하면 두 경우가 섞여 지운 소식이 되살아남.
+  if (saved === null) {
+    // 삭제하려면 글마다 식별자가 필요한데 초기 데이터에는 없으므로 여기서 부여
+    newsItems = INITIAL_NEWS.map((item, index) => ({ ...item, id: index + 1 }));
+    savePosts();
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+
+    // JSON.parse는 배열이 아닌 값도 통과시킴 — 배열이 아니면 아래 slice/map이 전부 터짐
+    newsItems = Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.error('소식 목록을 읽지 못했습니다.', error);
+    newsItems = [];
+  }
+}
+
 const announcementList = document.getElementById('announcementList');
 const announcementPagination = document.getElementById('announcementPagination');
 const modal = document.getElementById('announcementModal');
@@ -107,15 +141,32 @@ function renderNews() {
 
   const items = getPaginatedNews();
   announcementList.innerHTML = items.map((item) => `
-    <article class="announcement-card">
+    <article class="announcement-card" data-id="${item.id}">
       <div class="announcement-tag">${item.tag}</div>
       <h2>${item.title}</h2>
       <p>${item.content}</p>
       <div class="announcement-meta">
         <span>${item.date}</span>
+        ${isAdmin() ? `<button class="announcement-delete" type="button" data-id="${item.id}">삭제</button>` : ''}
       </div>
     </article>
   `).join('');
+
+  // 작성자 개념이 없는 글이라 canDelete 대신 isAdmin으로 판단
+  announcementList.querySelectorAll('.announcement-delete').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // dataset 값은 항상 문자열이라 Number로 바꿔야 비교가 성립
+      newsItems = newsItems.filter(item => item.id !== Number(btn.dataset.id));
+      savePosts();
+
+      // 마지막 페이지의 마지막 글을 지우면 존재하지 않는 페이지에 남게 됨.
+      // 전부 지우면 totalPages가 0이 되므로 바닥을 1로 막음.
+      const totalPages = Math.max(1, Math.ceil(newsItems.length / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+
+      renderNews();
+    });
+  });
 
   renderPagination();
 }
@@ -155,7 +206,6 @@ if (modal) {
   });
 }
 
-// 새 소식을 배열 앞에 추가하고 다시 렌더링합니다.
 // 글쓰기는 관리자 전용.
 // 화면에서 감출 뿐이라 진짜 권한 검사는 아님(서버 부재).
 function updateWriteButtonState() {
@@ -180,6 +230,7 @@ if (form) {
 
     const formData = new FormData(form);
     const newItem = {
+      id: Date.now(),          // 삭제 대상을 찾기 위한 식별자
       tag: formData.get('tag') || '신규',
       title: formData.get('title') || '제목 없음',
       content: formData.get('content') || '내용 없음',
@@ -187,10 +238,15 @@ if (form) {
     };
 
     newsItems.unshift(newItem);
+    savePosts();
     currentPage = 1;
     renderNews();
     closeModal();
   });
 }
 
+// 관리자 여부에 따라 삭제 버튼 노출이 달라지므로 목록도 다시 그림
+document.addEventListener('auth:changed', renderNews);
+
+loadPosts();
 renderNews();

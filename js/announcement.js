@@ -2,7 +2,8 @@
 // 목적: 사용자에게 공지글을 카드형 목록으로 보여주고, 새 글을 추가할 수 있게 함
 // 흐름: 배열 데이터 -> 렌더링 -> 페이지 번호 생성 -> 폼 제출 -> 배열 앞쪽에 추가
 
-const announcements = [
+// 초기 공지. 저장소가 비어 있을 때 한 번만 심는 씨앗 데이터.
+const INITIAL_ANNOUNCEMENTS = [
   {
     tag: '공지',
     title: '맛집 추천 서비스 이용 가이드 업데이트 안내',
@@ -65,6 +66,38 @@ const announcements = [
   }
 ];
 
+// 화면에 쓰이는 목록. loadPosts()가 저장소 값으로 통째로 교체하므로 let.
+let announcements = [];
+
+const POSTS_STORAGE_KEY = 'announcementPosts';
+
+function savePosts() {
+  localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(announcements));
+}
+
+function loadPosts() {
+  const saved = localStorage.getItem(POSTS_STORAGE_KEY);
+
+  // null = 키 자체가 없음(첫 방문). '[]' = 저장 후 전부 삭제한 상태.
+  // !saved로 검사하면 두 경우가 섞여 지운 공지가 되살아남.
+  if (saved === null) {
+    // 삭제하려면 글마다 식별자가 필요한데 초기 데이터에는 없으므로 여기서 부여
+    announcements = INITIAL_ANNOUNCEMENTS.map((item, index) => ({ ...item, id: index + 1 }));
+    savePosts();
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+
+    // JSON.parse는 배열이 아닌 값도 통과시킴 — 배열이 아니면 아래 slice/map이 전부 터짐
+    announcements = Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.error('공지 목록을 읽지 못했습니다.', error);
+    announcements = [];
+  }
+}
+
 const announcementList = document.getElementById('announcementList');
 const announcementPagination = document.getElementById('announcementPagination');
 const modal = document.getElementById('announcementModal');
@@ -107,15 +140,32 @@ function renderAnnouncements() {
 
   const items = getPaginatedAnnouncements();
   announcementList.innerHTML = items.map((item) => `
-    <article class="announcement-card">
+    <article class="announcement-card" data-id="${item.id}">
       <div class="announcement-tag">${item.tag}</div>
       <h2>${item.title}</h2>
       <p>${item.content}</p>
       <div class="announcement-meta">
         <span>${item.date}</span>
+        ${isAdmin() ? `<button class="announcement-delete" type="button" data-id="${item.id}">삭제</button>` : ''}
       </div>
     </article>
   `).join('');
+
+  // 작성자 개념이 없는 글이라 canDelete 대신 isAdmin으로 판단
+  announcementList.querySelectorAll('.announcement-delete').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // dataset 값은 항상 문자열이라 Number로 바꿔야 비교가 성립
+      announcements = announcements.filter(item => item.id !== Number(btn.dataset.id));
+      savePosts();
+
+      // 마지막 페이지의 마지막 글을 지우면 존재하지 않는 페이지에 남게 됨.
+      // 전부 지우면 totalPages가 0이 되므로 바닥을 1로 막음.
+      const totalPages = Math.max(1, Math.ceil(announcements.length / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+
+      renderAnnouncements();
+    });
+  });
 
   renderPagination();
 }
@@ -181,6 +231,7 @@ if (form) {
 
     const formData = new FormData(form);
     const newItem = {
+      id: Date.now(),          // 삭제 대상을 찾기 위한 식별자
       tag: formData.get('tag') || '공지',
       title: formData.get('title') || '제목 없음',
       content: formData.get('content') || '내용 없음',
@@ -188,10 +239,15 @@ if (form) {
     };
 
     announcements.unshift(newItem);
+    savePosts();
     currentPage = 1;
     renderAnnouncements();
     closeModal();
   });
 }
 
+// 관리자 여부에 따라 삭제 버튼 노출이 달라지므로 목록도 다시 그림
+document.addEventListener('auth:changed', renderAnnouncements);
+
+loadPosts();
 renderAnnouncements();
