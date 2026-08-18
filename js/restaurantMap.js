@@ -10,6 +10,8 @@
     const mapControls = document.getElementById('map-controls');
     const zoomInButton = document.getElementById('map-zoom-in');
     const zoomOutButton = document.getElementById('map-zoom-out');
+    const currentLocationButton = document.getElementById('map-current-location');
+    const currentLocationLabel = document.getElementById('map-location-label');
 
     let map = null;
     let cityBoundaryLayer = null;
@@ -21,6 +23,8 @@
     let selectedCategory = '전체';
     let restaurantMarkers = [];
     let restaurantInfoWindow = null;
+    let currentLocationMarker = null;
+    let hasCenteredOnCurrentLocation = false;
 
     const RESTAURANT_MARKER_SVG = `
         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="48" viewBox="0 0 44 48">
@@ -343,6 +347,78 @@
         if (map) {
             map.setZoom(map.getZoom() - 1);
         }
+    });
+
+    function updateCurrentLocationMarker(position) {
+        const location = { lat: position.latitude, lng: position.longitude };
+
+        if (currentLocationMarker) {
+            currentLocationMarker.setPosition(location);
+            currentLocationMarker.setMap(map);
+        } else {
+            currentLocationMarker = new google.maps.Marker({
+                map,
+                position: location,
+                title: '내 현재 위치',
+                zIndex: 1000,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#2563eb',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeOpacity: 1,
+                    strokeWeight: 4,
+                    scale: 9
+                }
+            });
+        }
+
+        if (!hasCenteredOnCurrentLocation) {
+            map.panTo(location);
+            map.setZoom(Math.max(map.getZoom(), 16));
+            hasCenteredOnCurrentLocation = true;
+        }
+    }
+
+    function stopCurrentLocationTracking() {
+        window.GeolocationService?.stopWatching();
+        currentLocationButton?.classList.remove('is-tracking');
+        currentLocationButton?.setAttribute('aria-pressed', 'false');
+        currentLocationLabel.textContent = '내 위치';
+        hasCenteredOnCurrentLocation = false;
+    }
+
+    currentLocationButton?.addEventListener('click', () => {
+        if (!map || !window.GeolocationService) {
+            return;
+        }
+
+        if (window.GeolocationService.isWatching()) {
+            stopCurrentLocationTracking();
+            return;
+        }
+
+        currentLocationButton.classList.add('is-tracking');
+        currentLocationButton.setAttribute('aria-pressed', 'true');
+        currentLocationLabel.textContent = '추적 중';
+        hasCenteredOnCurrentLocation = false;
+
+        try {
+            window.GeolocationService.startWatching(
+                updateCurrentLocationMarker,
+                error => {
+                    stopCurrentLocationTracking();
+                    window.alert(error.message);
+                }
+            );
+        } catch (error) {
+            stopCurrentLocationTracking();
+            window.alert(error.message);
+        }
+    });
+
+    window.addEventListener('pagehide', () => {
+        window.GeolocationService?.stopWatching();
     });
 
     window.RestaurantMap = {

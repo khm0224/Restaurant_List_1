@@ -82,9 +82,9 @@
                             aria-label="지도 축소">−</button>
                     </div>
                     <button class="map-control-btn map-location-btn" id="map-current-location" type="button"
-                        aria-label="내 위치" aria-disabled="true">
+                        aria-label="내 위치 실시간 추적" aria-pressed="false">
                         <span class="map-location-icon" aria-hidden="true"></span>
-                        <span>내 위치</span>
+                        <span id="map-location-label">내 위치</span>
                     </button>
                 </div>
                 <div id="map-loader">
@@ -104,6 +104,7 @@
     <script src="../js/map-config.js"></script>
     <script src="../js/restaurantData.js"></script>
     <script src="../js/restaurantService.js"></script>
+    <script src="../js/geolocationService.js"></script>
     <script src="../js/restaurantMap.js"></script>
     <script src="../js/restaurantExplorer.js"></script>
     <script src="../js/food_page.js"></script>
