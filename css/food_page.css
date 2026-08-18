@@ -175,11 +175,13 @@
 }
 
 #content.sidebar-collapsed .sidebar-category-control,
-#content.sidebar-collapsed #store-list {
+#content.sidebar-collapsed #store-list,
+#content.sidebar-collapsed #favorites-button {
     display: none;
 }
 
-#sidebar-toggle {
+#sidebar-toggle,
+#favorites-button {
     display: grid;
     place-items: center;
     width: 38px;
@@ -203,7 +205,8 @@
     margin: 0;
 }
 
-#sidebar-toggle:hover {
+#sidebar-toggle:hover,
+#favorites-button:hover {
     background: #e1eee7;
     border-color: #8ba997;
 }

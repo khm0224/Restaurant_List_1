@@ -95,7 +95,7 @@ if (!saved) {
     detailCard.innerHTML = '<div class="detail-empty"><h2>선택된 식당 정보가 없습니다</h2></div>';
 } else {
     const store = JSON.parse(saved);
-    restaurantId = `${store.district}_${store.category}_${store.id}`;
+    restaurantId = `${store.category}_${store.id}`;
 
     detailCard.innerHTML = `
         <img src="${store.img}" alt="${store.name}">

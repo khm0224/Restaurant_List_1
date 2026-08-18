@@ -3,12 +3,14 @@
     const categoryButtons = document.querySelectorAll('.category-btn');
     const storeList = document.getElementById('store-list');
     const sidebarCategorySelect = document.getElementById('sidebar-category-select');
+    const favoritesButton = document.getElementById('favorites-button');
     const searchParams = new URLSearchParams(window.location.search);
     const ALL_DISTRICTS = '전체';
     const initialDistrict = searchParams.get('district')
         || document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category
         || ALL_DISTRICTS;
     let selectedDistricts = new Set();
+    let favoritesOnly = false;
 
     // 카드에서 선택한 식당의 위치를 URL로 전달해 상세 화면을 엽니다.
     function openStoreDetail(district, category, index) {
@@ -37,12 +39,23 @@
             );
         });
 
-        if (stores.length === 0) {
-            storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
+        const filteredStores = favoritesOnly
+            ? stores.filter(store => isFavorite(`${store.district}_${store.category}_${store.index}`))
+            : stores;
+
+        if (filteredStores.length === 0) {
+            storeList.innerHTML = favoritesOnly
+                ? '<p class="empty-store-list">즐겨찾기한 식당이 없습니다.</p>'
+                : '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
             return;
         }
 
-        storeList.innerHTML = stores.map(store => `
+        // storeList.innerHTML 이게 food_page의 식당 카드 생성 구간 
+        storeList.innerHTML = filteredStores.map(store => {
+            const storeId = `${store.district}_${store.category}_${store.index}`;
+            const favorite = isFavorite(storeId);
+
+            return `
             <article class="store-card" data-district="${store.district}" data-category="${store.category}" data-index="${store.index}" tabindex="0">
                 <div class="store-main-row">
                     <img src="${store.img}" alt="${store.name}" class="store-img">
@@ -55,18 +68,34 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="favorite-btn" type="button" aria-label="즐겨찾기" title="즐겨찾기">☆</button>
+                        <button class="favorite-btn${favorite ? ' active' : ''}" type="button" aria-label="즐겨찾기" title="즐겨찾기">${favorite ? '★' : '☆'}</button>
                         <button class="nav-btn route-btn" type="button">길찾기</button>
                     </div>
                 </div>
             </article>
-        `).join('');
+        `;
+        }).join('');
 
         // 카드 안의 보조 버튼은 클릭해도 상세 화면으로 이동하지 않게 합니다.
         storeList.querySelectorAll('.route-btn, .favorite-btn').forEach(button => {
             button.addEventListener('click', event => {
                 event.preventDefault();
                 event.stopPropagation();
+
+                if (!button.classList.contains('favorite-btn')) return;
+
+                const card = button.closest('.store-card');
+                const storeId = `${card.dataset.district}_${card.dataset.category}_${card.dataset.index}`;
+
+                const favorite = toggleFavorite(storeId);
+                if (favorite === null) return;
+
+                button.textContent = favorite ? '★' : '☆';
+                button.classList.toggle('active', favorite);
+
+                if (favoritesOnly && !favorite) {
+                    renderSelectedStores();
+                }
             });
         });
 
@@ -139,6 +168,14 @@
         selectCategory(sidebarCategorySelect.value);
     });
 
+    favoritesButton.addEventListener('click', () => {
+        favoritesOnly = !favoritesOnly;
+        favoritesButton.setAttribute('aria-pressed', String(favoritesOnly));
+        sidebarCategorySelect.value = '전체';
+        window.RestaurantMap?.selectCategory('전체');
+        selectDistrict(ALL_DISTRICTS);
+    });
+
     // 헤더 검색이 전달한 URL 파라미터로 첫 화면의 필터를 복원합니다.
     const requestedCategory = searchParams.get('category');
     const categoryExists = requestedCategory
@@ -146,4 +183,10 @@
 
     selectDistrict(initialDistrict, Boolean(searchParams.get('district')));
     selectCategory(categoryExists ? requestedCategory : sidebarCategorySelect.value);
+
+    window.addEventListener('pageshow', event => {
+        if (event.persisted) {
+            renderSelectedStores();
+        }
+    });
 })();
