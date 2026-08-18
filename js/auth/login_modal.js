@@ -60,6 +60,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         modal.querySelector('input')?.focus();
     }
 
+    // 클릭이 아닌 상황에서도 열어야 할 때가 있음(즐겨찾기 ☆를 비로그인으로 누른 경우).
+    // data-login-open은 "이 요소를 누르면 연다"는 뜻이라 조건부로는 못 씀 —
+    // 로그인한 사람에게도 열려버림. 그래서 함수를 내줌.
+    // 모달이 fetch로 늦게 오므로 그 전에는 존재하지 않음. 부르는 쪽에서 ?.()로 확인할 것.
+    window.openLoginModal = openModal;
+
     function closeModal() {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');

@@ -88,7 +88,13 @@
                 const storeId = `${card.dataset.district}_${card.dataset.category}_${card.dataset.index}`;
 
                 const favorite = toggleFavorite(storeId);
-                if (favorite === null) return;
+
+                // null = 비로그인(또는 저장 실패). 아무 반응이 없으면 고장으로 보이므로 안내.
+                // 버튼을 감추지 않고 남겨둔 이유 — 감추면 기능이 있다는 걸 모름.
+                if (favorite === null) {
+                    if (!getCurrentUser()) window.openLoginModal?.();
+                    return;
+                }
 
                 button.textContent = favorite ? '★' : '☆';
                 button.classList.toggle('active', favorite);
@@ -188,5 +194,17 @@
         if (event.persisted) {
             renderSelectedStores();
         }
+    });
+
+    // 로그인은 모달로 이뤄져 새로고침이 없음.
+    // ☆/★은 사람마다 다르므로 로그인·로그아웃 때 다시 그려야 함.
+    document.addEventListener('auth:changed', () => {
+        // 로그아웃하면 즐겨찾기가 비어 목록이 통째로 사라짐 — 전체 보기로 되돌림
+        if (favoritesOnly && !getCurrentUser()) {
+            favoritesOnly = false;
+            favoritesButton.setAttribute('aria-pressed', 'false');
+        }
+
+        renderSelectedStores();
     });
 })();

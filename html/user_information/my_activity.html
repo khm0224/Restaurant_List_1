@@ -30,6 +30,7 @@
                 <div class="activity-tabs" id="activityTabs" role="tablist">
                     <button class="activity-tab active" type="button" role="tab" data-tab="reviews">내 리뷰</button>
                     <button class="activity-tab" type="button" role="tab" data-tab="comments">내 댓글</button>
+                    <button class="activity-tab" type="button" role="tab" data-tab="favorites">즐겨찾기</button>
                 </div>
 
                 <!-- 전환은 my_activity.js가 담당 (auth:changed 구독) -->
@@ -55,8 +56,10 @@
     <!--   auth.js           → getCurrentUser -->
     <!--   restaurantData.js → getRestaurantData -->
     <!--   board.js          → Board / ReviewBoard / RestaurantKey -->
+    <!--   favorites.js      → getFavoriteIds / toggleFavorite -->
     <!-- 먼저 두면 ReferenceError로 my_activity.js 전체가 죽음 -->
     <script src="../../js/auth/auth.js"></script>
+    <script src="../../js/auth/favorites.js"></script>
     <script src="../../js/auth/login.js"></script>
     <script src="../../js/auth/profileMenu.js"></script>
     <script src="../../js/header.js" data-header-component="../components/header.html"></script>
