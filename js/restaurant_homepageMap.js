@@ -7,6 +7,11 @@
     let coordinatePromise = null;
     let pendingRestaurants = [];
     let renderRequestId = 0;
+    let currentLocationMarker = null;
+    let currentLocationAccuracyCircle = null;
+    let pendingCurrentLocation = null;
+    let searchRadiusCircle = null;
+    let pendingSearchRadiusKm = null;
 
     function normalizeName(name) {
         return String(name || '').replace(/\s+/g, '').toLowerCase();
@@ -173,13 +178,33 @@
             bounds.extend(position);
         });
 
+        if (pendingCurrentLocation) {
+            bounds.extend({
+                lat: pendingCurrentLocation.latitude,
+                lng: pendingCurrentLocation.longitude
+            });
+        }
+
+        if (searchRadiusCircle?.getBounds()) {
+            const radiusBounds = searchRadiusCircle.getBounds();
+            bounds.extend(radiusBounds.getNorthEast());
+            bounds.extend(radiusBounds.getSouthWest());
+        }
+
         if (restaurantMarkers.length === 0) {
-            map.setCenter(CHUNCHEON_CENTER);
-            map.setZoom(13);
+            if (searchRadiusCircle?.getBounds()) {
+                map.fitBounds(searchRadiusCircle.getBounds(), 32);
+                return;
+            }
+
+            map.setCenter(pendingCurrentLocation
+                ? { lat: pendingCurrentLocation.latitude, lng: pendingCurrentLocation.longitude }
+                : CHUNCHEON_CENTER);
+            map.setZoom(pendingCurrentLocation ? 16 : 13);
             return;
         }
 
-        if (restaurantMarkers.length === 1) {
+        if (restaurantMarkers.length === 1 && !pendingCurrentLocation) {
             map.setCenter(restaurantMarkers[0].marker.getPosition());
             map.setZoom(16);
             return;
@@ -213,7 +238,111 @@
             ]
         });
 
+        if (pendingCurrentLocation) {
+            showCurrentLocation(pendingCurrentLocation);
+        }
+
+        if (pendingCurrentLocation && pendingSearchRadiusKm) {
+            showSearchRadius(pendingCurrentLocation, pendingSearchRadiusKm);
+        }
+
         showRestaurants(pendingRestaurants);
+    }
+
+    function showCurrentLocation(position) {
+        pendingCurrentLocation = position;
+
+        if (!map || !Number.isFinite(position?.latitude) || !Number.isFinite(position?.longitude)) {
+            return;
+        }
+
+        const location = { lat: position.latitude, lng: position.longitude };
+
+        if (currentLocationMarker) {
+            currentLocationMarker.setPosition(location);
+            currentLocationMarker.setMap(map);
+        } else {
+            currentLocationMarker = new google.maps.Marker({
+                map,
+                position: location,
+                title: '내 현재 위치',
+                zIndex: 2000,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#2563eb',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeOpacity: 1,
+                    strokeWeight: 4,
+                    scale: 9
+                }
+            });
+        }
+
+        if (Number.isFinite(position.accuracy) && position.accuracy > 0) {
+            if (currentLocationAccuracyCircle) {
+                currentLocationAccuracyCircle.setCenter(location);
+                currentLocationAccuracyCircle.setRadius(position.accuracy);
+                currentLocationAccuracyCircle.setMap(map);
+            } else {
+                currentLocationAccuracyCircle = new google.maps.Circle({
+                    map,
+                    center: location,
+                    radius: position.accuracy,
+                    clickable: false,
+                    fillColor: '#2563eb',
+                    fillOpacity: 0.12,
+                    strokeColor: '#2563eb',
+                    strokeOpacity: 0.35,
+                    strokeWeight: 1,
+                    zIndex: 10
+                });
+            }
+        }
+    }
+
+    function hideCurrentLocation() {
+        pendingCurrentLocation = null;
+        pendingSearchRadiusKm = null;
+        currentLocationMarker?.setMap(null);
+        currentLocationAccuracyCircle?.setMap(null);
+        searchRadiusCircle?.setMap(null);
+    }
+
+    function showSearchRadius(position, radiusKm) {
+        pendingSearchRadiusKm = radiusKm;
+
+        if (
+            !map ||
+            !Number.isFinite(position?.latitude) ||
+            !Number.isFinite(position?.longitude) ||
+            !Number.isFinite(radiusKm) ||
+            radiusKm <= 0
+        ) {
+            return;
+        }
+
+        const center = { lat: position.latitude, lng: position.longitude };
+        const radiusMeters = radiusKm * 1000;
+
+        if (searchRadiusCircle) {
+            searchRadiusCircle.setCenter(center);
+            searchRadiusCircle.setRadius(radiusMeters);
+            searchRadiusCircle.setMap(map);
+        } else {
+            searchRadiusCircle = new google.maps.Circle({
+                map,
+                center,
+                radius: radiusMeters,
+                clickable: false,
+                fillColor: '#2563eb',
+                fillOpacity: 0.06,
+                strokeColor: '#2563eb',
+                strokeOpacity: 0.65,
+                strokeWeight: 2,
+                zIndex: 5
+            });
+        }
     }
 
     function loadGoogleMaps() {
@@ -261,7 +390,10 @@
     window.HomepageMap = {
         showRestaurants,
         focusRestaurant,
-        clearMarkers
+        clearMarkers,
+        showCurrentLocation,
+        showSearchRadius,
+        hideCurrentLocation
     };
 
     if (document.getElementById('homepage-map')) {

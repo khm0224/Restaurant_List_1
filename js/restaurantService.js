@@ -3,7 +3,10 @@
 // 흐름: CSV 텍스트 읽기 -> 파싱 -> row 변환 -> 맛집 객체 배열 반환
 
 (function () {
-    const RESTAURANT_CSV_URL = '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv';
+    const RESTAURANT_CSV_URL = new URL(
+        '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv',
+        document.currentScript.src
+    ).href;
     let restaurantsPromise = null;
 
     // CSV 한 줄을 쉼표 기준으로 분리하고, 따옴표 안의 값은 유지합니다.
