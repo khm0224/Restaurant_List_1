@@ -123,9 +123,3 @@ html, body {
 #header-root {
     min-height: 72px;
 }
-
-/* 헤더 로그인 버튼 토글용. login.js가 이 클래스를 붙였다 뗌.
-   페이지별 CSS에 두면 그 파일을 안 읽는 페이지에서 조용히 실패함. */
-.hidden {
-    display: none;
-}

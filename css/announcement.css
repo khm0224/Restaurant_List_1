@@ -73,6 +73,72 @@
     justify-content: center;
 }
 
+.review-card {
+    border-left: 5px solid #f5821f;
+    background: linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+    position: relative;
+}
+
+.review-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.review-card__header h2 {
+    margin: 0;
+    flex: 1;
+    line-height: 1.4;
+}
+
+.review-card__delete {
+    border: 1px solid #f6d2b5;
+    background: #fff7f2;
+    color: #d96a00;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.review-card__delete:hover {
+    background: #fff1e5;
+    border-color: #f4b37d;
+    transform: translateY(-1px);
+}
+
+.review-card__rating {
+    margin: 0 0 12px;
+    color: #f0a92b;
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.review-card p:not(.review-card__rating) {
+    margin: 0 0 12px;
+    color: #4b4b4b;
+    line-height: 1.75;
+}
+
+.review-card .announcement-meta {
+    margin-top: 4px;
+    justify-content: flex-end;
+}
+
+.review-card .announcement-meta span {
+    background: #f5f5f5;
+    border-radius: 999px;
+    padding: 6px 10px;
+    color: #6b6b6b;
+    font-weight: 600;
+}
+
 .announcement-tag {
     display: inline-block;
     background: #fff3e7;
