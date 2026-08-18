@@ -1,15 +1,12 @@
 /**
  * signup.js — 회원가입 화면
  *
- * 가입 폼의 입력값을 순서대로 검증하고, 통과하면 users 배열에 추가한 뒤 저장합니다.
- * 아이디와 비밀번호 확인란은 입력하는 동안 실시간으로 안내 문구를 갱신합니다.
+ * 입력값을 위에서부터 순서대로 검증. 하나라도 실패하면 메시지를 남기고 즉시 종료.
  *
- * 의존: auth.js (검증 패턴 / isDuplicateId / users / saveUsers)
+ * 의존: auth.js (검증 패턴 / isDuplicateId / ADMIN_IDS / users / saveUsers)
  */
 
 
-// 가입 폼 전체를 검증하고 통과 시 회원을 등록합니다.
-// 검증은 위에서부터 순서대로 진행하며, 하나라도 실패하면 메시지를 남기고 즉시 종료합니다.
 function handleSignUp() {
     const id = document.querySelector('#signupId').value.trim();
     const pw = document.querySelector('#signupPw').value.trim();
@@ -19,7 +16,7 @@ function handleSignUp() {
     const agree = document.querySelector('#signupAgree').checked;
     const msg = document.querySelector('#signupMsg');
 
-    // 아래 검증은 모두 실패 메시지이므로 색을 미리 지정
+    // 아래는 전부 실패 메시지라 색을 미리 지정
     msg.style.color = 'red';
 
     if (!ID_PATTERN.test(id)) {
@@ -27,7 +24,9 @@ function handleSignUp() {
         return;
     }
 
-    if (isDuplicateId(id)) {
+    // 관리자 아이디 선점 방지.
+    // 관리자용이라고 알려주면 계정 존재가 노출되므로 중복과 같은 메시지.
+    if (isDuplicateId(id) || ADMIN_IDS.includes(id)) {
         msg.textContent = '이미 사용 중인 아이디입니다.';
         return;
     }
@@ -57,7 +56,6 @@ function handleSignUp() {
         return;
     }
 
-    // 모든 검증 통과
     users.push({ id, pw, name, email });
     saveUsers();
 
@@ -65,13 +63,12 @@ function handleSignUp() {
     location.href = '../../index.html';
 }
 
-// 폼 제출 시 기본 새로고침을 막고 직접 검증합니다.
 document.querySelector('#signupForm').addEventListener('submit', (event) => {
     event.preventDefault();
     handleSignUp();
 });
 
-// 아이디를 입력하는 동안 형식과 중복 여부를 실시간으로 안내합니다.
+// 입력하는 동안 형식·중복을 실시간 안내
 document.querySelector('#signupId').addEventListener('input', (e) => {
     const value = e.target.value.trim();
     const idMsg = document.querySelector('#idMsg');
@@ -79,7 +76,7 @@ document.querySelector('#signupId').addEventListener('input', (e) => {
     if (!ID_PATTERN.test(value)) {
         idMsg.textContent = '영문 시작 4~16자';
         idMsg.style.color = 'red';
-    } else if (isDuplicateId(value)) {
+    } else if (isDuplicateId(value) || ADMIN_IDS.includes(value)) {
         idMsg.textContent = '이미 사용 중입니다';
         idMsg.style.color = 'red';
     } else {
@@ -88,7 +85,6 @@ document.querySelector('#signupId').addEventListener('input', (e) => {
     }
 });
 
-// 비밀번호 확인란을 입력하는 동안 일치 여부를 실시간으로 안내합니다.
 document.querySelector('#signupPw2').addEventListener('input', (e) => {
     const pw = document.querySelector('#signupPw').value;
     const pw2Msg = document.querySelector('#pw2Msg');

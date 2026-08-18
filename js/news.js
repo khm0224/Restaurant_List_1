@@ -156,9 +156,27 @@ if (modal) {
 }
 
 // 새 소식을 배열 앞에 추가하고 다시 렌더링합니다.
+// 글쓰기는 관리자 전용.
+// 화면에서 감출 뿐이라 진짜 권한 검사는 아님(서버 부재).
+function updateWriteButtonState() {
+  if (!openModalBtn) return;
+
+  openModalBtn.hidden = !isAdmin();
+}
+
+document.addEventListener('auth:changed', updateWriteButtonState);
+updateWriteButtonState();
+
 if (form) {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+
+    // 버튼을 감추는 것만으로는 막히지 않음 — 제출 시점에 다시 확인
+    if (!isAdmin()) {
+      closeModal();
+      updateWriteButtonState();
+      return;
+    }
 
     const formData = new FormData(form);
     const newItem = {
