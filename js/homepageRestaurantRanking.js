@@ -58,6 +58,20 @@
         const card = document.createElement('a');
         card.className = 'ranking-item';
         card.href = getDetailUrl(restaurant);
+        card.dataset.restaurantKey = [
+            restaurant.district,
+            restaurant.category,
+            restaurant.index
+        ].join('|');
+
+        function requestMapFocus() {
+            window.dispatchEvent(new CustomEvent('homepage:restaurant-focus-request', {
+                detail: { key: card.dataset.restaurantKey }
+            }));
+        }
+
+        card.addEventListener('mouseenter', requestMapFocus);
+        card.addEventListener('focus', requestMapFocus);
 
         const image = document.createElement('div');
         image.className = 'ranking-image';
@@ -118,6 +132,9 @@
             emptyMessage.className = 'ranking-empty';
             emptyMessage.textContent = '등록된 맛집이 없습니다.';
             rankingList.appendChild(emptyMessage);
+            window.dispatchEvent(new CustomEvent('homepage:ranking-change', {
+                detail: { district, restaurants: [] }
+            }));
             return;
         }
 
@@ -126,6 +143,10 @@
             fragment.appendChild(createRestaurantCard(restaurant, index + 1));
         });
         rankingList.appendChild(fragment);
+
+        window.dispatchEvent(new CustomEvent('homepage:ranking-change', {
+            detail: { district, restaurants }
+        }));
     }
 
     function selectDistrict(district) {
@@ -161,6 +182,9 @@
             rankingMore.hidden = true;
             prevButton.disabled = true;
             nextButton.disabled = true;
+            window.dispatchEvent(new CustomEvent('homepage:ranking-change', {
+                detail: { district: '내 주변', restaurants: [] }
+            }));
             return;
         }
 
@@ -174,6 +198,22 @@
     nextButton.addEventListener('click', () => moveDistrict(1));
     rankingTabs.forEach(tab => {
         tab.addEventListener('click', () => selectRankingMode(tab));
+    });
+
+    window.addEventListener('homepage:restaurant-focus', event => {
+        const restaurantKey = event.detail?.key;
+
+        rankingList.querySelectorAll('.ranking-item').forEach(card => {
+            card.classList.toggle(
+                'is-map-focused',
+                card.dataset.restaurantKey === restaurantKey
+            );
+        });
+
+        const selectedCard = rankingList.querySelector(
+            `.ranking-item[data-restaurant-key="${CSS.escape(restaurantKey || '')}"]`
+        );
+        selectedCard?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     });
 
     window.HomepageRanking = {

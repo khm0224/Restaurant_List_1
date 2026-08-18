@@ -154,6 +154,15 @@
     border-bottom: 0;
 }
 
+.ranking-item.is-map-focused {
+    margin-right: -12px;
+    margin-left: -12px;
+    padding-right: 12px;
+    padding-left: 12px;
+    border-radius: 10px;
+    background: #fff4e8;
+}
+
 .ranking-image {
     position: relative;
     width: 118px;

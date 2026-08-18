@@ -89,8 +89,4 @@ if (regionButtons.length) {
     });
 }
 
-if (document.getElementById('homepage-map')) {
-    loadGoogleMaps();
-}
-
 // 헤더 검색창 동작은 js/headerSearch.js가 모든 페이지 공통으로 담당합니다.
