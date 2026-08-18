@@ -4,7 +4,7 @@
 
 (function () {
     const RESTAURANT_CSV_URL = new URL(
-        '../전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv',
+        '../전국_음식점_정보csv/res_Food_List_geocoded.csv',
         document.currentScript.src
     ).href;
     let restaurantsPromise = null;
@@ -73,11 +73,11 @@
         }
 
         return {
-            id: `gyodong-${index + 1}`,
-            district: '교동',
-            category: row['업태구분명'],
-            name: row['사업장명'],
-            address: row['변환주소'] || row['지번주소'],
+            id: `restaurant-${index + 1}`,
+            district: row['지역'],
+            category: row['업종'],
+            name: row['음식점명'],
+            address: row['주소'] || row['변환주소'],
             latitude,
             longitude,
             rating: Number(row['평점']) || 0,
