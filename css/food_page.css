@@ -525,6 +525,84 @@
     font-weight: 600;
 }
 
+.restaurant-map-info-shell {
+    position: relative;
+    width: min(360px, calc(100vw - 150px));
+    min-height: 170px;
+}
+
+.restaurant-map-info-shell.is-single {
+    width: min(280px, calc(100vw - 80px));
+}
+
+.restaurant-map-info {
+    min-width: 0;
+    padding: 10px 4px 4px;
+    color: #272727;
+}
+
+.restaurant-map-info strong {
+    display: block;
+    margin-bottom: 24px;
+    font-size: 17px;
+    line-height: 1.35;
+}
+
+.restaurant-map-info p {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.restaurant-map-info-count {
+    display: block;
+    margin-top: -8px;
+    color: #6b7280;
+    font-size: 12px;
+    text-align: center;
+}
+
+.restaurant-map-info-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #315a49;
+    font-size: 38px;
+    line-height: 1;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.restaurant-map-info-nav.is-prev {
+    left: -52px;
+}
+
+.restaurant-map-info-nav.is-next {
+    right: -52px;
+}
+
+.restaurant-map-info-nav:hover {
+    background: #eef6f2;
+}
+
+.restaurant-map-info-nav:focus-visible {
+    outline: 2px solid #315a49;
+    outline-offset: 2px;
+}
+
+#map-api .gm-style-iw-c,
+#map-api .gm-style-iw-d {
+    overflow: visible !important;
+}
+
 @media (max-width: 760px) {
     #content {
         flex-direction: column;

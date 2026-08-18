@@ -23,6 +23,7 @@
     let selectedCategory = '전체';
     let restaurantMarkers = [];
     let restaurantInfoWindow = null;
+    let infoWindowRenderId = 0;
     let currentLocationMarker = null;
     let hasCenteredOnCurrentLocation = false;
 
@@ -122,10 +123,8 @@
     function updateMarkerVisibility() {
         restaurantInfoWindow?.close();
 
-        restaurantMarkers.forEach(({ restaurant, marker }) => {
-            const matchesDistrict = selectedDistricts.has(ALL_DISTRICTS) || selectedDistricts.has(restaurant.district);
-            const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
-            const shouldShow = matchesDistrict && matchesCategory;
+        restaurantMarkers.forEach(({ restaurants, marker }) => {
+            const shouldShow = restaurants.some(matchesCurrentFilter);
             marker.setMap(shouldShow ? map : null);
         });
     }
@@ -219,6 +218,67 @@
             .replace(/'/g, '&#039;');
     }
 
+    function matchesCurrentFilter(restaurant) {
+        const matchesDistrict = selectedDistricts.has(ALL_DISTRICTS) || selectedDistricts.has(restaurant.district);
+        const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
+        return matchesDistrict && matchesCategory;
+    }
+
+    function openRestaurantGroup(marker, groupedRestaurants) {
+        const visibleRestaurants = groupedRestaurants.filter(matchesCurrentFilter);
+        if (!visibleRestaurants.length) {
+            return;
+        }
+
+        let currentIndex = 0;
+
+        const render = () => {
+            const restaurant = visibleRestaurants[currentIndex];
+            const renderId = `restaurant-info-${++infoWindowRenderId}`;
+            const hasMultipleRestaurants = visibleRestaurants.length > 1;
+
+            restaurantInfoWindow.setContent(`
+                <div class="restaurant-map-info-shell${hasMultipleRestaurants ? '' : ' is-single'}" data-restaurant-info-id="${renderId}">
+                    ${hasMultipleRestaurants ? `
+                        <button class="restaurant-map-info-nav is-prev" type="button" aria-label="이전 음식점">‹</button>
+                    ` : ''}
+                    <div class="restaurant-map-info">
+                        <strong>${escapeHtml(restaurant.name)}</strong>
+                        <p>${escapeHtml(restaurant.category)}</p>
+                        <p>${escapeHtml(restaurant.address)}</p>
+                        <p>⭐ ${restaurant.rating} · 리뷰 ${restaurant.reviewCount}</p>
+                        ${hasMultipleRestaurants ? `
+                            <span class="restaurant-map-info-count">${currentIndex + 1} / ${visibleRestaurants.length}</span>
+                        ` : ''}
+                    </div>
+                    ${hasMultipleRestaurants ? `
+                        <button class="restaurant-map-info-nav is-next" type="button" aria-label="다음 음식점">›</button>
+                    ` : ''}
+                </div>
+            `);
+            restaurantInfoWindow.open({ map, anchor: marker });
+
+            google.maps.event.addListenerOnce(restaurantInfoWindow, 'domready', () => {
+                const container = document.querySelector(`[data-restaurant-info-id="${renderId}"]`);
+                if (!container) {
+                    return;
+                }
+
+                container.querySelector('.is-prev')?.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + visibleRestaurants.length) % visibleRestaurants.length;
+                    render();
+                });
+
+                container.querySelector('.is-next')?.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % visibleRestaurants.length;
+                    render();
+                });
+            });
+        };
+
+        render();
+    }
+
     // 식당 배열을 기반으로 지도 마커를 생성하고 클릭 이벤트를 연결합니다.
     function createRestaurantMarkers(restaurants) {
         restaurantMarkers.forEach(({ marker }) => marker.setMap(null));
@@ -226,17 +286,25 @@
         restaurantInfoWindow?.close();
         restaurantInfoWindow = new google.maps.InfoWindow();
 
+        const restaurantGroups = new Map();
+
         restaurants.forEach(restaurant => {
-            const matchesDistrict = selectedDistricts.has(ALL_DISTRICTS) || selectedDistricts.has(restaurant.district);
-            const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
-            const shouldShow = matchesDistrict && matchesCategory;
+            const coordinateKey = `${restaurant.latitude.toFixed(8)},${restaurant.longitude.toFixed(8)}`;
+            const group = restaurantGroups.get(coordinateKey) || [];
+            group.push(restaurant);
+            restaurantGroups.set(coordinateKey, group);
+        });
+
+        restaurantGroups.forEach(groupedRestaurants => {
+            const representative = groupedRestaurants[0];
+            const shouldShow = groupedRestaurants.some(matchesCurrentFilter);
             const marker = new google.maps.Marker({
                 map: shouldShow ? map : null,
                 position: {
-                    lat: restaurant.latitude,
-                    lng: restaurant.longitude
+                    lat: representative.latitude,
+                    lng: representative.longitude
                 },
-                title: restaurant.name,
+                title: groupedRestaurants.map(restaurant => restaurant.name).join(', '),
                 icon: {
                     url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(RESTAURANT_MARKER_SVG)}`,
                     scaledSize: new google.maps.Size(44, 48),
@@ -245,18 +313,10 @@
             });
 
             marker.addListener('click', () => {
-                restaurantInfoWindow.setContent(`
-                    <div class="restaurant-map-info">
-                        <strong>${escapeHtml(restaurant.name)}</strong>
-                        <p>${escapeHtml(restaurant.category)}</p>
-                        <p>${escapeHtml(restaurant.address)}</p>
-                        <p>⭐ ${restaurant.rating} · 리뷰 ${restaurant.reviewCount}</p>
-                    </div>
-                `);
-                restaurantInfoWindow.open({ map, anchor: marker });
+                openRestaurantGroup(marker, groupedRestaurants);
             });
 
-            restaurantMarkers.push({ restaurant, marker });
+            restaurantMarkers.push({ restaurants: groupedRestaurants, marker });
         });
     }
 
