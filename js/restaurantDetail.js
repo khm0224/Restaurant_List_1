@@ -91,7 +91,6 @@ if (categoryParam && idParam !== null) {
 
 let restaurantId = null;
 
-// restaurantId("일식_0")에는 동네가 없어 리뷰를 저장할 때 따로 넘겨야 함.
 // store는 아래 else 블록 안에 갇혀 있어 제출 핸들러에서 못 읽으므로 여기에 보관.
 let restaurantDistrict = null;
 
@@ -99,7 +98,10 @@ if (!saved) {
     detailCard.innerHTML = '<div class="detail-empty"><h2>선택된 식당 정보가 없습니다</h2></div>';
 } else {
     const store = JSON.parse(saved);
-    restaurantId = `${store.district}_${store.category}_${store.id}`;
+
+    // 키 형식은 board.js가 정함. 여기서 문자열을 직접 조립하면
+    // 형식이 바뀔 때 쪼개는 쪽(my_activity.js)이 조용히 깨짐.
+    restaurantId = RestaurantKey.make(store.district, store.category, store.id);
     restaurantDistrict = store.district || null;
 
     detailCard.innerHTML = `

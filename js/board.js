@@ -2,7 +2,50 @@
 // 목적: 서버 없이도 식당 상세 페이지에서 댓글/리뷰를 추가, 조회, 삭제할 수 있게 만들기
 // 동작 방식: 각 식당별로 고유 키를 두고, JSON 객체 형태로 데이터를 저장/불러오기
 
+// ===== 식당 키 =====
+
+// 댓글·리뷰는 식당별 키 하나로 묶여 저장됨. 그 키를 만들고 쪼개는 곳을 여기 하나로 모음.
+// 전에는 만드는 곳(restaurantDetail.js)과 쪼개는 곳(화면 스크립트)이 따로여서,
+// 형식이 "카테고리_인덱스"에서 "동네_카테고리_인덱스"로 바뀌었을 때
+// 쪼개는 쪽이 에러 없이 잘못된 값을 내놓았음.
+window.RestaurantKey = {
+    make(district, category, index) {
+        return `${district}_${category}_${index}`;
+    },
+
+    // fallbackDistrict: 옛 형식(2조각) 키를 만났을 때 쓸 동네.
+    // 리뷰는 저장할 때 남긴 district가 있고, 댓글은 없어 기본값으로 떨어짐.
+    parse(restaurantId, fallbackDistrict) {
+        const parts = String(restaurantId).split('_');
+
+        // 조각 수가 곧 형식. 카테고리는 한식/일식/중식/양식/디저트뿐이라 '_'가 없어 성립함.
+        if (parts.length === 3) {
+            return { district: parts[0], category: parts[1], id: Number(parts[2]) };
+        }
+
+        return {
+            district: fallbackDistrict || '교동',
+            category: parts[0],
+            id: Number(parts[1])
+        };
+    }
+};
+
+
+// ===== 댓글 =====
+
 const BOARD_STORAGE_KEY = 'restaurantComments';
+
+// 저장소 전체에서 특정 작성자의 글만 모음. 댓글·리뷰가 같은 구조라 함수를 공유.
+// 저장소는 식당별로 나뉘어 있어 전체 키를 훑는 수밖에 없음.
+// restaurantId를 글에 붙여 내보냄 — 삭제할 때 필요한데 원래 글에는 없는 정보(바깥 키)임.
+function collectByAuthor(board, authorId) {
+    return Object.entries(board).flatMap(([restaurantId, items]) =>
+        (Array.isArray(items) ? items : [])
+            .filter(item => item.authorId === authorId)
+            .map(item => ({ ...item, restaurantId }))
+    );
+}
 
 // localStorage에서 식당별 댓글 데이터를 읽어오는 함수입니다.
 function loadBoard() {
@@ -49,6 +92,13 @@ window.Board = {
         board[restaurantId] = comments.filter(comment => comment.id !== commentId);
         saveBoard(board);
         return board[restaurantId];
+    },
+
+    // "내 활동" 화면용. 저장소 키가 이 파일 밖으로 나가지 않게 조회를 여기에 둠.
+    getCommentsByAuthor(authorId) {
+        if (!authorId) return [];
+
+        return collectByAuthor(loadBoard(), authorId);
     }
 };
 
@@ -109,23 +159,13 @@ window.ReviewBoard = {
         return board[restaurantId];
     },
 
-    // "내가 쓴 리뷰" 화면용. 저장소는 식당별로 나뉘어 있어 전체 키를 훑어야 함.
-    // 이 함수를 여기 두는 이유: REVIEW_STORAGE_KEY와 loadReviewBoard가 이 파일 밖으로
+    // "내 활동" 화면용. REVIEW_STORAGE_KEY와 loadReviewBoard가 이 파일 밖으로
     // 나가지 않음. 밖에서 localStorage를 직접 읽으면 키 이름이 두 곳에 생겨,
     // 저장 구조가 바뀔 때 에러 없이 빈 배열만 돌려주며 조용히 깨짐.
     getReviewsByAuthor(authorId) {
         if (!authorId) return [];
 
-        const board = loadReviewBoard();
-
-        // restaurantId를 리뷰에 붙여서 내보냄.
-        // 삭제하려면 deleteReview(restaurantId, reviewId)가 필요한데,
-        // 안 붙이면 부르는 쪽이 전체를 다시 훑어야 함.
-        return Object.entries(board).flatMap(([restaurantId, reviews]) =>
-            (Array.isArray(reviews) ? reviews : [])
-                .filter(review => review.authorId === authorId)
-                .map(review => ({ ...review, restaurantId }))
-        );
+        return collectByAuthor(loadReviewBoard(), authorId);
     }
 };
 
