@@ -1,0 +1,123 @@
+body {
+    margin: 0;
+    background: #f7f7f7;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #222;
+}
+
+.my-info-page {
+    max-width: 760px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.my-info-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+    padding: 32px;
+}
+
+.login-required-card {
+    padding: 48px 32px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+    text-align: center;
+}
+
+.login-required-card h1 {
+    margin: 0 0 12px;
+    font-size: 28px;
+}
+
+.login-required-card p {
+    margin: 0;
+    color: #666;
+}
+
+.my-info-card h1 {
+    margin: 0 0 20px;
+    font-size: 32px;
+}
+
+.profile-summary {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    background: #fafafa;
+    border-radius: 12px;
+}
+
+.info-row span {
+    color: #666;
+    font-weight: 600;
+}
+
+.info-row strong {
+    font-weight: 700;
+}
+
+.my-info-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-group label {
+    font-weight: 700;
+    color: #333;
+}
+
+.field-group input {
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    outline: none;
+}
+
+.field-group input:focus {
+    border-color: #f5821f;
+    box-shadow: 0 0 0 3px rgba(245, 130, 31, 0.08);
+}
+
+.submit-btn {
+    border: none;
+    background: #f5821f;
+    color: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.form-message {
+    min-height: 22px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.form-message.success {
+    color: #1f9d61;
+}
+
+.form-message.error {
+    color: #d44333;
+}
