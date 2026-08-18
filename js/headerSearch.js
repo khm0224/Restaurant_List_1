@@ -3,6 +3,7 @@
     // 스크립트 위치를 기준으로 URL을 만들면 페이지의 폴더 깊이와 관계없이 같은 경로를 사용합니다.
     const scriptUrl = document.currentScript?.src || window.location.href;
     const CUISINE_CATEGORIES = ['한식', '일식', '중식', '양식', '디저트'];
+    const DISTRICT_NAMES = ['소양동', '교동', '조운동', '약사명동', '근화동', '후평1동', '후평2동', '후평3동', '효자1동', '효자2동', '효자3동', '석사동', '퇴계동', '강남동', '신사우동'];
 
     // 탐색 및 상세 화면으로 이동할 URL에 검색 결과 파라미터를 추가합니다.
     function getPageUrl(pagePath, parameters = {}) {
@@ -35,6 +36,13 @@
         const keyword = input?.value.trim();
 
         if (!keyword) {
+            return;
+        }
+
+        if (DISTRICT_NAMES.includes(keyword)) {
+            window.location.href = getPageUrl('../html/food_page.html', {
+                district: keyword
+            });
             return;
         }
 
