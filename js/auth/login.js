@@ -75,7 +75,7 @@ function updateHeader() {
     const loginBtn = document.querySelector('#login_Btn');
     if (!loginBtn) return;
 
-    const user = getCookie('loginUser');
+    const user = getCurrentUser();
 
     // 로그인 상태면 로그인 버튼을 감추고, 비로그인 상태면 다시 보여줌
     loginBtn.classList.toggle('hidden', Boolean(user));
@@ -83,6 +83,10 @@ function updateHeader() {
     // 프로필 메뉴 갱신은 profileMenu.js에 위임
     // 헤더가 없는 페이지에는 해당 스크립트가 없으므로 ?. 로 안전하게 호출
     window.renderUserMenu?.();
+
+    // 댓글·리뷰 작성 영역 갱신은 restaurantDetail.js에 위임
+    // 상세 페이지에만 존재하므로 ?. 로 안전하게 호출
+    window.updateBoardAuthState?.();
 }
 
 
