@@ -106,7 +106,26 @@
     color: #8b8b8b;
 }
 
-/* 관리자에게만 보이는 삭제 버튼 */
+/* 관리자에게만 보이는 수정 / 삭제 버튼 */
+.announcement-edit {
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    background: #fff;
+    color: #555;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.announcement-edit:hover {
+    background: #f5f5f5;
+}
+
+.announcement-updated {
+    color: #b0b0b0;
+}
+
 .announcement-delete {
     border: 1px solid #ddd;
     border-radius: 999px;
