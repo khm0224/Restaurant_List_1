@@ -1,0 +1,11 @@
+#store-list .favorite-btn.active {
+    color: #f5b700;
+    border-color: #f5b700;
+    background: #fff9e6;
+}
+
+#store-list .favorite-btn.active:hover {
+    color: #d99c00;
+    border-color: #d99c00;
+    background: #fff2c7;
+}

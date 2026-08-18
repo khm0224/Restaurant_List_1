@@ -42,7 +42,12 @@
             return;
         }
 
-        storeList.innerHTML = stores.map(store => `
+        // storeList.innerHTML 이게 food_page의 식당 카드 생성 구간 
+        storeList.innerHTML = stores.map(store => {
+            const storeId = `${store.district}_${store.category}_${store.index}`;
+            const favorite = isFavorite(storeId);
+
+            return `
             <article class="store-card" data-district="${store.district}" data-category="${store.category}" data-index="${store.index}" tabindex="0">
                 <div class="store-main-row">
                     <img src="${store.img}" alt="${store.name}" class="store-img">
@@ -55,18 +60,30 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="favorite-btn" type="button" aria-label="즐겨찾기" title="즐겨찾기">☆</button>
+                        <button class="favorite-btn${favorite ? ' active' : ''}" type="button" aria-label="즐겨찾기" title="즐겨찾기">${favorite ? '★' : '☆'}</button>
                         <button class="nav-btn route-btn" type="button">길찾기</button>
                     </div>
                 </div>
             </article>
-        `).join('');
+        `;
+        }).join('');
 
         // 카드 안의 보조 버튼은 클릭해도 상세 화면으로 이동하지 않게 합니다.
         storeList.querySelectorAll('.route-btn, .favorite-btn').forEach(button => {
             button.addEventListener('click', event => {
                 event.preventDefault();
                 event.stopPropagation();
+
+                if (!button.classList.contains('favorite-btn')) return;
+
+                const card = button.closest('.store-card');
+                const storeId = `${card.dataset.district}_${card.dataset.category}_${card.dataset.index}`;
+
+                const favorite = toggleFavorite(storeId);
+                if (favorite === null) return;
+
+                button.textContent = favorite ? '★' : '☆';
+                button.classList.toggle('active', favorite);
             });
         });
 
@@ -146,4 +163,10 @@
 
     selectDistrict(initialDistrict, Boolean(searchParams.get('district')));
     selectCategory(categoryExists ? requestedCategory : sidebarCategorySelect.value);
+
+    window.addEventListener('pageshow', event => {
+        if (event.persisted) {
+            renderSelectedStores();
+        }
+    });
 })();
