@@ -180,3 +180,7 @@ html, body {
 #header-root {
     min-height: 72px;
 }
+
+.hidden{
+    display: none;
+}
