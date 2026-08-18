@@ -3,12 +3,14 @@
     const categoryButtons = document.querySelectorAll('.category-btn');
     const storeList = document.getElementById('store-list');
     const sidebarCategorySelect = document.getElementById('sidebar-category-select');
+    const favoritesButton = document.getElementById('favorites-button');
     const searchParams = new URLSearchParams(window.location.search);
     const ALL_DISTRICTS = '전체';
     const initialDistrict = searchParams.get('district')
         || document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category
         || ALL_DISTRICTS;
     let selectedDistricts = new Set();
+    let favoritesOnly = false;
 
     // 카드에서 선택한 식당의 위치를 URL로 전달해 상세 화면을 엽니다.
     function openStoreDetail(district, category, index) {
@@ -37,13 +39,19 @@
             );
         });
 
-        if (stores.length === 0) {
-            storeList.innerHTML = '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
+        const filteredStores = favoritesOnly
+            ? stores.filter(store => isFavorite(`${store.district}_${store.category}_${store.index}`))
+            : stores;
+
+        if (filteredStores.length === 0) {
+            storeList.innerHTML = favoritesOnly
+                ? '<p class="empty-store-list">즐겨찾기한 식당이 없습니다.</p>'
+                : '<p class="empty-store-list">선택된 카테고리에 식당이 없습니다.</p>';
             return;
         }
 
         // storeList.innerHTML 이게 food_page의 식당 카드 생성 구간 
-        storeList.innerHTML = stores.map(store => {
+        storeList.innerHTML = filteredStores.map(store => {
             const storeId = `${store.district}_${store.category}_${store.index}`;
             const favorite = isFavorite(storeId);
 
@@ -84,6 +92,10 @@
 
                 button.textContent = favorite ? '★' : '☆';
                 button.classList.toggle('active', favorite);
+
+                if (favoritesOnly && !favorite) {
+                    renderSelectedStores();
+                }
             });
         });
 
@@ -154,6 +166,14 @@
 
     sidebarCategorySelect.addEventListener('change', () => {
         selectCategory(sidebarCategorySelect.value);
+    });
+
+    favoritesButton.addEventListener('click', () => {
+        favoritesOnly = !favoritesOnly;
+        favoritesButton.setAttribute('aria-pressed', String(favoritesOnly));
+        sidebarCategorySelect.value = '전체';
+        window.RestaurantMap?.selectCategory('전체');
+        selectDistrict(ALL_DISTRICTS);
     });
 
     // 헤더 검색이 전달한 URL 파라미터로 첫 화면의 필터를 복원합니다.
