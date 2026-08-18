@@ -25,13 +25,14 @@ window.Board = {
         return board[restaurantId] || [];
     },
 
-    addComment(restaurantId, author, text) {
+    addComment(restaurantId, authorId, text) {
         const board = loadBoard();
         const comments = board[restaurantId] || [];
 
         comments.push({
             id: Date.now(),
-            author: author?.trim() || '익명',
+            // 이름이 아닌 아이디를 저장. 이름은 바뀔 수 있어 표시 시점에 조회
+            authorId: authorId || null,
             text: text.trim(),
             createdAt: new Date().toISOString()
         });
@@ -75,7 +76,7 @@ window.ReviewBoard = {
         return board[restaurantId] || [];
     },
 
-    addReview(restaurantId, rating, text, photo) {
+    addReview(restaurantId, rating, text, photo, authorId) {
         const board = loadReviewBoard();
         const reviews = board[restaurantId] || [];
 
@@ -84,6 +85,7 @@ window.ReviewBoard = {
             rating,
             text: text.trim(),
             photo: photo || null,
+            authorId: authorId || null,
             createdAt: new Date().toISOString()
         });
 
