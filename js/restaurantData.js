@@ -270,6 +270,228 @@ window.restaurantData.약사명동 = {
 };
 
 
+window.restaurantData.근화동 = {
+    한식: [
+        {
+            name: '호수별닭갈비', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251223_114%2F1766461294172mIeh9_JPEG%2FKakaoTalk_20251223_124107346_01.jpg',
+            address: '강원 춘천시 영서로 2529-45 호수별닭갈비', rating: 4.2, reviewCount: 4.067
+        }, // Ok
+        {
+            name: '메바우명가춘천막국수', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20150925_157%2F1443161688671LaYB8_JPEG%2F166875554466908_0.jpg',
+            address: '강원 춘천시 당간지주길 76 1층', rating: 4.7, reviewCount: 9.633
+        }, // OK
+        {
+            name: '남촌막국수', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190120_68%2F1547978279081oAHLt_JPEG%2F-6pHWNMLhbEXL8GcrE-E8iiK.jpg',
+            address: '강원 춘천시 당간지주길 71', rating: 4.4, reviewCount: 2.176
+        }
+    ],
+    일식: [
+        { name: '가거도횟집', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyMzAyMjdfMjQ2%2FMDAxNjc3NDg4NDQ0MzU5.tAPzsXtflVhJyLbzref-CQDHC71jYI5DeYctw_HCMswg.pRj0pyN1ZM2ddDeBjhVygQbIi6o7rvSeepz9_iwi8-Yg.JPEG%2F01A70363-7099-4157-AD41-470BF3769BED.jpeg',
+             address: '강원 춘천시 망대길37번길 19', rating: 4.2, reviewCount: 3 }
+    ],
+    중식: [
+        {
+            name: '이비가짬뽕 춘천점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260709_218%2F17835830129735Qx6p_JPEG%2Fimage4.jpg', // OK
+            address: '강원 춘천시 영서로 2652 2층 이비가짬뽕 춘천점', rating: 4.3, reviewCount: 2.184
+        },
+        {
+            name: '호반중식부페', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240223_138%2F17086690600066RH1o_JPEG%2F1708669024360.jpg', // OK
+            address: '강원 춘천시 공지로 603-8', rating: 4.3, reviewCount: 180
+        }
+    ],
+    양식: [
+        { name: '라토피아', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251211_22%2F1765429067660RADC7_JPEG%2F001.jpg', 
+            address: '강원 춘천시 영서로 2571 라토피아', rating: 4.3, reviewCount: 180 },
+        { name: '샌드소양', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNTEwMDFfMTQy%2FMDAxNzU5MjgyODkwMTQ5.wjTKRJkQkvwNtwBdB5Q7qov3BeI_ccQpYtsLnwpAXBAg.anVl13oi_Tq-8yesmngl4liHLWhvB_hT8ya6VygpYGIg.JPEG%2F1000052284.jpg.jpg', 
+            address: '강원 춘천시 번개시장길 32 110호', rating: 4.6, reviewCount: 82 }
+    ],
+    디저트: [
+        {
+            name: '리버레인', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20241204_209%2F1733284824446GTVvr_JPEG%2FKakaoTalk_20241204_125950077_02.jpg',  // Ok
+            address: '강원 춘천시 영서로 2529-47', rating: 4, reviewCount: 14.010
+        },
+        {
+            name: '맘인더가든', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20241225_118%2F1735127462135Miu23_JPEG%2FIMG_1762.jpg',
+            address: '강원 춘천시 영서로 2668-22 2층', rating: 4.1, reviewCount: 1.443
+        },
+        {
+            name: '아주르봄', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250608_100%2F1749386842290dM3Jg_PNG%2F%25BE%25C6%25C1%25D6%25B8%25A3%25BA%25BD_%25B7%25CE%25B0%25ED.png',
+            address: '강원 춘천시 영서로 2529-38 아주르봄', rating: 4.5, reviewCount: 1.341
+        }
+    ]
+};
+
+
+window.restaurantData.후평1동 = {
+    한식: [
+        {
+            name: '큰길낙지볶음', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220929_59%2F1664437282097smQUj_JPEG%2F20220929_135753.jpg',
+            address: '강원 춘천시 후석로420번길 7 하이테크 2층 A201호', rating: 4.4, reviewCount: 645
+        }, // Ok
+        {
+            name: '땡구땡구 본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220307_73%2F1646654269388I0R6e_JPEG%2F20220224_173622.jpg',
+            address: '강원 춘천시 후석로 435 (1동)', rating: 4.7, reviewCount: 669
+        }, // OK
+        {
+            name: '보영이네 해물칼국수 본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260610_14%2F1781077588993aYfXc_JPEG%2FIMG_0672.jpg',
+            address: '강원 춘천시 공단로60번길 2 보영이네 해물칼국수본점', rating: 4.6, reviewCount: 1.676
+        }
+    ],
+    일식: [
+        { name: '해마', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20170222_217%2F1487730333526f7bq8_JPEG%2F0222_.jpg',
+             address: '강원 춘천시 춘천로 380-1', rating: 4.2, reviewCount: 706 }
+    ],
+    중식: [
+        {
+            name: '뽕뽕황짬뽕이야', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190120_100%2F1547969808350vUaN5_JPEG%2FC-5PHA0gJzDnyuUkG2Ep5NH8.jpg', // OK
+            address: '강원 춘천시 후석로455번길 53-1', rating: 4.3, reviewCount: 569
+        },
+        {
+            name: '한중관', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250425_298%2F1745561589908WcLrm_JPEG%2F1745561558547.jpg', // OK
+            address: '강원 춘천시 삭주로 134-1 1층', rating: 4.3, reviewCount: 14
+        },
+         {
+            name: '웍선생', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260109_290%2F1767958695614F3FdU_JPEG%2FIMG_9489.jpeg', // OK
+            address: '강원 춘천시 후석로462번길 96 1, 2층', rating: 4.3, reviewCount: 36
+        }
+    ],
+    디저트: [
+        {
+            name: '텐퍼센트커피 춘천하이테크점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fnaverbooking-phinf.pstatic.net%2F20240608_293%2F1717831697859fiUvA_JPEG%2F%25B0%25A1%25B0%25D4%25BB%25E7%25C1%25F8.jpg',  // Ok
+            address: '강원 춘천시 후석로420번길 7 하이테크타워 1층 A110호', rating: 4, reviewCount: 322
+        },
+        {
+            name: '카페400', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240514_230%2F1715667948669GV4c0_JPEG%2F1000033834.jpg',
+            address: '강원 춘천시 후석로 400 GS칼텍스주유소건물 1층', rating: 4.1, reviewCount: 176
+        },
+        {
+            name: '그레이빌', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20210503_265%2F1619979934230UVsNm_JPEG%2FNV8AFc1Fa6tAlPbs9_sOiHs1.jpg',
+            address: '강원 춘천시 후석로440번길 63', rating: 4.5, reviewCount: 294
+        }
+    ]
+};
+
+
+window.restaurantData.후평2동 = {
+    한식: [
+        {
+            name: '홍가네 소머리국밥&순대국밥', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220811_52%2F16602177918631OuxT_JPEG%2F20220810_122235.jpg',
+            address: '강원 춘천시 춘천로310번길 39 1층 홍가네소머리국밥', rating: 4.4, reviewCount: 156
+        }, // Ok
+        {
+            name: '화포식당춘천점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20210209_140%2F1612870971270unSYv_JPEG%2Fx1ETX9vKIWhbuj5ndh-csmK1.jpeg.jpg',
+            address: '강원 춘천시 춘천로 306-5 1층', rating: 4.6, reviewCount: 552
+        }, // OK
+        {
+            name: '서윤식당', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20231104_211%2F1699078660310umvJy_JPEG%2FIMG_8311.jpeg',
+            address: '강원 춘천시 춘천로 271 1층', rating: 3.8, reviewCount: 713
+        }
+    ],
+    일식: [
+        { name: '춘천돈가스', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20221121_227%2F1669030982853lHuXA_JPEG%2FKakaoTalk_20220330_125631695.jpg', 
+            address: '강원 춘천시 춘천로 306-5 1층', rating: 4.3, reviewCount: 700 }, // Ok
+        { name: '은희네웰빙튀김집', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20170822_128%2F1503393546457Rqq7t_JPEG%2FbMzcCf_FPenAH8Unygnrb3k9.jpg', 
+            address: '강원 춘천시 춘천로296번길 13', rating: 4.7, reviewCount: 55 }
+    ],
+    중식: [
+        {
+            name: '후평각', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190101_57%2F1546344593708pjf6F_JPEG%2FgXEkqyc4A4_orvfh87EsYi24.jpg', // OK
+            address: '강원 춘천시 춘천로 292', rating: 4.2, reviewCount: 66
+        },
+        {
+            name: '대양부양꼬치 춘천점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20191231_96%2F1577766588632y4ofa_JPEG%2F599psxPtjWVSdC1XedcUHe3M.jpg',
+            address: '강원 춘천시 백령로 217-20', rating: 4.3, reviewCount: 361
+        },
+        {
+            name: '동춘관', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190110_22%2F1547101109535xSbwQ_JPEG%2FSmUWYbmTM7QzqVstvO0eH9oj.jpg', // OK
+            address: '강원 춘천시 춘천로282번길 4', rating: 4.4, reviewCount: 39
+        }
+    ],
+    양식: [
+        { name: '청년피자 춘천후평점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250522_295%2F1747900282237yJvUX_JPEG%2F25.05_%25C3%25BB%25B3%25E2%25C7%25C7%25C0%25DA_%25B3%25D7%25C0%25CC%25B9%25F6_%25BD%25BA%25B8%25B6%25C6%25AE%25C7%25C3%25B7%25B9%25C0%25CC%25BD%25BA_%25BD%25E6%25B3%25D7%25C0%25CF%2528%25B7%25CE%25B0%25ED%25BA%25AF%25B0%25E6%2529.jpg', 
+            address: '강원 춘천시 춘천로282번길 1 1층(후평동)', rating: 4.5, reviewCount: 35 }
+    ],
+    디저트: [
+        {
+            name: '아글라오네마', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNjA3MjVfMTAw%2FMDAxNzg0OTcwMTczMzI1.V635KmacW_Mb71SJXA9FCMyxHNJX683BvOc7atkaj2wg.Dzgqey88rlys3FFakpeqhaM3l3z4J9lAwt1QCrc423og.JPEG%2FIMG_7751.jpeg',  // Ok
+            address: '강원 춘천시 춘천로282번길 15', rating: 4.0, reviewCount: 352
+        },
+        {
+            name: '데이븐', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260425_29%2F1777101480160mzioj_JPEG%2FKakaoTalk_20260425_161351329_07.jpg',
+            address: '강원 춘천시 춘천로296번길 20 1층', rating: 4.1, reviewCount: 29
+        },
+        {
+            name: '어나더패브릭', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260707_196%2F17833998114412vpco_JPEG%2FIMG_0146.jpg',
+            address: '강원 춘천시 백령로 217-10', rating: 3.9, reviewCount: 667
+        }
+    ]
+};
+
+
+
+window.restaurantData.후평3동 = {
+    한식: [
+        {
+            name: '1.5닭갈비 본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250414_183%2F1744604972798mMSyl_JPEG%2F1000014359.jpg',
+            address: '강원 춘천시 후만로 77 1.5닭갈비', rating: 4.4, reviewCount: 1.235
+        }, // Ok
+        {
+            name: '4단지닭갈비', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240617_260%2F1718591884132epoet_JPEG%2F%25BF%25DC%25B0%25FC.jpg',
+            address: '강원 춘천시 후만로 81', rating: 4.6, reviewCount: 601
+        }, // OK
+        {
+            name: '이모네 불막창', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220308_188%2F16467300363557bttJ_JPEG%2F201DE9F6-908C-4E80-8B4C-A9E41F035620.jpeg',
+            address: '강원 춘천시 보안길 50-1 맛깔탕', rating: 3.8, reviewCount: 713
+        }
+    ],
+    일식: [
+        { name: '샤브르정원 춘천점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251112_229%2F1762929347766guiAr_JPEG%2F1.jpg', 
+            address: '강원 춘천시 삭주로 69', rating: 4.3, reviewCount: 164 }, // Ok
+        { name: '엠브로돈까스 춘천후평점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250315_243%2F1742030702353ijw0n_JPEG%2F1742030596575-3.jpg', 
+            address: '강원 춘천시 보안길 51 1층', rating: 4.7, reviewCount: 679 }, // Ok
+        { name: '사이타마', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251125_141%2F1764045541374voY8i_JPEG%2F1764018140586.jpg', 
+            address: '강원 춘천시 후석로326번길 11 1층', rating: 4.6, reviewCount: 21 }
+    ],
+    중식: [
+        {
+            name: '돌담집짬뽕', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190115_265%2F1547541363997uhy8a_JPEG%2Fi9LxZaxR987gr8wu-CsJPwiB.jpg', // OK
+            address: '강원 춘천시 보안길 50-2', rating: 4.2, reviewCount: 358
+        },
+        {
+            name: '태양부 양꼬치 후평점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240528_197%2F1716863054677ae8sR_JPEG%2F123.jpg',
+            address: '강원 춘천시 후석로 318', rating: 4.3, reviewCount: 361
+        },
+        {
+            name: '초원가', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220612_142%2F1654999648775hLT6w_JPEG%2F1.jpg', // OK
+            address: '강원 춘천시 보안길 71 2층', rating: 4.4, reviewCount: 328
+        }
+    ],
+    양식: [
+         {
+            name: '올블루파스타', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260313_99%2F1773395730538WxjuR_JPEG%2F1000013506.jpg',  // Ok
+            address: '강원 춘천시 후만로 91 1층', rating: 4.0, reviewCount: 2.456
+        },
+        { name: '맥도날드 춘천후평DT점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180528_263%2F1527496417464qoK2q_JPEG%2FXU7BwturWDgAdCKuomXr1lyR.jpg', 
+            address: '강원 춘천시 후석로 334', rating: 4.2, reviewCount: 10.000 },  // Ok
+        ],
+    디저트: [
+        {
+            name: '미미즈', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251003_68%2F1759420575451djuVF_JPEG%2F1000122103.jpg',  // Ok
+            address: '강원 춘천시 보안길 42 1층', rating: 4.0, reviewCount: 39
+        },
+        {
+            name: '춘젤라또', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20250611_290%2F1749624382039vM5Tn_JPEG%2FA6967ACC-8D22-47C8-93A5-C48CA128A306.jpeg',
+            address: '강원 춘천시 후석로 304 부속건물 1층 106호', rating: 4.1, reviewCount: 333
+        },
+        {
+            name: '도깨비꽈배기', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAyNjA1MTVfNjYg%2FMDAxNzc4ODQ0MDMyNjkz.iyeC3pQ1vOdtrm9T5pwrbEe7me6eF84cVoy1_q2MuVog.zJUwCqsfvBBfVCPzOYMx3c8M8cp9Wy8_3vw9BjXuFmIg.JPEG%2F20260514%25EF%25BC%25BF191620.jpg%2F3000x4000',
+            address: '강원 춘천시 보안길 39 1층', rating: 4.4, reviewCount: 229
+        }
+    ]
+};
+
+
+
 window.currentSelectedDistrict = '교동';
 
 // 카테고리와 인덱스를 받아 특정 식당 정보를 조회합니다.
