@@ -33,15 +33,29 @@ function loadMyReviews() {
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
-// restaurantId "일식_0" → ['일식', 0]
-// 동네는 키에 없어 리뷰에 따로 저장한 값을 씀. 없으면 교동 — 현재 데이터가 교동뿐.
+// restaurantId를 조각내 식당 위치를 얻음.
+//
+// 키 형식이 도중에 바뀌었고 저장소에는 두 형식이 섞여 있음.
+//   "교동_한식_0"  현재 형식 (restaurantDetail.js:102)
+//   "한식_0"       옛 형식 — 동네가 없어 다른 동네의 같은 자리와 키가 겹쳤음
+//
+// 조각 수 자체가 형식을 알려주므로 split으로 세어 가름.
+// 카테고리는 한식/일식/중식/양식/디저트 다섯뿐이고 '_'가 없어 이 판별이 성립함.
 function getStoreLocation(review) {
-    const separatorIndex = review.restaurantId.lastIndexOf('_');
+    const parts = review.restaurantId.split('_');
 
+    if (parts.length === 3) {
+        // 키에 동네가 들어 있으면 그쪽이 기준.
+        // 리뷰의 district 필드와 어긋나면 상세 페이지가 쓰는 키를 따라야 함.
+        return { district: parts[0], category: parts[1], id: Number(parts[2]) };
+    }
+
+    // 옛 리뷰. 저장할 때 함께 남긴 district를 씀.
+    // 그마저 없는 건 키 형식이 바뀌기 전 데이터라 당시 유일했던 교동으로 봄.
     return {
         district: review.district || '교동',
-        category: review.restaurantId.slice(0, separatorIndex),
-        id: Number(review.restaurantId.slice(separatorIndex + 1))
+        category: parts[0],
+        id: Number(parts[1])
     };
 }
 
