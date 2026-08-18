@@ -13,60 +13,11 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="logo">
-            <a href="./index.html" class="logo-link" aria-label="메인 페이지로 이동">
-                <img src="./img/logoimg.png" alt="logo">
-            </a>
-        </div>
-
-        <!-- 상단 카테고리 -->
-        <nav class="nav">
-            <a href="./html/main/main_info.html">맛집리스트 소개</a>
-            <a href="./html/main/news.html">새로운 소식</a>
-            <a href="./html/main/announcement.html">공지사항</a>
-        </nav>
-
-        <!-- 검색창 + 로그인 상태 영역 -->
-        <div class="header-right">
-            <div class="search-box">
-                <input type="text" placeholder="메뉴를 검색하시오..">
-                <span class="search-btn">🔍</span>
-            </div>
-
-            <!-- 비로그인 상태에서만 표시. 토글은 login.js updateHeader() 담당 -->
-            <button type="button" id="login_Btn" class="login-btn" data-login-open aria-label="로그인">로그인</button>
-
-            <!-- 로그인 상태에서만 표시. 제어는 profileMenu.js 담당 -->
-            <!-- hidden이 기본값 — 비로그인 상태에서 프로필이 깜빡였다 사라지는 걸 방지 -->
-            <div class="user-menu" id="userMenu" hidden>
-
-                <!-- 드롭다운 여는 버튼. div가 아닌 button이라 Tab 이동과 Enter/Space가 기본 지원됨 -->
-                <button class="user-menu__trigger" id="userMenuTrigger" type="button" aria-haspopup="true"
-                    aria-expanded="false" aria-controls="userMenuPanel">
-                    <!-- alt="" — 옆에 이름 텍스트가 있어 스크린리더가 같은 정보를 두 번 읽지 않도록 -->
-                    <img class="user-menu__avatar" id="userMenuAvatar" src="./img/profile-default.png" alt="">
-                    <span class="user-menu__name" id="userMenuName"></span>
-                    <span class="user-menu__caret" aria-hidden="true"></span>
-                </button>
-
-                <!-- 드롭다운 본체 -->
-                <div class="user-menu__panel" id="userMenuPanel" role="menu" hidden>
-
-                    <!-- 기능 추가 지점: li 한 줄만 추가하면 되고 JS 수정은 불필요 -->
-                    <ul class="user-menu__list">
-                        <li><a class="user-menu__item" role="menuitem" href="./html/my_info.html">개인정보 변경</a></li>
-                        <li><a class="user-menu__item" role="menuitem" href="./html/my_reviews.html">내가 쓴 리뷰</a></li>
-                    </ul>
-
-                    <!-- 로그아웃은 구분선 아래로 분리 — 되돌릴 수 없는 동작이라 오클릭 방지 -->
-                    <div class="user-menu__divider"></div>
-                    <button class="user-menu__item user-menu__item--danger" id="userMenuLogout" type="button"
-                        role="menuitem">로그아웃</button>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- 헤더 자리. js/header.js가 채웁니다.
+     안쪽 내용은 fetch 실패 시 남는 폴백 — 최소한 메인으로 돌아갈 길은 남깁니다. -->
+    <div id="header-root" data-active="">
+        <a href="./index.html" aria-label="메인 페이지로 이동">봄내로그</a>
+    </div>
 
 
     <!-- ============ 히어로 섹션 (맛집 카드) ============ -->
@@ -141,7 +92,7 @@
     <div class="region-slider" id="regionSlider">
         <div class="region-track" id="regionTrack">
 
-            <button class="region-item active" data-region="소양동">
+            <button class="region-item" data-region="소양동">
                 <span class="region-icon"><svg viewBox="0 0 200 200">
                     <circle cx="100" cy="100" r="100" fill="#e6eef7"/>
                     <g>
@@ -435,9 +386,11 @@
     <script src="./js/auth/auth.js"></script>
     <script src="./js/auth/login.js"></script>
     <script src="./js/auth/login_modal.js" data-login-component="./html/auth/login_page.html"></script>
-
+    
     <!-- 프로필 관련 js -->
     <script src="./js/auth/profileMenu.js"></script>
+    
+    <script src="./js/header.js" data-header-component="./html/components/header.html"></script>
 
     <script src="./js/map-config.js"></script>
     <script src="./js/places-photos.js"></script>
