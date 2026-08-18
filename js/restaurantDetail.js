@@ -143,15 +143,24 @@ function renderMenu(category) {
 }
 
 function reviewItemHTML(review) {
+    const avatarSrc = getAuthorAvatar(review);
+    const avatarHtml = avatarSrc
+        ? `<img class="review-avatar" src="${avatarSrc}" alt="${getAuthorName(review)} 프로필" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+        : '';
+
     return `
         <li class="review-item" data-id="${review.id}">
-            <div class="review-meta">
-                <span class="review-author">${getAuthorName(review)}</span>
-                <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
-                <span class="review-date">${new Date(review.createdAt).toLocaleString()}</span>
+            ${avatarHtml}
+            <div class="review-avatar review-avatar--placeholder" aria-hidden="true" style="display:${avatarSrc ? 'none' : 'flex'}">${getAuthorName(review).charAt(0) || '익'}</div>
+            <div class="review-body">
+                <div class="review-meta">
+                    <span class="review-author">${getAuthorName(review)}</span>
+                    <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                    <span class="review-date">${new Date(review.createdAt).toLocaleString()}</span>
+                </div>
+                <p class="review-text">${review.text}</p>
+                ${review.photo ? `<img class="review-photo" src="${review.photo}" alt="리뷰 사진">` : ''}
             </div>
-            <p class="review-text">${review.text}</p>
-            ${review.photo ? `<img class="review-photo" src="${review.photo}" alt="리뷰 사진">` : ''}
             ${canDelete(review) ? `<button class="review-delete" type="button" data-id="${review.id}">삭제</button>` : ''}
         </li>
     `;
@@ -364,6 +373,14 @@ function getAuthorName(item) {
     return findUserById(item.authorId)?.name || '탈퇴한 사용자';
 }
 
+function getAuthorAvatar(item) {
+    if (!item.authorId) {
+        return '';
+    }
+
+    return findUserById(item.authorId)?.img || '';
+}
+
 function isMyPost(item) {
     const user = getCurrentUser();
     return Boolean(user) && item.authorId === user.id;
@@ -392,16 +409,27 @@ function renderComments() {
     const start = (commentPage - 1) * COMMENTS_PER_PAGE;
     const pageComments = comments.slice(start, start + COMMENTS_PER_PAGE);
 
-    commentList.innerHTML = pageComments.map(comment => `
-        <li class="comment-item" data-id="${comment.id}">
-            <div class="comment-meta">
-                <span class="comment-author">${getAuthorName(comment)}</span>
-                <span class="comment-date">${new Date(comment.createdAt).toLocaleString()}</span>
-            </div>
-            <p class="comment-text">${comment.text}</p>
-            ${canDelete(comment) ? `<button class="comment-delete" type="button" data-id="${comment.id}">삭제</button>` : ''}
-        </li>
-    `).join('');
+    commentList.innerHTML = pageComments.map(comment => {
+        const avatarSrc = getAuthorAvatar(comment);
+        const avatarHtml = avatarSrc
+            ? `<img class="comment-avatar" src="${avatarSrc}" alt="${getAuthorName(comment)} 프로필" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+            : '';
+
+        return `
+            <li class="comment-item" data-id="${comment.id}">
+                ${avatarHtml}
+                <div class="comment-avatar comment-avatar--placeholder" aria-hidden="true" style="display:${avatarSrc ? 'none' : 'flex'}">${getAuthorName(comment).charAt(0) || '익'}</div>
+                <div class="comment-body">
+                    <div class="comment-meta">
+                        <span class="comment-author">${getAuthorName(comment)}</span>
+                        <span class="comment-date">${new Date(comment.createdAt).toLocaleString()}</span>
+                    </div>
+                    <p class="comment-text">${comment.text}</p>
+                </div>
+                ${canDelete(comment) ? `<button class="comment-delete" type="button" data-id="${comment.id}">삭제</button>` : ''}
+            </li>
+        `;
+    }).join('');
 
     commentList.querySelectorAll('.comment-delete').forEach(btn => {
         btn.addEventListener('click', () => {
