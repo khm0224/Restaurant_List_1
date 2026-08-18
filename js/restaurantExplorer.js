@@ -4,9 +4,11 @@
     const storeList = document.getElementById('store-list');
     const sidebarCategorySelect = document.getElementById('sidebar-category-select');
     const searchParams = new URLSearchParams(window.location.search);
-    let selectedDistrict = searchParams.get('district')
+    const ALL_DISTRICTS = '전체';
+    const initialDistrict = searchParams.get('district')
         || document.querySelector('.category-btn.active, .category-btn[aria-pressed="true"]')?.dataset.category
-        || '전체';
+        || ALL_DISTRICTS;
+    let selectedDistricts = new Set();
 
     // 카드에서 선택한 식당의 위치를 URL로 전달해 상세 화면을 엽니다.
     function openStoreDetail(district, category, index) {
@@ -17,9 +19,9 @@
     // 선택된 동네와 업종으로 restaurantData를 필터링해 목록 카드를 다시 만듭니다.
     function renderSelectedStores(selectedCategory = sidebarCategorySelect.value) {
         const restaurantData = window.restaurantData || {};
-        const districts = selectedDistrict === '전체'
+        const districts = selectedDistricts.has(ALL_DISTRICTS)
             ? Object.entries(restaurantData)
-            : [[selectedDistrict, restaurantData[selectedDistrict] || {}]];
+            : Array.from(selectedDistricts, district => [district, restaurantData[district] || {}]);
         const stores = districts.flatMap(([district, districtData]) => {
             const categories = selectedCategory === '전체'
                 ? Object.keys(districtData)
@@ -89,12 +91,27 @@
 
     // 동네 선택 상태를 버튼, 목록, 지도 경계에 동기화합니다.
     function selectDistrict(district, scrollIntoView = false) {
-        selectedDistrict = district;
-        window.currentSelectedDistrict = district;
+        if (district === ALL_DISTRICTS) {
+            selectedDistricts = new Set([ALL_DISTRICTS]);
+        } else {
+            selectedDistricts.delete(ALL_DISTRICTS);
+
+            if (selectedDistricts.has(district)) {
+                selectedDistricts.delete(district);
+            } else {
+                selectedDistricts.add(district);
+            }
+
+            if (selectedDistricts.size === 0) {
+                selectedDistricts.add(ALL_DISTRICTS);
+            }
+        }
+
+        window.currentSelectedDistricts = Array.from(selectedDistricts);
 
         const selectedButton = Array.from(categoryButtons).find(button => button.dataset.category === district);
         categoryButtons.forEach(button => {
-            const isActive = button === selectedButton;
+            const isActive = selectedDistricts.has(button.dataset.category);
             button.classList.toggle('active', isActive);
             button.setAttribute('aria-pressed', String(isActive));
         });
@@ -103,7 +120,7 @@
             selectedButton?.scrollIntoView({ inline: 'center', block: 'nearest' });
         }
 
-        window.RestaurantMap?.highlightDistrict(district);
+        window.RestaurantMap?.highlightDistricts(Array.from(selectedDistricts));
         renderSelectedStores();
     }
 
@@ -127,6 +144,6 @@
     const categoryExists = requestedCategory
         && Array.from(sidebarCategorySelect.options).some(option => option.value === requestedCategory);
 
-    selectDistrict(selectedDistrict, Boolean(searchParams.get('district')));
+    selectDistrict(initialDistrict, Boolean(searchParams.get('district')));
     selectCategory(categoryExists ? requestedCategory : sidebarCategorySelect.value);
 })();

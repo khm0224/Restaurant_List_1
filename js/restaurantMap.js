@@ -7,11 +7,17 @@
     const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
     const mapLoader = document.getElementById('map-loader');
     const mapStatus = document.getElementById('map-status');
+    const mapControls = document.getElementById('map-controls');
+    const zoomInButton = document.getElementById('map-zoom-in');
+    const zoomOutButton = document.getElementById('map-zoom-out');
 
     let map = null;
     let cityBoundaryLayer = null;
+    let selectedOutlineLayer = null;
+    let districtBoundaryGeoJson = null;
     let boundaryLoaded = false;
-    let selectedDistrict = '전체';
+    const ALL_DISTRICTS = '전체';
+    let selectedDistricts = new Set([ALL_DISTRICTS]);
     let selectedCategory = '전체';
     let restaurantMarkers = [];
     let restaurantInfoWindow = null;
@@ -36,18 +42,71 @@
 
     // 선택된 동네를 강조하는 경계 스타일을 계산합니다.
     function getDistrictStyle(feature) {
-        const isSelected = feature.getProperty('ADM_NM') === selectedDistrict;
+        const isSelected = selectedDistricts.has(feature.getProperty('ADM_NM'));
 
         return {
             clickable: false,
-            visible: selectedDistrict !== '전체',
+            visible: !selectedDistricts.has(ALL_DISTRICTS),
             fillColor: isSelected ? 'rgb(255, 255, 255)' : '#ffffff',
             fillOpacity: isSelected ? 0.28 : 0.02,
-            strokeColor: isSelected ? '#ba0707' : '#64748b',
-            strokeOpacity: isSelected ? 1 : 0.35,
-            strokeWeight: isSelected ? 4 : 1,
+            strokeColor: '#64748b',
+            strokeOpacity: isSelected ? 0 : 0.35,
+            strokeWeight: isSelected ? 0 : 1,
             zIndex: isSelected ? 2 : 1
         };
+    }
+
+    // 선택한 행정동끼리 맞닿은 선은 제거하고 합쳐진 영역의 바깥 윤곽선만 만듭니다.
+    function updateSelectedOutline() {
+        if (!selectedOutlineLayer || !districtBoundaryGeoJson) {
+            return;
+        }
+
+        selectedOutlineLayer.forEach(feature => selectedOutlineLayer.remove(feature));
+
+        if (selectedDistricts.has(ALL_DISTRICTS)) {
+            return;
+        }
+
+        const edges = new Map();
+        const addRingEdges = ring => {
+            for (let index = 0; index < ring.length - 1; index += 1) {
+                const start = ring[index];
+                const end = ring[index + 1];
+                const startKey = `${start[0]},${start[1]}`;
+                const endKey = `${end[0]},${end[1]}`;
+                const key = startKey < endKey ? `${startKey}|${endKey}` : `${endKey}|${startKey}`;
+                const edge = edges.get(key);
+
+                if (edge) {
+                    edge.count += 1;
+                } else {
+                    edges.set(key, { count: 1, coordinates: [start, end] });
+                }
+            }
+        };
+
+        districtBoundaryGeoJson.features
+            .filter(feature => selectedDistricts.has(feature.properties.ADM_NM))
+            .forEach(feature => {
+                const polygons = feature.geometry.type === 'Polygon'
+                    ? [feature.geometry.coordinates]
+                    : feature.geometry.coordinates;
+
+                polygons.forEach(polygon => polygon.forEach(addRingEdges));
+            });
+
+        const exteriorEdges = Array.from(edges.values())
+            .filter(edge => edge.count === 1)
+            .map(edge => edge.coordinates);
+
+        if (exteriorEdges.length) {
+            selectedOutlineLayer.addGeoJson({
+                type: 'Feature',
+                properties: {},
+                geometry: { type: 'MultiLineString', coordinates: exteriorEdges }
+            });
+        }
     }
 
     function getFeatureBounds(feature) {
@@ -60,7 +119,7 @@
         restaurantInfoWindow?.close();
 
         restaurantMarkers.forEach(({ restaurant, marker }) => {
-            const matchesDistrict = selectedDistrict === '전체' || restaurant.district === selectedDistrict;
+            const matchesDistrict = selectedDistricts.has(ALL_DISTRICTS) || selectedDistricts.has(restaurant.district);
             const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
             const shouldShow = matchesDistrict && matchesCategory;
             marker.setMap(shouldShow ? map : null);
@@ -73,8 +132,8 @@
     }
 
     // 동네를 선택하면 해당 구역을 하이라이트하고 지도를 해당 위치에 맞춥니다.
-    function highlightDistrict(districtName, moveMap = true) {
-        selectedDistrict = districtName;
+    function highlightDistricts(districtNames, moveMap = true) {
+        selectedDistricts = new Set(districtNames.length ? districtNames : [ALL_DISTRICTS]);
         updateMarkerVisibility();
 
         if (!map || !boundaryLoaded) {
@@ -82,16 +141,16 @@
         }
 
         map.data.setStyle(getDistrictStyle);
-        cityBoundaryLayer?.setMap(districtName === '전체' ? map : null);
+        cityBoundaryLayer?.setMap(selectedDistricts.has(ALL_DISTRICTS) ? map : null);
+        updateSelectedOutline();
 
-        let selectedFeature = null;
-        const allDistrictBounds = new google.maps.LatLngBounds();
+        const selectedBounds = new google.maps.LatLngBounds();
 
         map.data.forEach(feature => {
-            if (districtName === '전체') {
-                feature.getGeometry().forEachLatLng(latLng => allDistrictBounds.extend(latLng));
-            } else if (feature.getProperty('ADM_NM') === districtName) {
-                selectedFeature = feature;
+            if (selectedDistricts.has(ALL_DISTRICTS)) {
+                feature.getGeometry().forEachLatLng(latLng => selectedBounds.extend(latLng));
+            } else if (selectedDistricts.has(feature.getProperty('ADM_NM'))) {
+                feature.getGeometry().forEachLatLng(latLng => selectedBounds.extend(latLng));
             }
         });
 
@@ -99,10 +158,8 @@
             return;
         }
 
-        if (districtName === '전체' && !allDistrictBounds.isEmpty()) {
-            map.fitBounds(allDistrictBounds, 48);
-        } else if (selectedFeature) {
-            map.fitBounds(getFeatureBounds(selectedFeature), 24);
+        if (!selectedBounds.isEmpty()) {
+            map.fitBounds(selectedBounds, selectedDistricts.has(ALL_DISTRICTS) ? 48 : 24);
         }
     }
 
@@ -122,7 +179,17 @@
             cityResponse.json()
         ]);
 
+        districtBoundaryGeoJson = districtGeoJson;
         map.data.addGeoJson(districtGeoJson);
+
+        selectedOutlineLayer = new google.maps.Data({ map });
+        selectedOutlineLayer.setStyle({
+            clickable: false,
+            strokeColor: '#ba0707',
+            strokeOpacity: 1,
+            strokeWeight: 4,
+            zIndex: 3
+        });
 
         cityBoundaryLayer = new google.maps.Data();
         cityBoundaryLayer.addGeoJson(cityGeoJson);
@@ -135,7 +202,7 @@
         });
 
         boundaryLoaded = true;
-        highlightDistrict(selectedDistrict);
+        highlightDistricts(Array.from(selectedDistricts));
     }
 
     // 인포윈도우에 넣는 문자열을 안전하게 escape 처리합니다.
@@ -156,7 +223,7 @@
         restaurantInfoWindow = new google.maps.InfoWindow();
 
         restaurants.forEach(restaurant => {
-            const matchesDistrict = selectedDistrict === '전체' || restaurant.district === selectedDistrict;
+            const matchesDistrict = selectedDistricts.has(ALL_DISTRICTS) || selectedDistricts.has(restaurant.district);
             const matchesCategory = selectedCategory === '전체' || restaurant.category === selectedCategory;
             const shouldShow = matchesDistrict && matchesCategory;
             const marker = new google.maps.Marker({
@@ -206,6 +273,7 @@
         map = new google.maps.Map(document.getElementById('map-api'), {
             center: chuncheon,
             zoom: 12,
+            zoomControl: false,
             mapTypeControl: false,
             streetViewControl: false,
             // 구글 제공하는 마커 끄는 코드 //
@@ -226,6 +294,7 @@
                 loadRestaurantMarkers()
             ]);
             mapLoader.hidden = true;
+            mapControls.hidden = false;
         } catch (error) {
             showMapError(error.message);
         }
@@ -264,9 +333,21 @@
         }
     }
 
+    zoomInButton?.addEventListener('click', () => {
+        if (map) {
+            map.setZoom(map.getZoom() + 1);
+        }
+    });
+
+    zoomOutButton?.addEventListener('click', () => {
+        if (map) {
+            map.setZoom(map.getZoom() - 1);
+        }
+    });
+
     window.RestaurantMap = {
         load: loadGoogleMaps,
-        highlightDistrict,
+        highlightDistricts,
         selectCategory,
         setRestaurants: createRestaurantMarkers,
         resize,
