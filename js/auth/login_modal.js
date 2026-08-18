@@ -67,8 +67,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     closeButton.addEventListener('click', closeModal);
 
-    closeButton.addEventListener('click', closeModal);
-
     // 로그인 버튼은 헤더 안에 있어 fetch로 나중에 생깁니다.
     // 버튼에 직접 이벤트를 걸면 그 시점에 버튼이 없어 연결되지 않으므로,
     // document에 걸어두고 클릭한 위치를 확인하는 방식(이벤트 위임)을 씁니다.
