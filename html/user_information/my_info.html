@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보 변경</title>
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/auth/login_page.css">
+    <link rel="stylesheet" href="../../css/auth/user_menu.css">
+    <link rel="stylesheet" href="../../css/my_info.css">
+</head>
+
+<body>
+    <div id="header-root" data-active="info">
+        <a href="../../index.html" aria-label="메인 페이지로 이동">봄내로그</a>
+    </div>
+
+    <main class="my-info-page">
+        <!-- 이 창은 로그인 상태가 아닐때 나오는 화면 -->
+        <!-- 지금은 hidden을 넣었는데 로그인 상태가 아니면 hidden 지우면됨 -->
+        <section class="login-required-card hidden" aria-labelledby="loginRequiredTitle"> 
+            <h1 id="loginRequiredTitle">로그인 하시오</h1>
+            <p>개인정보를 확인하거나 변경하려면 로그인해주세요.</p>
+        </section>
+        
+        <section class="my-info-card "> <!-- 로그인 상태가 아니면 class=""안에 hidden를 추가하면 됨  -->
+            <h1>개인정보 변경</h1>
+
+            <div class="profile-summary">
+                <div class="info-row">
+                    <span>아이디</span>
+                    <strong id="userIdDisplay">-</strong>
+                </div>
+                <div class="info-row">
+                    <span>비밀번호</span>
+                    <strong id="userPasswordDisplay">********</strong>
+                </div>
+                <div class="info-row">
+                    <span>이름</span>
+                    <strong id="userNameDisplay">-</strong>
+                </div>
+                <div class="info-row">
+                    <span>이메일</span>
+                    <strong id="userEmailDisplay">-</strong>
+                </div>
+            </div>
+
+            <form id="myInfoForm" class="my-info-form">
+                <div class="field-group">
+                    <label for="nameInput">이름</label>
+                    <input id="nameInput" type="text" placeholder="변경할 이름을 입력하세요. 비워두면 유지됩니다.">
+                </div>
+
+                <div class="field-group">
+                    <label for="passwordInput">비밀번호</label>
+                    <input id="passwordInput" type="password" placeholder="변경할 비밀번호를 입력하세요. 비워두면 유지됩니다.">
+                </div>
+
+                <div class="field-group">
+                    <label for="emailInput">이메일</label>
+                    <input id="emailInput" type="email" placeholder="변경할 이메일을 입력하세요. 비워두면 유지됩니다.">
+                </div>
+
+                <button class="submit-btn" type="submit">저장하기</button>
+                <p id="formMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <div id="login-modal-root"></div>
+
+    <script src="../../js/auth/auth.js"></script>
+    <script src="../../js/auth/login.js"></script>
+    <script src="../../js/auth/profileMenu.js"></script>
+    <script src="../../js/header.js" data-header-component="../components/header.html"></script>
+    <script src="../../js/auth/login_modal.js" data-login-component="../auth/login_page.html"></script>
+    <script src="../../js/restaurantData.js"></script>
+    <script src="../../js/headerSearch.js"></script>
+    <script src="../../js/my_info.js"></script>
+</body>
+
+</html>

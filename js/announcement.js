@@ -2,7 +2,8 @@
 // 목적: 사용자에게 공지글을 카드형 목록으로 보여주고, 새 글을 추가할 수 있게 함
 // 흐름: 배열 데이터 -> 렌더링 -> 페이지 번호 생성 -> 폼 제출 -> 배열 앞쪽에 추가
 
-const announcements = [
+// 초기 공지. 저장소가 비어 있을 때 한 번만 심는 씨앗 데이터.
+const INITIAL_ANNOUNCEMENTS = [
   {
     tag: '공지',
     title: '맛집 추천 서비스 이용 가이드 업데이트 안내',
@@ -65,6 +66,38 @@ const announcements = [
   }
 ];
 
+// 화면에 쓰이는 목록. loadPosts()가 저장소 값으로 통째로 교체하므로 let.
+let announcements = [];
+
+const POSTS_STORAGE_KEY = 'announcementPosts';
+
+function savePosts() {
+  localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(announcements));
+}
+
+function loadPosts() {
+  const saved = localStorage.getItem(POSTS_STORAGE_KEY);
+
+  // null = 키 자체가 없음(첫 방문). '[]' = 저장 후 전부 삭제한 상태.
+  // !saved로 검사하면 두 경우가 섞여 지운 공지가 되살아남.
+  if (saved === null) {
+    // 삭제하려면 글마다 식별자가 필요한데 초기 데이터에는 없으므로 여기서 부여
+    announcements = INITIAL_ANNOUNCEMENTS.map((item, index) => ({ ...item, id: index + 1 }));
+    savePosts();
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+
+    // JSON.parse는 배열이 아닌 값도 통과시킴 — 배열이 아니면 아래 slice/map이 전부 터짐
+    announcements = Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.error('공지 목록을 읽지 못했습니다.', error);
+    announcements = [];
+  }
+}
+
 const announcementList = document.getElementById('announcementList');
 const announcementPagination = document.getElementById('announcementPagination');
 const modal = document.getElementById('announcementModal');
@@ -72,8 +105,19 @@ const openModalBtn = document.getElementById('openAnnouncementModal');
 const closeModalBtn = document.getElementById('closeAnnouncementModal');
 const cancelModalBtn = document.getElementById('cancelAnnouncementModal');
 const form = document.getElementById('announcementForm');
+const modalTitle = document.getElementById('announcementModalTitle');
+const submitBtn = form ? form.querySelector('.submit-btn') : null;
 const pageSize = 5;
 let currentPage = 1;
+
+// 수정 중인 글의 id. 새 글이면 null.
+// 화면에 드러나지 않는 상태라 DOM이 아니라 변수에 둠.
+let editingId = null;
+
+// '2026.08.18' 형태. 작성일·수정일 세 곳에서 쓰므로 함수로 묶음.
+function todayString() {
+  return new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+}
 
 // 현재 페이지 기준으로 보여줄 공지 목록 범위를 계산합니다.
 function getPaginatedAnnouncements() {
@@ -107,37 +151,86 @@ function renderAnnouncements() {
 
   const items = getPaginatedAnnouncements();
   announcementList.innerHTML = items.map((item) => `
-    <article class="announcement-card">
+    <article class="announcement-card" data-id="${item.id}">
       <div class="announcement-tag">${item.tag}</div>
       <h2>${item.title}</h2>
       <p>${item.content}</p>
       <div class="announcement-meta">
         <span>${item.date}</span>
+        ${item.updatedAt ? `<span class="announcement-updated">· 수정 ${item.updatedAt}</span>` : ''} 
+        ${isAdmin() ? `<button class="announcement-edit" type="button" data-id="${item.id}">수정</button>` : ''}
+        ${isAdmin() ? `<button class="announcement-delete" type="button" data-id="${item.id}">삭제</button>` : ''}
       </div>
     </article>
   `).join('');
 
+  announcementList.querySelectorAll('.announcement-edit').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const post = announcements.find(item => item.id === Number(btn.dataset.id));
+      if (post) openEditModal(post);
+    });
+  });
+
+  // 작성자 개념이 없는 글이라 canDelete 대신 isAdmin으로 판단
+  announcementList.querySelectorAll('.announcement-delete').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // dataset 값은 항상 문자열이라 Number로 바꿔야 비교가 성립
+      announcements = announcements.filter(item => item.id !== Number(btn.dataset.id));
+      savePosts();
+
+      // 마지막 페이지의 마지막 글을 지우면 존재하지 않는 페이지에 남게 됨.
+      // 전부 지우면 totalPages가 0이 되므로 바닥을 1로 막음.
+      const totalPages = Math.max(1, Math.ceil(announcements.length / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+
+      renderAnnouncements();
+    });
+  });
+
   renderPagination();
 }
 
-// 글쓰기 모달을 열고 닫는 동작을 처리합니다.
 function openModal() {
   if (!modal) return;
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
 }
 
-// 입력 폼을 초기화하고 모달을 닫습니다.
 function closeModal() {
   if (!modal) return;
   modal.classList.remove('active');
   modal.setAttribute('aria-hidden', 'true');
   if (form) form.reset();
+
+  // 수정 상태도 함께 정리.
+  // 안 지우면 수정을 취소한 뒤 새 글을 쓸 때 그 글이 덮어써짐.
+  // 닫는 경로가 넷(X · 취소 · 배경 · 저장 완료)이라 한 곳에 모아둠.
+  editingId = null;
 }
 
-// 버튼 클릭 이벤트를 연결해 모달 열기/닫기를 제어합니다.
+// 같은 모달을 작성·수정 두 모드로 씀. 입력 항목이 같아 폼을 두 벌 둘 이유가 없음.
+function openWriteModal() {
+  editingId = null;
+  modalTitle.textContent = '새 공지사항 작성';
+  submitBtn.textContent = '등록하기';
+  openModal();
+}
+
+function openEditModal(post) {
+  editingId = post.id;
+  modalTitle.textContent = '공지사항 수정';
+  submitBtn.textContent = '수정하기';
+
+  // select는 option에 없는 값을 넣으면 에러 없이 빈 값이 됨
+  document.getElementById('announcementTag').value = post.tag;
+  document.getElementById('announcementTitle').value = post.title;
+  document.getElementById('announcementContent').value = post.content;
+
+  openModal();
+}
+
 if (openModalBtn) {
-  openModalBtn.addEventListener('click', openModal);
+  openModalBtn.addEventListener('click', openWriteModal);
 }
 
 if (closeModalBtn) {
@@ -180,18 +273,43 @@ if (form) {
     }
 
     const formData = new FormData(form);
-    const newItem = {
-      tag: formData.get('tag') || '공지',
-      title: formData.get('title') || '제목 없음',
-      content: formData.get('content') || '내용 없음',
-      date: new Date().toISOString().slice(0, 10).replace(/-/g, '.')
-    };
 
-    announcements.unshift(newItem);
-    currentPage = 1;
+    if (editingId === null) {
+      announcements.unshift({
+        id: Date.now(),          // 수정·삭제 대상을 찾기 위한 식별자
+        tag: formData.get('tag') || '공지',
+        title: formData.get('title') || '제목 없음',
+        content: formData.get('content') || '내용 없음',
+        date: todayString()
+      });
+      currentPage = 1;
+    } else {
+      // find는 배열 안 객체의 참조를 돌려주므로 직접 수정하면 배열에 반영됨
+      const post = announcements.find(item => item.id === editingId);
+
+      // 다른 탭에서 삭제됐을 수 있음. 확인 없이 대입하면 TypeError.
+      if (!post) {
+        closeModal();
+        return;
+      }
+
+      post.tag = formData.get('tag') || post.tag;
+      post.title = formData.get('title') || post.title;
+      post.content = formData.get('content') || post.content;
+
+      // date(작성일)는 덮어쓰지 않음. 덮어쓰면 언제 올라온 공지인지 알 수 없어짐.
+      post.updatedAt = todayString();
+      // 순서도 유지 — 오타 수정만으로 맨 위에 올라오면 새 공지로 오인함
+    }
+
+    savePosts();
     renderAnnouncements();
     closeModal();
   });
 }
 
+// 관리자 여부에 따라 삭제 버튼 노출이 달라지므로 목록도 다시 그림
+document.addEventListener('auth:changed', renderAnnouncements);
+
+loadPosts();
 renderAnnouncements();
