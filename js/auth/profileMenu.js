@@ -9,7 +9,7 @@
  *
  * 전체를 즉시 실행 함수로 감싸 내부 변수가 전역으로 새어 나가지 않게 합니다.
  */
-(function () {
+window.initUserMenu = function () {
     const menu = document.getElementById('userMenu');
     // 헤더가 없는 페이지에서도 이 스크립트를 읽을 수 있으므로 조용히 종료
     if (!menu) return;
@@ -19,6 +19,9 @@
     const avatar = document.getElementById('userMenuAvatar');
     const nameLabel = document.getElementById('userMenuName');
     const logoutBtn = document.getElementById('userMenuLogout');
+    // WHY: header.js가 경로를 이미 완전한 주소로 바꿔놓은 뒤라 그 값을 그대로 재사용합니다.
+    //      여기서 './img/...'를 직접 쓰면 html/main/ 페이지에서 404가 납니다.
+    const defaultAvatarSrc = avatar.getAttribute('src');
 
 
     // ===== 열기 / 닫기 =====
@@ -91,7 +94,7 @@
         }
 
         // img 필드가 없는 기존 가입자도 있으므로 기본 이미지로 대체
-        avatar.src = user.img || './img/profile-default.png';
+        avatar.src = user.img || defaultAvatarSrc;
         // 이름은 사용자 입력값이므로 textContent로 넣어 태그가 실행되지 않게 함
         nameLabel.textContent = user.name;
         menu.hidden = false;
@@ -99,4 +102,4 @@
 
     // 즉시 실행 함수 바깥에서도 호출할 수 있도록 이 함수만 공개
     window.renderUserMenu = renderUserMenu;
-})();
+}
