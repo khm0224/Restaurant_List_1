@@ -810,7 +810,7 @@ window.restaurantData.퇴계동 = {
         }, // Ok
         {
             name: '누보', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190919_52%2F1568873726870cE8DX_JPEG%2FE9lc8RMbX8uw9GKmXOdjYdNW.jpg',
-            address: '강원 춘천시 퇴계로 13 3층 춘천시 퇴계농공로 9 넥서스빌딩 1층 103호', rating: 4.8, reviewCount: 4.587
+            address: '강원 춘천시 퇴계로 13 3층', rating: 4.8, reviewCount: 4.587
         }
     ],
     중식: [
