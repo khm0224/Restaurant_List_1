@@ -58,6 +58,7 @@
                     <button id="sidebar-toggle" type="button" aria-label="식당 목록 숨기기" aria-expanded="true"
                         aria-controls="side-bar">
                         <span aria-hidden="true">☰</span>
+                    </button>
                     <button id="favorites-button" type="button" aria-label="즐겨찾기" aria-pressed="false">
                         <span aria-hidden="true">★</span>
                     </button>
@@ -89,6 +90,35 @@
                         <span class="map-location-icon" aria-hidden="true"></span>
                         <span id="map-location-label">내 위치</span>
                     </button>
+                    <button
+                        class="map-control-btn map-route-btn"
+                        id="map-route-search"
+                        type="button"
+                        aria-label="경로 탐색"
+                        aria-expanded="false"
+                        aria-controls="route-panel"
+                    >
+                        <span class="map-route-icon" aria-hidden="true">➤</span>
+                        <span>경로 탐색</span>
+                    </button>
+                </div>
+                <div id="route-panel" class="route-panel" hidden>
+                    <div class="route-panel-header">
+                        <h2>길찾기</h2>
+                        <button id="route-panel-close" type="button" aria-label="길찾기 닫기">×</button>
+                    </div>
+
+                    <label>
+                        출발지
+                        <input id="route-origin" type="text" placeholder="출발지 입력">
+                    </label>
+
+                    <label>
+                        도착지
+                        <input id="route-destination" type="text" placeholder="도착지 입력">
+                    </label>
+
+                    <button id="route-submit" type="button">경로 찾기</button>
                 </div>
                 <div id="map-loader">
                     <div class="map-loader-card">
