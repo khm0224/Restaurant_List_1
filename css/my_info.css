@@ -67,6 +67,29 @@ body {
     font-weight: 700;
 }
 
+.info-row-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.password-toggle-btn {
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    color: #666;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+    border-color: #f5821f;
+    color: #f5821f;
+}
+
 .my-info-form {
     display: flex;
     flex-direction: column;

@@ -26,6 +26,7 @@ const verifyMessage = document.getElementById('verifyMessage');
 
 const userIdDisplay = document.getElementById('userIdDisplay');
 const userPasswordDisplay = document.getElementById('userPasswordDisplay');
+const passwordToggleBtn = document.getElementById('passwordToggleBtn');
 const userNameDisplay = document.getElementById('userNameDisplay');
 const userEmailDisplay = document.getElementById('userEmailDisplay');
 
@@ -40,15 +41,25 @@ const formMessage = document.getElementById('formMessage');
 
 // ===== 표시 =====
 
+let isPasswordVisible = false;
+
 // 길이를 그대로 반영하면 비밀번호 자릿수가 노출됨. 고정 길이로 표시.
 function maskPassword() {
     return '********';
 }
 
+function updatePasswordDisplay(user) {
+    if (!user) return;
+
+    userPasswordDisplay.textContent = isPasswordVisible ? user.pw : maskPassword();
+    passwordToggleBtn.textContent = isPasswordVisible ? '숨기기' : '보기';
+    passwordToggleBtn.setAttribute('aria-label', isPasswordVisible ? '비밀번호 숨기기' : '비밀번호 표시');
+}
+
 function renderProfile(user) {
     // 사용자 입력값이라 textContent — innerHTML이면 저장된 태그가 실행됨(XSS)
     userIdDisplay.textContent = user.id;
-    userPasswordDisplay.textContent = maskPassword();
+    updatePasswordDisplay(user);
     userNameDisplay.textContent = user.name;
     userEmailDisplay.textContent = user.email;
 
@@ -68,6 +79,15 @@ function setMessage(message, isError = false) {
     formMessage.classList.toggle('error', isError);
     formMessage.classList.toggle('success', !isError);
 }
+
+passwordToggleBtn.addEventListener('click', () => {
+    const user = getCurrentUser();
+
+    if (!user) return;
+
+    isPasswordVisible = !isPasswordVisible;
+    updatePasswordDisplay(user);
+});
 
 
 // ===== 본인 확인 =====
