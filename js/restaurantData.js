@@ -573,8 +573,7 @@ window.restaurantData.효자1동 = {
             address: '강원 춘천시 효명길 12', rating: 4.2, reviewCount: 19
         }
     ],
-    양식: [{}
-    ],
+    양식: [],
     디저트: [
         {
             name: '마릴본', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20251031_101%2F1761889215869W9phC_JPEG%2F1000014670.jpg',  // Ok

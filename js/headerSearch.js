@@ -22,7 +22,9 @@
         const restaurantData = window.restaurantData || {};
         return Object.entries(restaurantData).flatMap(([district, districtData]) =>
             Object.entries(districtData).flatMap(([category, stores]) =>
-                stores.map((store, index) => ({ district, category, index, store }))
+                stores
+                    .map((store, index) => ({ district, category, index, store }))
+                    .filter(entry => entry.store?.name)
             )
         );
     }
