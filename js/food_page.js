@@ -3,6 +3,10 @@ const functionScrollPrev = document.getElementById('function-scroll-prev');
 const functionScrollNext = document.getElementById('function-scroll-next');
 const content = document.getElementById('content');
 const sidebarToggle = document.getElementById('sidebar-toggle');
+const routeSearchButton = document.getElementById('map-route-search');
+const routePanel = document.getElementById('route-panel');
+const routePanelCloseButton = document.getElementById('route-panel-close');
+const routeOriginInput = document.getElementById('route-origin');
 
 // 카테고리 가로 스크롤 상태에 따라 이전/다음 버튼의 활성/비활성 상태를 갱신합니다.
 function updateFunctionScrollButtons() {
@@ -34,6 +38,40 @@ sidebarToggle.addEventListener('click', () => {
     window.setTimeout(() => {
         window.RestaurantMap?.resize();
     }, 320);
+});
+
+// 길찾기 패널의 표시 상태와 버튼의 접근성 정보를 함께 갱신합니다.
+function setRoutePanelOpen(isOpen, restoreFocus = false) {
+    if (!routePanel || !routeSearchButton) {
+        return;
+    }
+
+    routePanel.hidden = !isOpen;
+    routeSearchButton.setAttribute('aria-expanded', String(isOpen));
+    routeSearchButton.setAttribute('aria-label', isOpen ? '경로 탐색 닫기' : '경로 탐색 열기');
+
+    if (isOpen) {
+        routeOriginInput?.focus();
+    } else if (restoreFocus) {
+        routeSearchButton.focus();
+    }
+}
+
+// 지도 도구 버튼으로 길찾기 패널을 열거나 닫습니다.
+routeSearchButton?.addEventListener('click', () => {
+    setRoutePanelOpen(routePanel?.hidden ?? false);
+});
+
+// 닫기 버튼으로 패널을 닫고 경로 탐색 버튼으로 초점을 돌려보냅니다.
+routePanelCloseButton?.addEventListener('click', () => {
+    setRoutePanelOpen(false, true);
+});
+
+// 키보드 사용자는 Escape 키로 길찾기 패널을 닫을 수 있습니다.
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && routePanel && !routePanel.hidden) {
+        setRoutePanelOpen(false, true);
+    }
 });
 
 // 지도의 초기화와 CSV 기반 식당 마커 생성은 restaurantMap.js에서 담당합니다.
