@@ -240,6 +240,11 @@
     padding: 10px 0;
 }
 
+/* 거리 없이 하트만 있는 카드(지역별 탭) — 위로 붙지 않도록 가운데로 */
+.ranking-side.is-favorite-only {
+    justify-content: center;
+}
+
 .ranking-distance {
     color: #555;
     font-size: 14px;
