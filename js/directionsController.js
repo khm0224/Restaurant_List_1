@@ -7,9 +7,12 @@
     const routeToggleButton = document.getElementById('map-route-search');
     const originInput = document.getElementById('route-origin');
     const destinationInput = document.getElementById('route-destination');
+    const routeSubmitButton = document.getElementById('route-submit');
+    const routeResult = document.getElementById('route-result');
     const markers = { origin: null, destination: null };
     const routeLocations = { origin: null, destination: null };
     let selectedLocation = null;
+    let routePolyline = null;
 
     if (!mapArea || !mapElement || !contextMenu) {
         return;
@@ -78,6 +81,8 @@
     function applyRoutePoint(type, location, displayValue) {
         const input = type === 'origin' ? originInput : destinationInput;
 
+        clearRoute();
+
         if (input) {
             input.value = displayValue;
             input.dataset.latitude = String(location.latitude);
@@ -107,6 +112,85 @@
         }
 
         routeLocations[type] = null;
+        clearRoute();
+    }
+
+    function clearRoute() {
+        routePolyline?.setMap(null);
+        routePolyline = null;
+        if (routeResult) {
+            routeResult.hidden = true;
+            routeResult.textContent = '';
+            routeResult.classList.remove('is-error');
+        }
+    }
+
+    function showRouteResult(message, isError = false) {
+        if (!routeResult) return;
+        routeResult.textContent = message;
+        routeResult.hidden = false;
+        routeResult.classList.toggle('is-error', isError);
+    }
+
+    function formatDistance(distance) {
+        return distance >= 1000 ? `${(distance / 1000).toFixed(1)}km` : `${distance}m`;
+    }
+
+    function formatDuration(duration) {
+        const totalMinutes = Math.max(1, Math.round(duration / 60));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return hours ? `${hours}시간 ${minutes}분` : `${minutes}분`;
+    }
+
+    function drawRoute(route) {
+        const map = window.RestaurantMap?.getMap();
+        if (!map) throw new Error('지도가 아직 준비되지 않았습니다.');
+
+        routePolyline?.setMap(null);
+        const path = route.points.map(point => new kakao.maps.LatLng(point.latitude, point.longitude));
+        routePolyline = new kakao.maps.Polyline({
+            map,
+            path,
+            strokeWeight: 7,
+            strokeColor: '#eb1111',
+            strokeOpacity: 0.9,
+            strokeStyle: 'solid'
+        });
+
+        const bounds = new kakao.maps.LatLngBounds();
+        path.forEach(point => bounds.extend(point));
+        map.setBounds(bounds, 72, 72, 72, 72);
+    }
+
+    async function findRoute() {
+        if (!routeLocations.origin || !routeLocations.destination) {
+            showRouteResult('출발지와 도착지를 지도에서 모두 지정해 주세요.', true);
+            return;
+        }
+        if (!window.DirectionsService) {
+            showRouteResult('길찾기 서비스를 불러오지 못했습니다.', true);
+            return;
+        }
+
+        routeSubmitButton.disabled = true;
+        routeSubmitButton.textContent = '경로 탐색 중…';
+        showRouteResult('자동차 추천 경로를 탐색하고 있습니다.');
+
+        try {
+            const route = await window.DirectionsService.findDrivingRoute(
+                routeLocations.origin,
+                routeLocations.destination
+            );
+            drawRoute(route);
+            showRouteResult(`자동차 · ${formatDistance(route.distance)} · 약 ${formatDuration(route.duration)}`);
+        } catch (error) {
+            clearRoute();
+            showRouteResult(error.message, true);
+        } finally {
+            routeSubmitButton.disabled = false;
+            routeSubmitButton.textContent = '경로 찾기';
+        }
     }
 
     function showContextMenu(detail) {
@@ -166,7 +250,7 @@
             );
 
             // panTo 이동 애니메이션과 확대 애니메이션이 서로 취소되지 않도록
-            // 확대 단계를 먼저 적용한 뒤 목적지를 지도 중심으로 고정합니다.
+            // 확대 단계를 먼저 적용한 뒤 목적지를 지도 중심으로 고정.
             map.setLevel(3);
             map.setCenter(destinationPosition);
         }
@@ -192,6 +276,8 @@
             clearRoutePoint(button.dataset.clearRoutePoint);
         });
     });
+
+    routeSubmitButton?.addEventListener('click', findRoute);
 
     document.addEventListener('pointerdown', event => {
         if (!contextMenu.hidden && !contextMenu.contains(event.target)) {
