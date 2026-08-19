@@ -251,6 +251,10 @@ window.restaurantData.약사명동 = {
     ],
     일식: [
         {
+            name: '가거도횟집', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyMzAyMjdfMjQ2%2FMDAxNjc3NDg4NDQ0MzU5.tAPzsXtflVhJyLbzref-CQDHC71jYI5DeYctw_HCMswg.pRj0pyN1ZM2ddDeBjhVygQbIi6o7rvSeepz9_iwi8-Yg.JPEG%2F01A70363-7099-4157-AD41-470BF3769BED.jpeg',
+            address: '강원 춘천시 망대길37번길 19', rating: 4.2, reviewCount: 3
+        },
+        {
             name: '은은', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230119_9%2F1674100692545USlRa_JPEG%2F97F97A7C-0F56-48C6-B4A0-D71C677D9F50.jpeg',
             address: '강원 춘천시 망대길37번길 19', rating: 4.8, reviewCount: 435
         }, // Ok
@@ -315,12 +319,7 @@ window.restaurantData.근화동 = {
             address: '강원 춘천시 당간지주길 71', rating: 4.4, reviewCount: 2.176
         }
     ],
-    일식: [
-        {
-            name: '가거도횟집', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyMzAyMjdfMjQ2%2FMDAxNjc3NDg4NDQ0MzU5.tAPzsXtflVhJyLbzref-CQDHC71jYI5DeYctw_HCMswg.pRj0pyN1ZM2ddDeBjhVygQbIi6o7rvSeepz9_iwi8-Yg.JPEG%2F01A70363-7099-4157-AD41-470BF3769BED.jpeg',
-            address: '강원 춘천시 망대길37번길 19', rating: 4.2, reviewCount: 3
-        }
-    ],
+    일식: [],
     중식: [
         {
             name: '이비가짬뽕 춘천점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20260709_218%2F17835830129735Qx6p_JPEG%2Fimage4.jpg', // OK
@@ -500,6 +499,10 @@ window.restaurantData.후평3동 = {
     ],
     중식: [
         {
+            name: '죽향', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190525_225%2F1558730813924ny0Wl_JPEG%2FUBbMj0S2gRpneObdNoNRKXZO.jpg', // OK
+            address: '강원 춘천시 보안길 50-2', rating: 4.2, reviewCount: 358
+        },
+        {
             name: '돌담집짬뽕', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190115_265%2F1547541363997uhy8a_JPEG%2Fi9LxZaxR987gr8wu-CsJPwiB.jpg', // OK
             address: '강원 춘천시 보안길 50-2', rating: 4.2, reviewCount: 358
         },
@@ -548,11 +551,7 @@ window.restaurantData.효자1동 = {
         {
             name: '풍물옹심이칼국수 본점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20150901_240%2F1441060590670KXGNu_JPEG%2F127060406259026_1.jpg',
             address: '강원 춘천시 닥나무길9번길 5', rating: 4.3, reviewCount: 2.060
-        }, // OK
-        {
-            name: '모녀밥상', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220413_299%2F1649827916982uy2cG_JPEG%2FIMG_20220413_143133.jpg',
-            address: '강원 춘천시 공지로333번길 10', rating: 4.4, reviewCount: 360
-        }
+        } // OK
     ],
     일식: [
         {
@@ -595,6 +594,10 @@ window.restaurantData.효자1동 = {
 window.restaurantData.효자2동 = {
     한식: [
         {
+            name: '모녀밥상', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20220413_299%2F1649827916982uy2cG_JPEG%2FIMG_20220413_143133.jpg',
+            address: '강원 춘천시 공지로333번길 10', rating: 4.4, reviewCount: 360
+        },
+        {
             name: '오시드래요', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240824_5%2F1724450585143081Ee_JPEG%2FScreenshot_20240813_213548_Gallery.jpg',
             address: '강원 춘천시 공지로242번길 25 1층 오시드래요', rating: 4.7, reviewCount: 840
         }, // Ok
@@ -618,10 +621,6 @@ window.restaurantData.효자2동 = {
         }
     ],
     중식: [
-        {
-            name: '죽향', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20190525_225%2F1558730813924ny0Wl_JPEG%2FUBbMj0S2gRpneObdNoNRKXZO.jpg', // OK
-            address: '강원 춘천시 보안길 50-2', rating: 4.2, reviewCount: 358
-        },
         {
             name: '행복반점', img: 'https://search.pstatic.net/common/?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAyNjA3MjhfMTAy%2FMDAxNzg1MjIwMDQ1Nzc2.l0JCEgXMP3wspynp2OqGjJFqalei70kkSRJ9i0_3_XAg.L5zVrlinRcwBlDhUkpQ4NXtnuXS6TUGktaC7_X8yTD0g.JPEG%2FIMG%25EF%25BC%25BF8744.jpg%2F900x1200',
             address: '강원 춘천시 백령로 63 1층', rating: 4.3, reviewCount: 844
