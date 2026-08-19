@@ -54,7 +54,10 @@
                 </div>
                 <div class="info-row">
                     <span>비밀번호</span>
-                    <strong id="userPasswordDisplay">********</strong>
+                    <div class="info-row-value">
+                        <strong id="userPasswordDisplay">********</strong>
+                        <button type="button" class="password-toggle-btn" id="passwordToggleBtn" aria-label="비밀번호 표시">보기</button>
+                    </div>
                 </div>
                 <div class="info-row">
                     <span>이름</span>
@@ -88,7 +91,7 @@
                 <div class="field-group">
                     <label for="passwordInput">새 비밀번호</label>
                     <input id="passwordInput" type="password" autocomplete="new-password"
-                        placeholder="변경할 비밀번호를 입력하세요. 비워두면 유지됩니다.">
+                        placeholder="영문+숫자+특수문자 조합 8~16자. 비워두면 유지됩니다.">
                 </div>
 
                 <button class="submit-btn" type="submit">저장하기</button>
