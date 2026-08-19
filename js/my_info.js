@@ -223,7 +223,7 @@ form.addEventListener('submit', (event) => {
     }
 
     if (nextPassword && !PW_PATTERN.test(nextPassword)) {
-        setMessage('비밀번호는 영문과 숫자를 포함한 8~16자입니다.', true);
+        setMessage('비밀번호는 영문, 숫자, 특수문자를 포함한 8~16자입니다.', true);
         return;
     }
 
