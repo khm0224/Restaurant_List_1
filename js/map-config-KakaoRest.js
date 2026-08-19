@@ -1,0 +1,1 @@
+window.Kakao_Rest_API_KEY = 'e5852f2b0f6db289f87e43e52820be52';

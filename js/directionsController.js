@@ -33,11 +33,11 @@
     function createOrMoveMarker(type, location) {
         const map = window.RestaurantMap?.getMap();
 
-        if (!map || !window.google?.maps) {
+        if (!map || !window.kakao?.maps) {
             return;
         }
 
-        const position = { lat: location.latitude, lng: location.longitude };
+        const position = new kakao.maps.LatLng(location.latitude, location.longitude);
         const isOrigin = type === 'origin';
         const markerColor = isOrigin ? '#2563eb' : '#ef5b62';
         const markerText = isOrigin ? '출발' : '도착';
@@ -48,23 +48,20 @@
             return;
         }
 
-        markers[type] = new google.maps.Marker({
+        const markerSvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="48" viewBox="0 0 44 48">
+                <path fill="${markerColor}" stroke="#ffffff" stroke-width="2"
+                    d="M22 1C10.4 1 2 9.7 2 20.4C2 34 22 47 22 47S42 34 42 20.4C42 9.7 33.6 1 22 1Z"/>
+                <circle cx="22" cy="20" r="14" fill="#ffffff"/>
+                <text x="22" y="24" fill="${markerColor}" font-family="Arial, sans-serif"
+                    font-size="10" font-weight="700" text-anchor="middle">${markerText}</text>
+            </svg>`;
+
+        markers[type] = new kakao.maps.Marker({
             map,
             position,
             title: isOrigin ? '출발지' : '도착지',
-            icon: {
-                url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="48" viewBox="0 0 44 48">
-                        <path fill="${markerColor}" stroke="#ffffff" stroke-width="2"
-                            d="M22 1C10.4 1 2 9.7 2 20.4C2 34 22 47 22 47S42 34 42 20.4C42 9.7 33.6 1 22 1Z"/>
-                        <circle cx="22" cy="20" r="14" fill="#ffffff"/>
-                        <text x="22" y="24" fill="${markerColor}" font-family="Arial, sans-serif"
-                            font-size="10" font-weight="700" text-anchor="middle">${markerText}</text>
-                    </svg>
-                `)}`,
-                scaledSize: new google.maps.Size(44, 48),
-                anchor: new google.maps.Point(22, 47)
-            },
+            image: window.RestaurantMap.createMarkerImage(markerSvg),
             zIndex: 1100
         });
     }
@@ -163,11 +160,15 @@
         const map = window.RestaurantMap?.getMap();
 
         if (map) {
-            map.panTo({
-                lat: restaurant.latitude,
-                lng: restaurant.longitude
-            });
-            map.setZoom(17);
+            const destinationPosition = new kakao.maps.LatLng(
+                restaurant.latitude,
+                restaurant.longitude
+            );
+
+            // panTo 이동 애니메이션과 확대 애니메이션이 서로 취소되지 않도록
+            // 확대 단계를 먼저 적용한 뒤 목적지를 지도 중심으로 고정합니다.
+            map.setLevel(3);
+            map.setCenter(destinationPosition);
         }
 
         return true;
