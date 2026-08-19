@@ -170,20 +170,32 @@
 
         card.append(image, info);
 
-        if (Number.isFinite(restaurant.distanceKm)) {
+        // 거리는 주변 탭에만 있고, 하트는 두 탭 모두에 붙음.
+        // 둘 다 없으면 빈 칸만 생기므로 하나라도 있을 때만 side를 만듦.
+        const hasDistance = Number.isFinite(restaurant.distanceKm);
+
+        // index는 카테고리 배열 안의 순번.
+        // 지역별 탭은 목록을 만들 때 붙인 값이라 항상 있지만(collectRestaurants),
+        // 주변 탭은 이름으로 찾아낸 값이라 못 찾으면 -1(enrichNearbyRestaurant).
+        // -1로 키를 만들면 "교동_양식_-1"이 되어 서로 다른 가게가 한 칸에 뭉침.
+        const canFavorite = Number.isInteger(restaurant.index) && restaurant.index >= 0;
+
+        if (hasDistance || canFavorite) {
             const side = document.createElement('div');
             side.className = 'ranking-side';
 
-            const distance = document.createElement('span');
-            distance.className = 'ranking-distance';
-            distance.textContent = restaurant.distanceLabel;
+            if (hasDistance) {
+                const distance = document.createElement('span');
+                distance.className = 'ranking-distance';
+                distance.textContent = restaurant.distanceLabel;
+                side.appendChild(distance);
+            } else {
+                // side는 위아래로 벌리는 배치(space-between)라 하트만 있으면 위로 붙음.
+                // 지역별 탭 카드는 거리가 없으므로 가운데로 맞춤.
+                side.classList.add('is-favorite-only');
+            }
 
-            side.appendChild(distance);
-
-            // index는 CSV의 식당을 restaurantData에서 이름으로 찾아낸 순번(enrichNearbyRestaurant).
-            // 못 찾으면 -1인데, 그대로 키를 만들면 "교동_양식_-1"이 되어
-            // 서로 다른 가게가 한 칸에 뭉침. 담을 수 없으니 버튼을 아예 만들지 않음.
-            if (Number.isInteger(restaurant.index) && restaurant.index >= 0) {
+            if (canFavorite) {
                 side.appendChild(createFavoriteButton(restaurant));
             }
 
@@ -443,10 +455,15 @@
     });
 
     // 로그인은 모달로 이뤄져 새로고침이 없음. ♡/♥는 사람마다 다르므로 다시 그림.
-    // 위치를 아직 못 받았으면 그릴 목록 자체가 없어 건너뜀 —
-    // 여기서 loadNearbyRestaurants를 부르면 로그인할 때마다 위치를 다시 물음.
     document.addEventListener('auth:changed', () => {
-        if (selectedRankingMode === 'nearby' && nearbyOrigin) {
+        if (selectedRankingMode !== 'nearby') {
+            renderDistrict(districts[selectedDistrictIndex]);
+            return;
+        }
+
+        // 위치를 아직 못 받았으면 그릴 목록 자체가 없어 건너뜀 —
+        // 여기서 loadNearbyRestaurants를 부르면 로그인할 때마다 위치를 다시 물음.
+        if (nearbyOrigin) {
             renderNearbyResults();
         }
     });
