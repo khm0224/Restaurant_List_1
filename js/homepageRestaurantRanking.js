@@ -68,6 +68,49 @@
         return `./html/restaurant_detail.html?${params.toString()}`;
     }
 
+    // 즐겨찾기 키. 맛집 탐색(restaurantExplorer.js:55)·내 활동과 같은 "동네_카테고리_순번" 형식.
+    // 형식이 화면마다 갈라지면 여기서 담은 가게가 즐겨찾기 목록에 뜨지 않음.
+    function getStoreId(restaurant) {
+        return `${restaurant.district}_${restaurant.category}_${restaurant.index}`;
+    }
+
+    // 저장은 favorites.js가 맡음. 여기서는 화면 표시와 안내만 함.
+    function setFavoriteState(button, isActive, name) {
+        button.classList.toggle('active', isActive);
+        button.textContent = isActive ? '♥' : '♡';
+        button.setAttribute('aria-pressed', String(isActive));
+        button.setAttribute('aria-label', `${name} 즐겨찾기 ${isActive ? '해제' : '추가'}`);
+    }
+
+    function createFavoriteButton(restaurant) {
+        const storeId = getStoreId(restaurant);
+        const button = document.createElement('button');
+        button.className = 'ranking-favorite';
+        button.type = 'button';
+
+        // 그릴 때마다 저장소에 물어봄. 변수에 담아두면 계정이 바뀌었을 때 옛 값이 남음.
+        setFavoriteState(button, isFavorite(storeId), restaurant.name);
+
+        button.addEventListener('click', event => {
+            // 카드 전체가 <a>라 막지 않으면 상세 페이지로 넘어가 버림
+            event.preventDefault();
+            event.stopPropagation();
+
+            const added = toggleFavorite(storeId);
+
+            // null = 비로그인 또는 저장 실패. 아무 반응이 없으면 고장으로 보이므로 로그인 모달로 안내
+            // (맛집 탐색 화면 restaurantExplorer.js:94와 같은 처리).
+            if (added === null) {
+                if (!getCurrentUser()) window.openLoginModal?.();
+                return;
+            }
+
+            setFavoriteState(button, added, restaurant.name);
+        });
+
+        return button;
+    }
+
     function createRestaurantCard(restaurant, rank) {
         const card = document.createElement('a');
         card.className = 'ranking-item';
@@ -135,19 +178,15 @@
             distance.className = 'ranking-distance';
             distance.textContent = restaurant.distanceLabel;
 
-            const favorite = document.createElement('button');
-            favorite.className = 'ranking-favorite';
-            favorite.type = 'button';
-            favorite.setAttribute('aria-label', `${restaurant.name} 즐겨찾기`);
-            favorite.textContent = '♡';
-            favorite.addEventListener('click', event => {
-                event.preventDefault();
-                event.stopPropagation();
-                favorite.classList.toggle('active');
-                favorite.textContent = favorite.classList.contains('active') ? '♥' : '♡';
-            });
+            side.appendChild(distance);
 
-            side.append(distance, favorite);
+            // index는 CSV의 식당을 restaurantData에서 이름으로 찾아낸 순번(enrichNearbyRestaurant).
+            // 못 찾으면 -1인데, 그대로 키를 만들면 "교동_양식_-1"이 되어
+            // 서로 다른 가게가 한 칸에 뭉침. 담을 수 없으니 버튼을 아예 만들지 않음.
+            if (Number.isInteger(restaurant.index) && restaurant.index >= 0) {
+                side.appendChild(createFavoriteButton(restaurant));
+            }
+
             card.appendChild(side);
         }
 
@@ -401,6 +440,15 @@
             `.ranking-item[data-restaurant-key="${CSS.escape(restaurantKey || '')}"]`
         );
         selectedCard?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+
+    // 로그인은 모달로 이뤄져 새로고침이 없음. ♡/♥는 사람마다 다르므로 다시 그림.
+    // 위치를 아직 못 받았으면 그릴 목록 자체가 없어 건너뜀 —
+    // 여기서 loadNearbyRestaurants를 부르면 로그인할 때마다 위치를 다시 물음.
+    document.addEventListener('auth:changed', () => {
+        if (selectedRankingMode === 'nearby' && nearbyOrigin) {
+            renderNearbyResults();
+        }
     });
 
     window.HomepageRanking = {
