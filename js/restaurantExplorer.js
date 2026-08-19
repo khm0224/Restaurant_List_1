@@ -78,13 +78,45 @@
 
         // 카드 안의 보조 버튼은 클릭해도 상세 화면으로 이동하지 않게 합니다.
         storeList.querySelectorAll('.route-btn, .favorite-btn').forEach(button => {
-            button.addEventListener('click', event => {
+            button.addEventListener('click', async event => {
                 event.preventDefault();
                 event.stopPropagation();
 
-                if (!button.classList.contains('favorite-btn')) return;
-
                 const card = button.closest('.store-card');
+
+                if (button.classList.contains('route-btn')) {
+                    const store = window.restaurantData?.[card.dataset.district]
+                        ?.[card.dataset.category]?.[Number(card.dataset.index)];
+
+                    if (!store || !window.RestaurantService) {
+                        window.alert('식당 위치 정보를 불러올 수 없습니다.');
+                        return;
+                    }
+
+                    button.disabled = true;
+
+                    try {
+                        const restaurant = await window.RestaurantService.findRestaurant({
+                            district: card.dataset.district,
+                            name: store.name
+                        });
+
+                        if (!restaurant) {
+                            throw new Error('식당 좌표를 찾을 수 없습니다.');
+                        }
+
+                        if (!window.DirectionsController?.setDestination(restaurant)) {
+                            throw new Error('길찾기 화면에 도착지를 설정할 수 없습니다.');
+                        }
+                    } catch (error) {
+                        window.alert(error.message || '식당 위치 정보를 불러올 수 없습니다.');
+                    } finally {
+                        button.disabled = false;
+                    }
+
+                    return;
+                }
+
                 const storeId = `${card.dataset.district}_${card.dataset.category}_${card.dataset.index}`;
 
                 const favorite = toggleFavorite(storeId);

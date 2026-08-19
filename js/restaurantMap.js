@@ -7,6 +7,7 @@
     const CHUNCHEON_CITY_BOUNDARY_URL = '../data/area/chuncheon-city-boundary.geojson';
     const mapLoader = document.getElementById('map-loader');
     const mapStatus = document.getElementById('map-status');
+    const mapElement = document.getElementById('map-api');
     const mapControls = document.getElementById('map-controls');
     const zoomInButton = document.getElementById('map-zoom-in');
     const zoomOutButton = document.getElementById('map-zoom-out');
@@ -334,7 +335,7 @@
     async function initFoodMap() {
         const chuncheon = { lat: 37.8813, lng: 127.7298 };
 
-        map = new google.maps.Map(document.getElementById('map-api'), {
+        map = new google.maps.Map(mapElement, {
             center: chuncheon,
             zoom: 12,
             zoomControl: false,
@@ -351,6 +352,38 @@
 
         // 기존 코드와 다른 페이지에서 지도를 참조할 수 있도록 유지합니다.
         window.foodMap = map;
+        document.dispatchEvent(new CustomEvent('restaurant-map:ready'));
+
+        // Google 지도 내부 요소가 우클릭 이벤트를 막더라도 좌표를 안정적으로 계산합니다.
+        const projectionOverlay = new google.maps.OverlayView();
+        projectionOverlay.onAdd = () => {};
+        projectionOverlay.draw = () => {};
+        projectionOverlay.onRemove = () => {};
+        projectionOverlay.setMap(map);
+
+        mapElement.addEventListener('contextmenu', event => {
+            event.preventDefault();
+            const projection = projectionOverlay.getProjection();
+
+            if (!projection) {
+                return;
+            }
+
+            const mapRect = mapElement.getBoundingClientRect();
+            const latLng = projection.fromContainerPixelToLatLng(new google.maps.Point(
+                event.clientX - mapRect.left,
+                event.clientY - mapRect.top
+            ));
+
+            document.dispatchEvent(new CustomEvent('restaurant-map:rightclick', {
+                detail: {
+                    latitude: latLng.lat(),
+                    longitude: latLng.lng(),
+                    clientX: event.clientX,
+                    clientY: event.clientY
+                }
+            }));
+        }, true);
 
         try {
             await Promise.all([

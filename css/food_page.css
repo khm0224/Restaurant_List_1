@@ -508,6 +508,66 @@
     line-height: 1;
     transform: rotate(-45deg);
 }
+
+/* 지도 우클릭 위치에서 출발지 또는 도착지를 선택하는 메뉴 */
+.map-route-context-menu {
+    position: absolute;
+    z-index: 6;
+    min-width: 164px;
+    padding: 8px;
+    border: 1px solid #d9dfdc;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(31, 41, 55, 0.24);
+    box-sizing: border-box;
+}
+
+.map-route-context-menu[hidden] {
+    display: none;
+}
+
+.map-route-context-menu button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #30343b;
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.map-route-context-menu button:hover,
+.map-route-context-menu button:focus-visible {
+    background: #f1f5f3;
+    outline: none;
+}
+
+.route-point-pin {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 29px;
+    flex: 0 0 auto;
+    clip-path: polygon(50% 100%, 7% 56%, 7% 28%, 20% 8%, 50% 0, 80% 8%, 93% 28%, 93% 56%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.route-point-pin.is-origin {
+    background: #2563eb;
+}
+
+.route-point-pin.is-destination {
+    background: #ef5b62;
+}
 /* 위치 권한 확인 등 처리 중인 내 위치 버튼 상태 */
 .map-location-btn:disabled {
     color: #6b7280;
@@ -617,6 +677,13 @@
 }
 
 /* 출발지와 도착지 입력창 스타일 */
+.route-input-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    align-items: center;
+    gap: 8px;
+}
+
 .route-panel input {
     width: 100%;
     padding: 11px 12px;
@@ -626,6 +693,31 @@
     color: #202124;
     font: inherit;
     box-sizing: border-box;
+}
+
+.route-input-clear {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #f1f5f3;
+    color: #4b5563;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.route-input-clear:hover {
+    background: #e4ebe7;
+    color: #20382e;
+}
+
+.route-input-clear:focus-visible {
+    outline: 2px solid #315a49;
+    outline-offset: 2px;
 }
 
 .route-panel input:focus {
