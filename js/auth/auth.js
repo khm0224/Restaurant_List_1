@@ -159,6 +159,16 @@ function findUserByIdEmail(id, email) {
     return users.find(u => u.id === id && u.email === email);
 }
 
+// 관리자 화면(회원 목록)용.
+// users 배열 자체를 내주면 밖에서 push/splice해도 저장이 안 돼 조용히 어긋남 —
+// favorites.js:31의 getFavoriteIds와 같은 이유로 복사본을 돌려줌.
+//
+// 얕은 복사라 회원 객체는 원본 참조 그대로임. 읽기 전용으로만 쓸 것.
+// 깊은 복사를 하지 않은 이유는 프로필 사진(Base64)까지 통째로 복제되기 때문.
+function getAllUsers() {
+    return users.slice();
+}
+
 // 로그인 여부의 기준은 loginUser 쿠키 하나. 화면은 모두 이 값을 보고 그림.
 function getCurrentUser() {
     const id = getCookie('loginUser');

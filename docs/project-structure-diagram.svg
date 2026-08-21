@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#153c2c" flood-opacity=".14"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7b9f90"/>
+    </marker>
+    <style>
+      .title{font:700 38px 'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;fill:#173d2e}
+      .subtitle{font:400 18px 'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;fill:#668176}
+      .section{font:700 18px 'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;letter-spacing:1px;fill:#527064}
+      .node{fill:#fffaf0;stroke:#234d3c;stroke-width:2;rx:14;filter:url(#shadow)}
+      .node-main{fill:#e8f4ed;stroke:#1c6749;stroke-width:2.5;rx:16;filter:url(#shadow)}
+      .node-data{fill:#edf3f8;stroke:#56758c;stroke-width:2;rx:14;filter:url(#shadow)}
+      .node-store{fill:#f7edff;stroke:#76598a;stroke-width:2;rx:14;filter:url(#shadow)}
+      .label{font:700 20px 'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;fill:#183b2e;text-anchor:middle}
+      .small{font:400 14px 'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif;fill:#667a72;text-anchor:middle}
+      .line{fill:none;stroke:#8bad9f;stroke-width:2.2;marker-end:url(#arrow)}
+      .line-soft{fill:none;stroke:#b4c8bf;stroke-width:1.8;stroke-dasharray:7 6;marker-end:url(#arrow)}
+      .group{fill:#ffffff;stroke:#d9e7e0;stroke-width:1.5;rx:24}
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="#fbfaf6"/>
+  <rect x="0" y="0" width="1600" height="12" fill="#173d2e"/>
+  <text x="70" y="72" class="title">봄내로그 · 프로젝트 구조도</text>
+  <text x="70" y="105" class="subtitle">Restaurant_List — 화면, 공통 기능, 데이터 흐름을 중심으로 정리</text>
+
+  <text x="70" y="160" class="section">01  ENTRY</text>
+  <text x="355" y="160" class="section">02  PAGES</text>
+  <text x="975" y="160" class="section">03  SHARED LOGIC</text>
+  <text x="1280" y="160" class="section">04  DATA / STORAGE</text>
+
+  <rect x="45" y="180" width="250" height="750" class="group"/>
+  <rect x="325" y="180" width="600" height="750" class="group"/>
+  <rect x="955" y="180" width="270" height="750" class="group"/>
+  <rect x="1255" y="180" width="300" height="750" class="group"/>
+
+  <!-- Entry -->
+  <rect x="80" y="245" width="180" height="76" class="node-main"/>
+  <text x="170" y="276" class="label">메인 화면</text>
+  <text x="170" y="302" class="small">index.html</text>
+
+  <rect x="80" y="410" width="180" height="76" class="node"/>
+  <text x="170" y="441" class="label">공통 헤더</text>
+  <text x="170" y="467" class="small">components/header.html</text>
+
+  <rect x="80" y="575" width="180" height="76" class="node"/>
+  <text x="170" y="606" class="label">추천·지역 선택</text>
+  <text x="170" y="632" class="small">슬라이더 · 미니 지도</text>
+
+  <rect x="80" y="740" width="180" height="76" class="node"/>
+  <text x="170" y="771" class="label">공지·소식</text>
+  <text x="170" y="797" class="small">메인 콘텐츠 진입</text>
+
+  <!-- Pages -->
+  <rect x="365" y="225" width="220" height="82" class="node-main"/>
+  <text x="475" y="258" class="label">맛집 탐색</text>
+  <text x="475" y="284" class="small">food_page.html</text>
+
+  <rect x="665" y="225" width="220" height="82" class="node-main"/>
+  <text x="775" y="258" class="label">맛집 상세</text>
+  <text x="775" y="284" class="small">restaurant_detail.html</text>
+
+  <rect x="365" y="385" width="220" height="82" class="node"/>
+  <text x="475" y="418" class="label">로그인</text>
+  <text x="475" y="444" class="small">auth/login_page.html</text>
+
+  <rect x="665" y="350" width="220" height="82" class="node"/>
+  <text x="775" y="383" class="label">회원가입</text>
+  <text x="775" y="409" class="small">auth/signup_page.html</text>
+
+  <rect x="665" y="455" width="220" height="82" class="node"/>
+  <text x="775" y="488" class="label">계정 찾기</text>
+  <text x="775" y="514" class="small">auth/find_account.html</text>
+
+  <rect x="365" y="575" width="220" height="82" class="node"/>
+  <text x="475" y="608" class="label">내 정보</text>
+  <text x="475" y="634" class="small">user_information/my_info.html</text>
+
+  <rect x="665" y="575" width="220" height="82" class="node"/>
+  <text x="775" y="608" class="label">내 활동</text>
+  <text x="775" y="634" class="small">user_information/my_activity.html</text>
+
+  <rect x="365" y="755" width="220" height="82" class="node"/>
+  <text x="475" y="788" class="label">공지사항</text>
+  <text x="475" y="814" class="small">main/announcement.html</text>
+
+  <rect x="665" y="755" width="220" height="82" class="node"/>
+  <text x="775" y="788" class="label">춘천 소식</text>
+  <text x="775" y="814" class="small">main/news.html</text>
+
+  <!-- Shared logic -->
+  <rect x="990" y="225" width="200" height="76" class="node"/>
+  <text x="1090" y="256" class="label">검색·필터</text>
+  <text x="1090" y="282" class="small">headerSearch · Explorer</text>
+
+  <rect x="990" y="350" width="200" height="76" class="node"/>
+  <text x="1090" y="381" class="label">지도·길찾기</text>
+  <text x="1090" y="407" class="small">Map · Directions</text>
+
+  <rect x="990" y="475" width="200" height="76" class="node"/>
+  <text x="1090" y="506" class="label">인증·즐겨찾기</text>
+  <text x="1090" y="532" class="small">js/auth/*</text>
+
+  <rect x="990" y="600" width="200" height="76" class="node"/>
+  <text x="1090" y="631" class="label">상세·게시판</text>
+  <text x="1090" y="657" class="small">Detail · Board</text>
+
+  <rect x="990" y="725" width="200" height="76" class="node"/>
+  <text x="1090" y="756" class="label">공통 UI</text>
+  <text x="1090" y="782" class="small">header.js · CSS</text>
+
+  <!-- Data -->
+  <rect x="1290" y="225" width="230" height="82" class="node-data"/>
+  <text x="1405" y="258" class="label">음식점 데이터</text>
+  <text x="1405" y="284" class="small">restaurantData.js</text>
+
+  <rect x="1290" y="365" width="230" height="82" class="node-data"/>
+  <text x="1405" y="398" class="label">CSV 원본·가공본</text>
+  <text x="1405" y="424" class="small">전국_음식점_정보csv/</text>
+
+  <rect x="1290" y="505" width="230" height="82" class="node-data"/>
+  <text x="1405" y="538" class="label">지도 경계 데이터</text>
+  <text x="1405" y="564" class="small">data/area/*.geojson</text>
+
+  <rect x="1290" y="645" width="230" height="82" class="node-store"/>
+  <text x="1405" y="678" class="label">브라우저 저장소</text>
+  <text x="1405" y="704" class="small">localStorage · Cookie</text>
+
+  <rect x="1290" y="785" width="230" height="82" class="node-data"/>
+  <text x="1405" y="818" class="label">이미지 자산</text>
+  <text x="1405" y="844" class="small">img/ · img/foodlist/</text>
+
+  <!-- Connections -->
+  <path d="M260 283 H365" class="line"/>
+  <path d="M260 283 C305 283 310 266 365 266" class="line"/>
+  <path d="M585 266 H665" class="line"/>
+  <path d="M170 321 V410" class="line-soft"/>
+  <path d="M260 448 H365" class="line"/>
+  <path d="M585 426 C625 426 625 391 665 391" class="line"/>
+  <path d="M585 426 C625 426 625 496 665 496" class="line"/>
+  <path d="M475 467 V575" class="line"/>
+  <path d="M585 616 H665" class="line"/>
+  <path d="M260 778 C305 778 320 796 365 796" class="line"/>
+  <path d="M585 796 H665" class="line"/>
+  <path d="M260 613 C315 613 305 266 365 266" class="line"/>
+
+  <path d="M585 266 H990" class="line-soft"/>
+  <path d="M885 266 C930 266 940 388 990 388" class="line-soft"/>
+  <path d="M885 391 C940 391 940 513 990 513" class="line-soft"/>
+  <path d="M885 616 H990" class="line-soft"/>
+  <path d="M260 448 C700 448 710 763 990 763" class="line-soft"/>
+
+  <path d="M1190 263 H1290" class="line"/>
+  <path d="M1190 388 C1240 388 1240 406 1290 406" class="line"/>
+  <path d="M1190 388 C1240 388 1240 546 1290 546" class="line"/>
+  <path d="M1190 513 C1240 513 1240 686 1290 686" class="line"/>
+  <path d="M1190 638 C1240 638 1240 686 1290 686" class="line-soft"/>
+  <path d="M885 266 C1000 190 1190 190 1290 266" class="line-soft"/>
+
+  <text x="800" y="962" class="small">실선: 주요 화면 이동/직접 연결 · 점선: 공통 모듈 및 데이터 의존 관계</text>
+</svg>

@@ -51,6 +51,8 @@
 - 선택한 동네에 따라 테두리와 강조 스타일 동기화
 - 마커 클릭 시 식당 정보창 표시
 - 길찾기 기능 및 현재 위치 기반 UI 구성
+메인 미니 지도(`js/restaurant_homepageMap.js`)와 맛집 탐색 지도(`js/restaurantMap.js`)는 모두 Google Maps JavaScript API를 사용합니다. 
+<- 메인 지도는 카카오 지도로 변경
 
 ### 4. 상세 페이지 기능
 

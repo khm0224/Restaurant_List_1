@@ -5,7 +5,7 @@
  * 저장소를 아는 곳을 여기 하나로 모아 화면 스크립트가 users를 직접 만지지 않게 함.
  *
  * 의존: auth.js (getCurrentUser / saveUsers)
- * 공개: toggleFavorite / isFavorite / getFavoriteIds
+ * 공개: toggleFavorite / isFavorite / getFavoriteIds / countFavorites
  *
  * 한계: 비로그인 사용자는 쓸 수 없음. 회원 객체에 붙어 있어 로그인이 전제됨.
  *       별도 키로 두면 가능하지만, 지금은 로그인해야 쓰는 기능으로 정함.
@@ -29,6 +29,15 @@ function getFavoriteIds() {
 
 	// 복사본을 돌려줌 — 원본을 내주면 밖에서 push해도 저장이 안 돼 조용히 어긋남
 	return user ? ensureFavorites(user).slice() : [];
+}
+
+// 관리자 화면용 — 현재 로그인한 사람이 아니라 넘겨받은 회원의 개수를 셈.
+// getFavoriteIds()는 항상 getCurrentUser()를 보므로 남의 것을 셀 수 없음.
+//
+// ensureFavorites를 쓰지 않은 이유: 그쪽은 없는 필드를 만들어 넣음(쓰기).
+// 세기만 하는데 남의 회원 객체를 건드리면 저장도 안 된 채 메모리만 바뀜.
+function countFavorites(user) {
+	return Array.isArray(user?.favorites) ? user.favorites.length : 0;
 }
 
 function isFavorite(storeId) {
