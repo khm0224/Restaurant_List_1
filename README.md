@@ -1,167 +1,520 @@
-# 봄내로그 (Restaurant_List)
+# 봄내로그 (Bomnaelog)
 
-춘천 지역 음식점을 동네와 업종별로 탐색하고, 지도에서 위치와 상세 정보를 확인할 수 있는 정적 웹 프로젝트입니다.
+춘천시 지역 음식점을 중심으로 동네별 맛집을 탐색하고, 지도에서 위치를 확인하며, 식당 상세 정보를 살펴볼 수 있는 정적 웹 애플리케이션입니다.
+
+이 프로젝트는 실제 백엔드 서버 없이 HTML, CSS, JavaScript만으로 구성된 프론트엔드형 서비스로, 로컬 환경에서 간단히 실행할 수 있습니다. 사용자는 동네, 음식 종류, 식당명을 기준으로 식당을 찾고, 지도와 길찾기, 즐겨찾기, 상세 페이지, 리뷰/댓글 기능을 통해 맛집 탐색 경험을 제공합니다.
+
+---
+
+## 프로젝트 소개
+
+### 핵심 목표
+
+- 춘천 내 동네/업종별 음식점 정보를 한눈에 탐색할 수 있도록 제공
+- 지도 기반으로 식당 위치와 행정동 경계를 직관적으로 확인
+- 정적 웹 환경에서도 로그인/프로필/즐겨찾기 같은 사용자 경험 구현
+- 학습용 프로젝트로서 데이터 구조와 UI 로직을 분리해 유지보수하기 쉽게 구성
+
+### 프로젝트 컨셉
+
+봄내로그는 "춘천 구석구석 맛집 찾기"를 주제로 한 지역 기반 음식점 탐색 서비스입니다. 사용자는 메인 페이지에서 지역을 고르거나, 검색창을 통해 식당을 찾고, 이동 보조 도구와 리뷰 정보를 함께 확인할 수 있습니다.
+
+이 프로젝트는 실제 배포용 서비스라기보다, 프론트엔드 동작과 UI/UX를 학습하고 구현해보는 데 초점을 두고 있으며, 데이터는 로컬 JavaScript 객체와 CSV/GeoJSON 파일을 활용합니다.
+
+---
 
 ## 주요 기능
 
-- 메인 화면 추천 음식점 슬라이더와 춘천 행정동 선택
-- 동네별 음식점 목록 탐색 및 한식, 일식, 중식, 양식, 디저트 필터
-- Google Maps 기반 음식점 마커와 춘천시/행정동 경계 표시
-- 음식점 상세 정보, 카테고리별 메뉴, 리뷰 사진, 댓글 확인 및 작성
-- 브라우저 기반 회원가입, 로그인, 아이디 찾기, 비밀번호 재설정, 프로필 메뉴
-- 공지사항 및 소식 영역
+### 1. 동네 기반 맛집 탐색
 
-## 화면 구성
+- 메인 페이지에서 춘천 행정동을 선택 가능
+- 행정동별로 음식점을 카테고리별로 필터링
+- 상단/사이드바에서 동네와 업종을 변경하며 목록 실시간 갱신
+- 식당 카드 클릭 시 상세 페이지 이동
 
-| 화면 | 경로 | 내용 |
-| --- | --- | --- |
-| 메인 | `index.html` | 추천 맛집, 지역 선택, 공지사항 및 소식 |
-| 맛집 탐색 | `html/food_page.html` | 행정동/업종 필터, 음식점 목록, 지도 |
-| 맛집 상세 | `html/restaurant_detail.html` | 상세 정보, 메뉴, 리뷰, 댓글, 위치 지도 |
-| 인증 | `html/auth/` | 로그인, 회원가입, 아이디/비밀번호 찾기 |
-| 데이터 비교 도구 | `html/compare_restaurants.html` | `restaurantData.js`와 CSV 데이터 비교 |
+### 2. 업종 필터 기능
 
-## 실행 방법
+지원 업종은 다음과 같습니다.
 
-이 프로젝트는 별도 빌드 과정이나 패키지 설치가 필요 없는 HTML, CSS, JavaScript 기반 정적 사이트입니다. CSV, GeoJSON, HTML 컴포넌트를 `fetch`로 불러오기 때문에 브라우저에서 파일을 직접 열지 말고 로컬 HTTP 서버로 실행해야 합니다.
+- 한식
+- 일식
+- 중식
+- 양식
+- 디저트
 
-서버 실행 후 브라우저에서 `http://localhost:8000/index.html`에 접속합니다.
+사용자는 선택한 지역을 기준으로 업종별 식당 목록을 빠르게 좁혀 볼 수 있으며, 목록과 지도 마커가 함께 동기화됩니다.
 
-## 지도 설정
+### 3. 지도 시각화
 
-메인 미니 지도(`js/restaurant_homepageMap.js`)와 맛집 탐색 지도(`js/restaurantMap.js`)는 모두 Google Maps JavaScript API를 사용합니다.
+- Kakao Maps 기반으로 식당 위치 마커 표시
+- 행정동/시 경계 GeoJSON 데이터를 이용해 지역 경계 표시
+- 선택한 동네에 따라 테두리와 강조 스타일 동기화
+- 마커 클릭 시 식당 정보창 표시
+- 길찾기 기능 및 현재 위치 기반 UI 구성
 
-1. Google Cloud Console에서 Maps JavaScript API를 활성화합니다.
-2. API 키의 HTTP 리퍼러 제한을 로컬 개발 주소와 배포 주소로 설정합니다.
-3. `js/map-config.js`의 `window.GOOGLE_MAPS_API_KEY`에 발급받은 키를 넣습니다.
+### 4. 상세 페이지 기능
 
-API 키가 없거나 유효하지 않으면 지도 영역에는 비활성화 안내가 표시되며, 나머지 기능은 사용할 수 있습니다. API 키는 공개 저장소에 커밋하지 않도록 주의합니다.
+- 식당명, 주소, 평점, 리뷰 수 표시
+- 메뉴/사진/리뷰/댓글 UI 구성
+- 식당별로 이미지, 평점, 위치 정보를 볼 수 있음
+- 리뷰 및 댓글 작성 기능이 브라우저 localStorage에 저장됨
+
+### 5. 공통 헤더 검색
+
+- 모든 페이지에 공통으로 적용되는 헤더 검색 기능
+- 검색어 입력 시 자동완성 드롭다운 제공
+- 검색 대상은 다음 우선순위로 판별
+  1. 동네 이름
+  2. 음식 종류
+  3. 식당명
+- 검색 결과가 있으면 해당 식당 상세 페이지 또는 맛집 탐색 페이지로 이동
+
+### 6. 회원 기능 (시뮬레이션)
+
+브라우저 기반으로 동작하는 데모 인증 기능이 포함되어 있습니다.
+
+- 회원가입
+- 로그인
+- 로그아웃
+- 아이디 찾기
+- 비밀번호 재설정
+- 프로필 메뉴 표시
+- 관리자 계정 시드 생성
+
+모든 데이터는 localStorage와 쿠키를 활용하며, 실제 서버/DB가 없으므로 데모용 구현입니다.
+
+### 7. 즐겨찾기 기능
+
+- 식당을 즐겨찾기 목록에 추가/삭제 가능
+- 브라우저 로컬 데이터 기반으로 저장
+- 맛집 탐색 페이지에서 즐겨찾기 버튼 및 목록 표시 지원
+
+### 8. 길찾기 및 현재 위치 기능
+
+- 지도에서 출발지/도착지 설정 가능
+- 사용자 위치를 기준으로 경로 탐색 흐름 제공
+- 경로 탐색 UI와 지도 컨트롤 구성
+
+### 9. 공지사항 / 뉴스 영역
+
+- 메인 페이지에서 공지사항, 소식, 지역 정보를 보여주는 영역이 존재
+- 게시판형 동작이 아닌 정적 콘텐츠 기반으로 구성
+
+---
+
+## 기술 스택
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Kakao Maps JavaScript API
+- Google Maps JavaScript API (관련 설정이 남아 있는 구조)
+
+### Data & Storage
+
+- CSV 데이터 파일
+- GeoJSON 경계 데이터
+- localStorage
+- document.cookie 기반 로그인 쿠키
+
+### Design / UI
+
+- 반응형 레이아웃
+- 공통 헤더 컴포넌트
+- 카드형 식당 목록 UI
+- 지도 정보창과 탐색 패널 UI
+
+### 개발 특성
+
+- 별도의 빌드 툴 없이 정적 파일로 구성
+- 브라우저에서 직접 실행 가능
+- `fetch`로 HTML 컴포넌트와 GeoJSON 데이터를 불러오는 구조
+
+---
+
+## 프로젝트 구조
+
+```text
+Restaurant_List/
+├── index.html
+├── README.md
+├── css/
+│   ├── announcement.css
+│   ├── favorites.css
+│   ├── food_page.css
+│   ├── header.css
+│   ├── homepageRestaurantRanking.css
+│   ├── main_info.css
+│   ├── main_page_style.css
+│   ├── my_info.css
+│   ├── restaurant_detail.css
+│   └── auth/
+│       ├── find_account.css
+│       ├── login_page.css
+│       ├── signup_page.css
+│       └── user_menu.css
+├── data/
+│   └── area/
+│       ├── chuncheon-admin-dong.geojson
+│       └── chuncheon-city-boundary.geojson
+├── docs/
+│   └── auth-guide.md
+├── html/
+│   ├── compare_restaurants.html
+│   ├── food_page.html
+│   ├── restaurant_detail.html
+│   ├── auth/
+│   │   ├── find_account.html
+│   │   ├── login_page.html
+│   │   └── signup_page.html
+│   ├── components/
+│   │   └── header.html
+│   ├── main/
+│   │   ├── announcement.html
+│   │   ├── Chuncheon_illustrations.html
+│   │   ├── main_info.html
+│   │   └── news.html
+│   └── user_information/
+│       ├── my_activity.html
+│       └── my_info.html
+├── img/
+│   └── foodlist/
+├── js/
+│   ├── announcement.js
+│   ├── board.js
+│   ├── compareRestaurants.js
+│   ├── directionsController.js
+│   ├── directionsService.js
+│   ├── food_page.js
+│   ├── geolocationService.js
+│   ├── header.js
+│   ├── headerSearch.js
+│   ├── homepageRestaurantRanking.js
+│   ├── main_hero-slider.js
+│   ├── main.js
+│   ├── map-config-KakaoJS.js
+│   ├── map-config-KakaoRest.js
+│   ├── map-config.js
+│   ├── my_activity.js
+│   ├── my_info.js
+│   ├── nearbyRestaurantService.js
+│   ├── news.js
+│   ├── places-photos.js
+│   ├── region-slider.js
+│   ├── restaurant_homepageMap.js
+│   ├── restaurantData.js
+│   ├── restaurantDetail.js
+│   ├── restaurantDetailMap.js
+│   ├── restaurantExplorer.js
+│   ├── restaurantMap.js
+│   ├── restaurantService.js
+│   └── auth/
+│       ├── auth.js
+│       ├── favorites.js
+│       ├── findAccount.js
+│       ├── login_modal.js
+│       ├── login.js
+│       ├── profileMenu.js
+│       └── signup.js
+├── 전국_음식점_정보csv/
+│   ├── filter_file_*.csv
+│   ├── res_Food_List.csv
+│   ├── res_Food_List_geocoded.csv
+│   ├── title.csv
+│   └── ...
+└── ...
+```
+
+---
+
+## 주요 파일 설명
+
+### 1. `index.html`
+
+메인 랜딩 페이지입니다. 히어로 섹션, 지역 선택 버튼, 추천 맛집 슬라이더, 커뮤니티/공지 관련 영역이 구성되어 있습니다.
+
+### 2. `html/food_page.html`
+
+지역과 업종 기반 탐색용 페이지입니다. 좌측 목록, 우측 지도, 동네/카테고리 필터, 길찾기 패널이 포함됩니다.
+
+### 3. `js/restaurantData.js`
+
+프로젝트의 핵심 데이터 구조 파일입니다. 지역별 업종별 식당 배열을 정의하고 전역 객체 `window.restaurantData`로 저장합니다. 검색, 카드 목록, 상세 페이지 이동, 자동완성 기능의 근간이 됩니다.
+
+### 4. `js/restaurantMap.js`
+
+지도 초기화, 마커 생성, 경계 오버레이, 지역 강조, 식당 정보창 표시 로직을 담당합니다.
+
+### 5. `js/restaurantExplorer.js`
+
+URL 파라미터를 읽어 현재 동네/카테고리 상태를 적용하고, 식당 목록과 지도 마커를 동기화합니다.
+
+### 6. `js/headerSearch.js`
+
+공통 헤더 검색창에서 발생하는 입력, 클릭, Enter, 자동완성 동작을 처리합니다. 검색 결과에 따라 상세 페이지 또는 탐색 페이지로 이동합니다.
+
+### 7. `js/auth/auth.js`
+
+회원 저장소, 쿠키 처리, 로그인 상태 확인, 관리자 시드 생성 등의 인증 로직 중앙 관리 파일입니다.
+
+### 8. `js/auth/login.js`
+
+로그인/로그아웃 절차와 헤더 갱신을 담당합니다.
+
+### 9. `js/auth/profileMenu.js`
+
+로그인 상태에서 프로필 메뉴 드롭다운 UI와 사용자 표시를 처리합니다.
+
+### 10. `js/restaurantDetail.js`
+
+식당 상세 페이지에서 식당 정보를 렌더링하고, 리뷰/댓글을 화면에 표시하는 로직입니다.
+
+---
 
 ## 데이터 흐름
 
-```text
-전국_음식점_정보csv/filter_file_Gyo_dong_JS_geocoded.csv
-	-> js/restaurantService.js
-	-> js/restaurantMap.js
-	-> 음식점 마커 표시
-
-js/restaurantData.js
-	-> js/headerSearch.js, js/restaurantExplorer.js, js/restaurantDetail.js
-	-> 목록 및 상세 화면 표시
-
-data/area/*.geojson
-	-> js/restaurantMap.js
-	-> 춘천시 및 행정동 경계 표시
-```
-
-현재 CSV 기반 지도 데이터는 교동 음식점을 대상으로 하며, 목록과 상세 화면은 `js/restaurantData.js`에 정의된 데이터를 사용합니다.
-
-## 헤더 검색 기능
-
-모든 공통 헤더 화면의 검색창은 동네 이름, 음식 종류, 식당명을 입력받아 적절한 화면으로 이동합니다. 헤더 UI는 `html/components/header.html`에 한 번만 정의하고, 검색 동작은 `js/headerSearch.js`에서 공통으로 처리합니다.
+### 식당 데이터 흐름
 
 ```text
-헤더 검색창 입력
-	-> js/headerSearch.js
-	-> js/restaurantData.js에서 동네, 업종, 식당명 검색
-	-> 탐색 화면 또는 상세 화면으로 URL 이동
-	-> js/restaurantExplorer.js가 URL 필터를 적용
+restaurantData.js
+  -> 식당 정보 객체 생성
+  -> headerSearch.js / restaurantExplorer.js / restaurantDetail.js
+  -> 지도 마커 / 리스트 렌더링 / 상세 정보 표시
 ```
 
-### 검색 대상과 결과
+### 지도 데이터 흐름
 
-검색어는 아래 표의 순서대로 판정합니다 (동네 이름 → 업종 → 식당명).
+```text
+data/area/chuncheon-admin-dong.geojson
+  -> restaurantMap.js
+  -> 행정동 경계 렌더링
 
-| 입력 | 검색 방식 | 결과 |
+data/area/chuncheon-city-boundary.geojson
+  -> restaurantMap.js
+  -> 춘천시 경계 표시
+```
+
+### 검색 데이터 흐름
+
+```text
+헤더 검색 입력
+  -> headerSearch.js
+  -> restaurantData.js로 검색 대상 조회
+  -> district / category / 식당명 판별
+  -> food_page.html 또는 restaurant_detail.html 이동
+```
+
+### 인증 데이터 흐름
+
+```text
+회원가입/로그인 폼
+  -> auth.js
+  -> localStorage userAccounts 저장
+  -> loginUser 쿠키 저장
+  -> profileMenu.js / login.js로 UI 갱신
+```
+
+---
+
+## 실행 방법
+
+이 프로젝트는 서버 프레임워크 없이 정적 파일 기반으로 구성되어 있으므로, 브라우저에서 직접 파일을 열기보다 로컬 HTTP 서버를 통해 실행하는 것을 권장합니다.
+
+### 1. 저장소 클론
+
+```bash
+git clone https://github.com/your-username/Restaurant_List.git
+cd Restaurant_List
+```
+
+### 2. 로컬 서버 실행
+
+Python을 사용한 경우:
+
+```bash
+python -m http.server 8000
+```
+
+그 다음 브라우저에서 다음 주소를 접속합니다.
+
+```text
+http://localhost:8000/index.html
+```
+
+### 3. 브라우저 접속
+
+- 메인 페이지: `http://localhost:8000/index.html`
+- 맛집 탐색 페이지: `http://localhost:8000/html/food_page.html`
+- 상세 페이지는 식당 데이터 선택 시 동적으로 이동됩니다.
+
+> 주의: 이 프로젝트는 `fetch`를 통해 HTML 컴포넌트, GeoJSON, CSV 파일을 불러오므로 파일 경로로 직접 열면 일부 기능이 정상 동작하지 않을 수 있습니다.
+
+---
+
+## 지도 API 설정
+
+현재 프로젝트는 Kakao Maps를 중심으로 동작하고 있으며, 일부 구조에서는 Google Maps 관련 설정도 포함되어 있습니다.
+
+### Kakao Maps
+
+`js/map-config-KakaoJS.js` 또는 관련 설정 파일에서 API 키를 관리합니다.
+
+```
+window.KAKAO_JS_MAPS_API_KEY
+```
+
+이 값이 유효하지 않으면 지도는 비활성화되며, 사용자에게 안내 메시지가 표시됩니다.
+
+### Google Maps
+
+기존 구조상 Google Maps 기반 로직도 일부 남아 있으며, `js/map-config.js` 또는 관련 파일에서 키를 연결할 수 있도록 설계되어 있습니다. 실제 운영 환경에서는 민감한 API 키를 공개 저장소에 커밋하지 않는 것이 안전합니다.
+
+---
+
+## 인증 및 브라우저 저장소 동작
+
+### 저장 방식
+
+- 회원 정보: `localStorage`의 `userAccounts`
+- 로그인 상태: `loginUser` 쿠키
+- 리뷰/댓글: `localStorage`
+- 즐겨찾기: `localStorage`
+
+### 특이점
+
+이 프로젝트는 서버를 두지 않고 브라우저에서만 동작하는 데모 앱입니다. 즉,
+
+- 회원 정보가 실제 DB에 저장되지 않음
+- 다른 브라우저 또는 기기에서 동일 계정 정보 유지 불가
+- 데이터가 삭제되면 초기화됨
+- 실제 서비스 확장 시 서버와 데이터베이스가 필요함
+
+### 관리자 계정
+
+`js/auth/auth.js`에 관리자 계정이 시드로 주입됩니다.
+
+```text
+id: admin
+pw: admin1234
+```
+
+이 계정은 데모용으로만 사용되며, 실제 운영 환경에서는 보안상 제거해야 합니다.
+
+---
+
+## 맛집 탐색 로직 상세
+
+### 동네 및 업종 선택 흐름
+
+1. 사용자가 메인 화면 또는 탐색 화면에서 동네 선택
+2. URL 쿼리 파라미터가 생성되거나 읽어짐
+3. `restaurantExplorer.js`가 현재 선택 상태를 반영
+4. 식당 목록 렌더링
+5. 지도 마커 및 행정동 경계 강조
+6. 카드 클릭 시 상세 페이지 이동
+
+### 검색 로직
+
+검색어는 우선순위에 따라 다음 방식으로 판단됩니다.
+
+- 동네 이름 일치 시: 해당 동네의 전체 업종 목록 이동
+- 업종명 일치 시: 전체 동네 범위 중 해당 업종 필터 적용
+- 식당명 일치 시: 상세 페이지로 이동
+- 검색어 없음: 현재 화면 유지
+- 일치 항목이 없을 경우: 검색 결과 없음 메시지 표시
+
+### 자동완성 기능
+
+`headerSearch.js`는 입력 이벤트를 감지해, 사용자 입력 문자열을 포함하는 식당 이름을 최대 8개까지 보여줍니다. 각 항목은 아래 정보를 표시합니다.
+
+- 식당명
+- 동네
+- 업종
+
+클릭 시 즉시 해당 식당의 상세 페이지로 이동합니다.
+
+---
+
+## 화면 구성
+
+| 화면 | 경로 | 설명 |
 | --- | --- | --- |
-| `소양동`, `교동` 등 15개 행정동 이름 | 등록된 동 이름과 완전 일치 | 전체 업종에서 해당 동 목록 화면으로 이동 |
-| `한식`, `일식`, `중식`, `양식`, `디저트` | 등록된 업종명과 완전 일치 | 전체 지역의 해당 업종 목록 화면으로 이동 |
-| 식당명 | 정확히 일치하는 이름을 우선하고, 없으면 이름에 입력어가 포함된 첫 식당을 선택 | 해당 식당 상세 화면으로 이동 |
-| 빈 값 | 검색하지 않음 | 현재 화면 유지 |
-| 위 조건에 모두 해당 없음 | `restaurantData.js`에서 검색 실패 | `검색 결과가 없습니다.` 알림 표시 |
+| 메인 화면 | `index.html` | 추천 맛집, 지역 선택, 행사/공지/소식 영역 |
+| 맛집 탐색 | `html/food_page.html` | 동네/업종 기반 식당 목록 및 지도 |
+| 식당 상세 | `html/restaurant_detail.html` | 식당 정보, 메뉴, 리뷰, 댓글, 위치 안내 |
+| 로그인 | `html/auth/login_page.html` | 로그인 폼 및 인증 모달 |
+| 회원가입 | `html/auth/signup_page.html` | 회원 생성 페이지 |
+| 아이디/비밀번호 찾기 | `html/auth/find_account.html` | 계정 찾기 기능 |
+| 마이 페이지 | `html/user_information/my_info.html` | 내 정보/활동 페이지 |
+| 공지사항/뉴스 | `html/main/*.html` | 정적 정보 페이지 |
 
-동 이름 검색은 다음과 같은 URL을 만듭니다.
+---
 
-```text
-html/food_page.html?district=소양동
-```
+## 주요 구현 포인트
 
-음식 종류 검색은 다음과 같은 URL을 만듭니다.
+### 1. 공통 헤더 구조
 
-```text
-html/food_page.html?district=전체&category=일식
-```
+- `html/components/header.html`에 공통 헤더 구조가 포함됨
+- 페이지마다 `header.js`가 이 구조를 불러와 삽입
+- 검색 기능은 각 페이지마다 따로 만들지 않고 전역적으로 처리
 
-식당명 검색은 식당이 속한 동네, 업종, 배열 인덱스를 URL에 전달합니다.
+### 2. 모듈화된 JS 구조
 
-```text
-html/restaurant_detail.html?district=교동&category=한식&id=0
-```
+- 데이터 관리: `restaurantData.js`
+- 지도 렌더링: `restaurantMap.js`
+- 탐색 UI: `restaurantExplorer.js`
+- 검색: `headerSearch.js`
+- 인증: `auth.js`, `login.js`, `signup.js`
+- 즐겨찾기: `favorites.js`
 
-### 검색어 자동완성 드롭다운
+### 3. 정적 웹앱 장점
 
-검색창에 입력할 때마다(`input` 이벤트) 이름에 그 글자가 포함된 식당을 최대 8개까지 실시간으로 걸러 입력창 아래 드롭다운으로 보여줍니다. 각 항목은 `식당명`과 `동네 · 업종`을 함께 표시하며, 클릭하면 바로 해당 식당의 상세 화면으로 이동합니다. 검색창 바깥 클릭이나 Esc 키, Enter로 검색을 실행하면 드롭다운이 닫힙니다.
+- 빠른 초기 개발
+- 별도 프레임워크나 서버 설치 불필요
+- 작은 프로젝트를 빠르게 시연/운영 가능
 
-### 파일별 역할
+### 4. 데모용 한계
 
-| 파일 | 역할 |
-| --- | --- |
-| `html/components/header.html` | 검색 입력창, 검색 버튼, 자동완성 드롭다운(`.search-dropdown`)을 포함한 공통 헤더 마크업 |
-| `css/header.css` | 헤더와 검색창, 자동완성 드롭다운 스타일 |
-| `js/headerSearch.js` | 클릭·Enter·입력을 감지해 검색어에 따라 탐색/상세 화면 URL을 생성하고, 자동완성 드롭다운을 갱신 |
-| `js/restaurantData.js` | 검색, 자동완성, 목록 표시에 사용하는 동네별 음식점 데이터 제공 |
-| `js/restaurantExplorer.js` | 탐색 화면 URL의 `district`, `category` 값을 읽어 동네 버튼, 업종 선택, 목록, 지도 마커를 동기화 |
-| `js/food_page.js` | 탐색 화면의 동네 바 가로 스크롤, 사이드바 접기, 지도 초기화 담당 |
+- 백엔드 부재
+- 실제 사용자 인증 및 권한 관리 불가
+- 데이터 영속성 제한
+- 실사용 서비스로는 확장 불가
 
-### 탐색 화면 필터 적용
+---
 
-`js/restaurantExplorer.js`는 URL을 읽어 초기 선택 상태를 만듭니다.
+## 향후 개선 방향
 
-- `district`: 선택한 행정동입니다. 값이 없으면 화면의 기본 동네 버튼을 사용합니다.
-- `category`: 사이드바에 등록된 업종 값일 때만 적용합니다. 올바르지 않은 값이면 기본 업종 선택을 유지합니다.
-- 동네를 바꾸면 음식점 목록을 다시 만들고, Google Maps의 행정동 강조와 마커 표시를 갱신합니다.
-- 업종을 바꾸면 음식점 목록과 지도 마커를 같은 업종으로 다시 필터링합니다.
-- 목록 카드를 클릭하거나 Enter/Space 키를 누르면 해당 식당의 상세 화면으로 이동합니다. 길찾기와 즐겨찾기 버튼은 카드 이동 이벤트를 막습니다.
+이 프로젝트는 학습용 정적 웹앱이지만, 실제 서비스로 발전시키기 위해 다음 항목을 적용할 수 있습니다.
 
-### 스크립트 연결 규칙
+- Node.js + Express 또는 Spring Boot 백엔드 도입
+- MySQL / PostgreSQL 연동
+- JWT 기반 인증 시스템
+- 실제 업소 데이터베이스 구축
+- 관리자 페이지 추가
+- 리뷰/댓글 CRUD 서버화
+- 사진 업로드 기능
+- 지도 API 고도화 및 별도 페이지 구성
+- 검색 기능 서버 처리로 확장
 
-`headerSearch.js`는 검색 데이터가 준비된 뒤에 불러와야 합니다. 헤더는 `header.js`가 비동기로 삽입하지만, 검색 모듈은 `document`에 이벤트를 위임하므로 헤더가 삽입된 후에도 클릭과 Enter를 정상적으로 처리합니다.
+---
 
-맛집 탐색 화면의 권장 로드 순서는 다음과 같습니다.
+## 문서 참고
 
-```html
-<script src="../js/restaurantData.js"></script>
-<script src="../js/restaurantMap.js"></script>
-<script src="../js/restaurantExplorer.js"></script>
-<script src="../js/food_page.js"></script>
-<script src="../js/headerSearch.js"></script>
-```
+- 인증 로직 구조 설명: [docs/auth-guide.md](docs/auth-guide.md)
 
-다른 헤더 사용 페이지에서도 `restaurantData.js` 다음에 `headerSearch.js`를 추가해야 합니다. 이전 페이지별 검색 구현은 사용하지 않으며, 공통 검색은 `headerSearch.js` 하나만 유지합니다.
+---
 
-## 주요 디렉터리
+## 프로젝트 요약
 
-```text
-css/                     페이지 및 인증 화면 스타일
-data/area/               춘천시/행정동 GeoJSON 경계 데이터
-docs/                    기능 연동 문서
-html/                    맛집 탐색, 상세, 인증 화면
-html/components/         재사용 헤더 컴포넌트
-img/foodlist/            음식점 이미지
-js/                      화면 동작, 데이터, 지도, 인증 로직
-js/auth/                 브라우저 기반 인증 및 프로필 로직
-전국_음식점_정보csv/     음식점 원본/가공 CSV 데이터
-```
+봄내로그는 춘천 지역 음식점을 탐색하는 정적 웹 애플리케이션으로, 지역 기반 맛집 안내, 지도 시각화, 검색, 상세 페이지, 인증, 즐겨찾기 기능을 함께 갖춘 데모 프로젝트입니다.
 
-## 브라우저 저장소 동작
+작은 규모의 프론트엔드 프로젝트를 빠르게 구축하고, 실사용 서비스로 발전시킬 수 있는 기반 구조를 담고 있다는 점에서 의미가 있습니다.
 
-- 회원 계정 정보는 브라우저 `localStorage`의 `userAccounts`에 저장됩니다.
-- 로그인 상태는 `loginUser` 쿠키로 유지됩니다.
-- 리뷰와 댓글은 브라우저 `localStorage`에 저장됩니다.
+---
 
-현재 인증과 게시 기능은 데모용 클라이언트 저장 방식입니다. 브라우저 데이터를 삭제하거나 다른 기기에서 접속하면 데이터가 유지되지 않으며, 실제 서비스로 확장하려면 서버 API와 데이터베이스 연동이 필요합니다.
+## 라이선스
 
-## 참고 문서
-
-- 인증 및 프로필 메뉴 구조: [docs/auth-guide.md](docs/auth-guide.md)
+현재 저장소에는 별도의 라이선스 파일이 명시되어 있지 않으므로, 프로젝트를 복제하거나 수정할 때 각자의 용도에 맞게 라이선스를 추가하는 것을 권장합니다.
 
