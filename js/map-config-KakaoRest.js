@@ -1,1 +1,1 @@
-window.Kakao_Rest_API_KEY = '3857898f4262692d7dc6fb03841b9bc2';
+window.Kakao_Rest_API_KEY = '';
