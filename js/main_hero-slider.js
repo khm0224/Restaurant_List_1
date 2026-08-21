@@ -3,6 +3,68 @@
     if (!hero) return;
 
     const track = document.getElementById('heroTrack');
+
+    // restaurantData 전체를 훑어 리뷰 많은순 상위 5곳을 뽑아 히어로 카드로 채움
+    function getTopRestaurantsByReview(limit) {
+        const restaurantData = window.restaurantData || {};
+
+        return Object.entries(restaurantData)
+            .flatMap(([district, categories]) =>
+                Object.entries(categories || {}).flatMap(([category, stores]) =>
+                    (stores || [])
+                        .map((store, index) => ({ ...store, district, category, index }))
+                        .filter(store => store.name)
+                )
+            )
+            .sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
+            .slice(0, limit);
+    }
+
+    function buildHeroCard(restaurant) {
+        const card = document.createElement('div');
+        card.className = 'hero-card';
+
+        const image = document.createElement('div');
+        image.className = 'hero-card-img';
+        image.style.backgroundImage = `url('${restaurant.img || ''}')`;
+
+        const info = document.createElement('div');
+        info.className = 'hero-card-info';
+
+        const tag = document.createElement('span');
+        tag.className = 'hero-card-tag';
+        tag.textContent = restaurant.category;
+
+        const name = document.createElement('h3');
+        name.className = 'hero-card-name';
+        name.textContent = restaurant.name;
+
+        const desc = document.createElement('p');
+        desc.className = 'hero-card-desc';
+        desc.textContent = `리뷰 ${restaurant.reviewCount}`;
+
+        const rating = document.createElement('div');
+        rating.className = 'hero-card-rating';
+        rating.textContent = `★ ${restaurant.rating}`;
+
+        const cta = document.createElement('a');
+        cta.className = 'hero-cta';
+        cta.href = `./html/restaurant_detail.html?${new URLSearchParams({
+            district: restaurant.district,
+            category: restaurant.category,
+            id: String(restaurant.index)
+        })}`;
+        cta.textContent = '맛집으로 이동 ›';
+
+        info.append(tag, name, desc, rating, cta);
+        card.append(image, info);
+        return card;
+    }
+
+    const topRestaurants = getTopRestaurantsByReview(5);
+    if (topRestaurants.length === 0) return;
+    track.replaceChildren(...topRestaurants.map(buildHeroCard));
+
     const realCards = Array.from(track.querySelectorAll('.hero-card'));
     const pagination = document.getElementById('heroPagination');
     const prevBtn = document.getElementById('heroPrev');
