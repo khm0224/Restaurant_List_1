@@ -29,7 +29,8 @@
 
 ## 지도 설정
 
-메인 미니 지도(`js/restaurant_homepageMap.js`)와 맛집 탐색 지도(`js/restaurantMap.js`)는 모두 Google Maps JavaScript API를 사용합니다.
+메인 미니 지도(`js/restaurant_homepageMap.js`)와 맛집 탐색 지도(`js/restaurantMap.js`)는 모두 Google Maps JavaScript API를 사용합니다. 
+<- 메인 지도는 카카오 지도로 변경
 
 1. Google Cloud Console에서 Maps JavaScript API를 활성화합니다.
 2. API 키의 HTTP 리퍼러 제한을 로컬 개발 주소와 배포 주소로 설정합니다.

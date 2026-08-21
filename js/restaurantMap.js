@@ -20,6 +20,7 @@
     let outlineOverlays = [];
     let selectedDistricts = new Set([ALL]);
     let selectedCategory = ALL;
+    let favoriteRestaurantKeys = null;
     let restaurantMarkers = [];
     let infoWindow;
     let infoId = 0;
@@ -61,9 +62,11 @@
     const addToBounds = (bounds, geometry) =>
         forEachCoordinate(geometry.coordinates, coordinate => bounds.extend(latLng(coordinate)));
     // 식당이 현재 선택한 행정동과 음식 카테고리에 해당하는지 검사합니다.
+    const getRestaurantKey = restaurant => `${restaurant.district}|${restaurant.name}`;
     const matchesFilter = restaurant =>
         (selectedDistricts.has(ALL) || selectedDistricts.has(restaurant.district)) &&
-        (selectedCategory === ALL || restaurant.category === selectedCategory);
+        (selectedCategory === ALL || restaurant.category === selectedCategory) &&
+        (favoriteRestaurantKeys === null || favoriteRestaurantKeys.has(getRestaurantKey(restaurant)));
 
     // SVG 문자열을 카카오 지도 MarkerImage 객체로 변환합니다.
     // 출발지·도착지 핀도 이 함수를 공유합니다.
@@ -320,6 +323,10 @@
         load: loadKakaoMaps,
         highlightDistricts,
         selectCategory(category) { selectedCategory = category; updateMarkerVisibility(); },
+        selectFavorites(keys) {
+            favoriteRestaurantKeys = keys === null ? null : new Set(keys);
+            updateMarkerVisibility();
+        },
         setRestaurants: createRestaurantMarkers,
         resize() { map?.relayout(); },
         getMap: () => map,
