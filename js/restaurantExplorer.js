@@ -12,6 +12,30 @@
     let selectedDistricts = new Set();
     let favoritesOnly = false;
 
+    // 즐겨찾기 저장 키를 지도 CSV에서도 비교할 수 있는 "행정동|음식점명" 키로 변환합니다.
+    function getFavoriteRestaurantKeys() {
+        const keys = [];
+        const restaurantData = window.restaurantData || {};
+
+        Object.entries(restaurantData).forEach(([district, districtData]) => {
+            Object.entries(districtData).forEach(([category, stores]) => {
+                stores.forEach((store, index) => {
+                    if (isFavorite(`${district}_${category}_${index}`)) {
+                        keys.push(`${district}|${store.name}`);
+                    }
+                });
+            });
+        });
+
+        return keys;
+    }
+
+    function syncFavoriteMarkers() {
+        window.RestaurantMap?.selectFavorites(
+            favoritesOnly ? getFavoriteRestaurantKeys() : null
+        );
+    }
+
     // 카드에서 선택한 식당의 위치를 URL로 전달해 상세 화면을 엽니다.
     function openStoreDetail(district, category, index) {
         const parameters = new URLSearchParams({ district, category, id: index });
@@ -131,7 +155,8 @@
                 button.textContent = favorite ? '★' : '☆';
                 button.classList.toggle('active', favorite);
 
-                if (favoritesOnly && !favorite) {
+                if (favoritesOnly) {
+                    syncFavoriteMarkers();
                     renderSelectedStores();
                 }
             });
@@ -211,6 +236,7 @@
         favoritesButton.setAttribute('aria-pressed', String(favoritesOnly));
         sidebarCategorySelect.value = '전체';
         window.RestaurantMap?.selectCategory('전체');
+        syncFavoriteMarkers();
         selectDistrict(ALL_DISTRICTS);
     });
 
@@ -237,6 +263,7 @@
             favoritesButton.setAttribute('aria-pressed', 'false');
         }
 
+        syncFavoriteMarkers();
         renderSelectedStores();
     });
 })();
