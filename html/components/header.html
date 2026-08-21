@@ -45,6 +45,9 @@
                     <!-- 즐겨찾기는 같은 화면의 탭이지만 자주 쓰는 기능이라 진입점을 따로 둠 -->
                     <li><a class="user-menu__item" role="menuitem" data-header-link="../user_information/my_activity.html?tab=favorites">즐겨찾기</a></li>
                     <li><a class="user-menu__item" role="menuitem" data-header-link="../user_information/my_activity.html">내 활동</a></li>
+                    <!-- 관리자에게만 보임. 토글은 profileMenu.js 담당 -->
+                    <!-- WHY: hidden을 li에 검 — a에 걸면 li의 여백만 남아 빈 줄이 생김 -->
+                    <li id="userMenuAdminItem" hidden><a class="user-menu__item" role="menuitem" data-header-link="../user_information/admin_users.html">회원 관리</a></li>
                 </ul>
 
                 <div class="user-menu__divider"></div>
