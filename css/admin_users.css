@@ -1,0 +1,109 @@
+/* 회원 관리 화면. 카드·폼·버튼은 my_info.css를 그대로 쓰고 여기서는 표만 담당 */
+
+/* WHY: my-info-page(760px)보다 넓힘 — 열이 여덟이라 그 폭에서는 글자가 세로로 쌓임 */
+.admin-users-page {
+    max-width: 1080px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.admin-users__summary {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* WHY: 표를 감싸서 스크롤을 여기에 둠 — 화면이 좁을 때 페이지 전체가 가로로 밀리지 않음 */
+.admin-users__scroll {
+    overflow-x: auto;
+}
+
+.admin-users__table {
+    width: 100%;
+    /* WHY: 칸 사이 기본 여백을 없애고 테두리를 선 하나로 합침 */
+    border-collapse: collapse;
+    /* WHY: 표가 이 값보다 좁아지면 줄바꿈이 생기므로 여기서 가로 스크롤로 넘김 */
+    min-width: 860px;
+    font-size: 14px;
+}
+
+.admin-users__table th,
+.admin-users__table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    /* WHY: 이메일이 길어도 칸 폭이 밀리지 않게 */
+    white-space: nowrap;
+}
+
+.admin-users__table th {
+    background: #fafafa;
+    color: #666;
+    font-weight: 600;
+}
+
+.admin-users__table tbody tr:hover {
+    background: #fff7ed;
+}
+
+/* WHY: 숫자는 오른쪽 정렬 — 자릿수가 달라도 눈으로 크기를 비교할 수 있음 */
+.admin-users__cell--num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-users__cell--muted {
+    color: #bbb;
+    letter-spacing: 2px;
+}
+
+.admin-users__pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+/*
+ * WHY: 이 한 줄이 필요한 이유
+ *   [hidden]은 브라우저 기본 스타일시트 소속이라 작성자가 쓴 클래스 룰에 짐.
+ *   바로 위 display:flex 때문에 JS의 userPagination.hidden = true가 무시됨.
+ *   프로젝트 전체 규칙([hidden]{display:none !important})은 food_page.css:7에만 있고
+ *   이 페이지는 그 파일을 로드하지 않음 — 그래서 여기서 따로 막음.
+ */
+.admin-users__pagination[hidden] {
+    display: none;
+}
+
+.admin-users__page-btn {
+    min-width: 34px;
+    padding: 7px 10px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    background: #fff;
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-users__page-btn:hover {
+    border-color: #f5821f;
+    color: #f5821f;
+}
+
+.admin-users__page-btn.active {
+    border-color: #f5821f;
+    background: #f5821f;
+    color: #fff;
+}
+
+.admin-users__notice {
+    margin: 20px 0 0;
+    padding: 14px 16px;
+    background: #fafafa;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #888;
+}

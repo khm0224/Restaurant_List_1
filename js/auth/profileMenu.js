@@ -3,7 +3,7 @@
  *
  * 메뉴 항목은 HTML의 li로 관리 — 항목을 늘려도 이 파일은 수정하지 않음.
  *
- * 의존: auth.js (getCurrentUser), login.js (handleLogout)
+ * 의존: auth.js (getCurrentUser / isAdmin), login.js (handleLogout)
  * 공개: window.initUserMenu — header.js가 헤더 삽입을 끝낸 뒤 호출
  * 구독: auth:changed — 이후 갱신은 스스로 처리
  *
@@ -19,6 +19,7 @@ window.initUserMenu = function () {
     const avatar = document.getElementById('userMenuAvatar');
     const nameLabel = document.getElementById('userMenuName');
     const logoutBtn = document.getElementById('userMenuLogout');
+    const adminItem = document.getElementById('userMenuAdminItem');
     // header.js가 완전한 주소로 바꿔놓은 값을 재사용.
     // './img/...'를 직접 쓰면 html/main/ 페이지에서 404.
     const defaultAvatarSrc = avatar.getAttribute('src');
@@ -91,6 +92,18 @@ window.initUserMenu = function () {
         avatar.src = user.img || defaultAvatarSrc;
         // 사용자 입력값이므로 textContent — innerHTML이면 태그가 실행됨(XSS)
         nameLabel.textContent = user.name;
+
+        // 관리자 전용 항목.
+        //
+        // 위의 avatar·nameLabel과 달리 존재 확인을 하는 이유:
+        //   헤더는 fetch로 오므로 header.html과 이 파일의 버전이 갈라질 수 있음.
+        //   같은 파일 안의 코드는 그럴 수 없지만 컴포넌트는 브라우저 캐시나
+        //   병합 순서에 따라 옛 마크업이 올 수 있어, 그때 드롭다운 전체가 죽음.
+        //
+        // 감추는 것은 화면 정리일 뿐 권한 검사가 아님 —
+        // 주소를 직접 치면 열리고, 진짜 차단은 admin_users.js가 함.
+        if (adminItem) adminItem.hidden = !isAdmin(user);
+
         menu.hidden = false;
     }
 

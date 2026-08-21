@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 관리</title>
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/auth/login_page.css">
+    <link rel="stylesheet" href="../../css/auth/user_menu.css">
+    <!-- 카드·폼·버튼 스타일은 개인정보 화면과 같은 것을 씀. 표만 따로 둠 -->
+    <link rel="stylesheet" href="../../css/my_info.css">
+    <link rel="stylesheet" href="../../css/admin_users.css">
+</head>
+
+<body>
+    <!-- 상단 메뉴 중 해당 항목이 없는 페이지라 빈 값 -->
+    <div id="header-root" data-active="">
+        <a href="../../index.html" aria-label="메인 페이지로 이동">봄내로그</a>
+    </div>
+
+    <main class="admin-users-page">
+        <!-- 카드 넷 중 하나만 보임. 전환은 admin_users.js가 담당 (auth:changed 구독) -->
+        <!--   비로그인 → loginRequiredCard / 비관리자 → adminRequiredCard -->
+        <!--   관리자·미인증 → verifyCard / 관리자·인증 → adminContent -->
+        <!-- hidden 속성을 씀 — .hidden 클래스와 달리 CSS 로드 실패 시에도 유지됨 -->
+        <section class="login-required-card" id="loginRequiredCard" aria-labelledby="loginRequiredTitle" hidden>
+            <h1 id="loginRequiredTitle">로그인이 필요합니다</h1>
+            <p>회원 관리는 관리자만 볼 수 있습니다.</p>
+            <button type="button" class="submit-btn" data-login-open>로그인</button>
+        </section>
+
+        <!-- WHY: 로그인은 했지만 권한이 없는 경우를 따로 둠 -->
+        <!--   로그인 카드를 그대로 보여주면 이미 로그인한 사람에게 또 로그인하라고 말하게 됨 -->
+        <section class="login-required-card" id="adminRequiredCard" aria-labelledby="adminRequiredTitle" hidden>
+            <h1 id="adminRequiredTitle">접근 권한이 없습니다</h1>
+            <p>이 화면은 관리자 계정으로만 열 수 있습니다.</p>
+        </section>
+
+        <!-- 남의 개인정보를 보는 화면이라 로그인 쿠키만으로는 열지 않음 -->
+        <section class="my-info-card" id="verifyCard" hidden>
+            <h1>본인 확인</h1>
+            <p class="field-hint">회원 목록을 보려면 현재 비밀번호를 입력하세요.</p>
+
+            <form id="verifyForm" class="my-info-form">
+                <div class="field-group">
+                    <label for="verifyPasswordInput">현재 비밀번호</label>
+                    <input id="verifyPasswordInput" type="password" autocomplete="current-password"
+                        placeholder="현재 비밀번호">
+                </div>
+
+                <button class="submit-btn" type="submit">확인</button>
+                <p id="verifyMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="my-info-card" id="adminContent" hidden>
+            <h1>회원 관리</h1>
+            <p class="admin-users__summary" id="userSummary" aria-live="polite"></p>
+
+            <div class="admin-users__scroll">
+                <!-- 머리글과 본문 모두 admin_users.js가 COLUMNS 하나로 그림 -->
+                <table class="admin-users__table">
+                    <caption class="field-hint">가입한 순서대로 표시됩니다.</caption>
+                    <thead id="userTableHead"></thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="admin-users__pagination" id="userPagination" hidden></div>
+
+            <p class="admin-users__notice">
+                비밀번호는 관리자에게도 표시하지 않습니다.
+                서버가 있다면 BCrypt로 해싱되어 저장되므로 원문을 되돌릴 수 없고,
+                비밀번호를 알아야 하는 관리 업무는 존재하지 않습니다.
+            </p>
+        </section>
+    </main>
+
+    <div id="login-modal-root"></div>
+
+    <!-- 로드 순서 주의 -->
+    <!--   auth.js      → 나머지 전부가 여기 함수를 씀 -->
+    <!--   favorites.js → auth.js 필요. countFavorites를 표에서 씀 -->
+    <!--   board.js     → Board / ReviewBoard. 리뷰·댓글 수를 세는 데 필요 -->
+    <!--   admin_users.js는 반드시 맨 마지막 -->
+    <script src="../../js/auth/auth.js"></script>
+    <script src="../../js/auth/favorites.js"></script>
+    <script src="../../js/auth/login.js"></script>
+    <script src="../../js/auth/profileMenu.js"></script>
+    <script src="../../js/header.js" data-header-component="../components/header.html"></script>
+    <script src="../../js/auth/login_modal.js" data-login-component="../auth/login_page.html"></script>
+    <script src="../../js/restaurantData.js"></script>
+    <script src="../../js/headerSearch.js"></script>
+    <script src="../../js/board.js"></script>
+    <script src="../../js/admin_users.js"></script>
+</body>
+
+</html>
