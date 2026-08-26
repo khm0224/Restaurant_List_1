@@ -36,7 +36,7 @@
         );
     }
 
-    // 카드에서 선택한 식당의 위치를 URL로 전달해 상세 화면을 엽니다.
+    // 카드에서 선택한 식당의 지역·카테고리·ID를 URL로 전달해 상세 화면을 엽니다.
     function openStoreDetail(district, category, index) {
         const parameters = new URLSearchParams({ district, category, id: index });
         window.location.href = `restaurant_detail.html?${parameters}`;
