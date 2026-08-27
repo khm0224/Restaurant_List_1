@@ -69,7 +69,7 @@ const REVIEWS_PER_PAGE = 5;
 let reviewPage = 1;
 
 // 목록 페이지에서 선택한 식당을 복원하고, 직접 접속 시 URL로 보완합니다.
-let saved = sessionStorage.getItem('selectedRestaurant');
+let saved = sessionStorage.getItem('selectedRestaurant'); // sessionStorage인 selectedRestaurant에 저장되어 있는 값들을 사용해서 읽음
 const queryParams = new URLSearchParams(window.location.search);
 const districtParam = queryParams.get('district');
 const categoryParam = queryParams.get('category');
@@ -97,7 +97,7 @@ let restaurantDistrict = null;
 if (!saved) {
     detailCard.innerHTML = '<div class="detail-empty"><h2>선택된 식당 정보가 없습니다</h2></div>';
 } else {
-    const store = JSON.parse(saved);
+    const store = JSON.parse(saved); // 선택한 식당의 정보가 있으면 sessionStorage에 있던거 가져옴
 
     // 키 형식은 board.js가 정함. 여기서 문자열을 직접 조립하면
     // 형식이 바뀔 때 쪼개는 쪽(my_activity.js)이 조용히 깨짐.
@@ -363,7 +363,7 @@ reviewForm.addEventListener('submit', (event) => {
     }
 
     const photo = reviewPhotoPreview.hidden ? null : reviewPhotoPreview.src;
-    ReviewBoard.addReview(restaurantId, selectedRating, reviewText.value, photo, user.id, restaurantDistrict);
+    ReviewBoard.addReview(restaurantId, selectedRating, reviewText.value, photo, user.id, restaurantDistrict); // Board.js 리뷰 부분 호출
     renderReviews();
     closeReviewModal();
 });
@@ -462,23 +462,32 @@ commentPageNext.addEventListener('click', () => {
 
 // 입력한 댓글을 localStorage에 저장하고 목록을 다시 렌더링합니다.
 commentForm.addEventListener('submit', (event) => {
+    // 폼 제출에 따른 페이지 새로고침을 막고 JavaScript로 처리합니다.
     event.preventDefault();
 
+    // 공백만 입력된 댓글은 저장하지 않습니다.
     if (!commentText.value.trim()) {
         return;
     }
 
     // loginUser 쿠키는 1일 만료 — 쓰는 동안 풀릴 수 있음
+    // 제출 시점의 로그인 상태를 다시 확인합니다.
     const user = getCurrentUser();
 
     if (!user) {
         // 아래 value 초기화까지 가지 않으므로 쓰던 글은 그대로 남음
+        // 로그인하지 않은 경우 저장하지 않고 댓글 입력 상태만 갱신합니다.
         updateBoardAuthState();
         return;
     }
 
-    Board.addComment(restaurantId, user.id, commentText.value);
+    // 현재 식당 ID와 작성자 ID를 이용해 댓글을 localStorage에 저장합니다.
+    Board.addComment(restaurantId, user.id, commentText.value); // board.js에 댓글 부분 호출
+
+    // 저장이 완료되면 입력창을 비우고 댓글 목록을 첫 페이지부터 보여줍니다.
     commentText.value = '';
     commentPage = 1;
+
+    // 저장된 댓글을 포함하도록 화면의 댓글 목록을 다시 렌더링합니다.
     renderComments();
 });

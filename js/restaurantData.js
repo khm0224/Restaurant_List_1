@@ -985,38 +985,55 @@ window.restaurantData.신사우동 = {
 window.currentSelectedDistrict = '교동';
 
 // 카테고리와 인덱스를 받아 특정 식당 정보를 조회합니다.
+// 이거 위에 있는 window.restaurantData="~~동" 여기 안에 있는 놈들 가져오는거임
 window.getRestaurantData = function (category, index, district = window.currentSelectedDistrict || '교동') {
+    // 지역값 누락으로 인한 조회 실패를 줄이는 방어 용도로 || "교동"을 넣음
+
+    // 카테고리나 식당 인덱스가 없으면 조회를 진행하지 않고 null을 반환합니다.
     if (!category || index === undefined || index === null) {
         return null;
     }
 
+    // URL에서 받은 문자열 인덱스를 배열에서 사용할 숫자로 변환합니다.
     const normalizedIndex = Number(index);
+
+    // 선택한 동네의 전체 카테고리 데이터를 가져옵니다.
     const districtData = window.restaurantData?.[district];
 
+    // 해당 동네에 카테고리 배열이 있으면 인덱스로 식당을 조회합니다.
     if (districtData && Array.isArray(districtData[category])) {
+        // 존재하는 식당을 반환하고, 잘못된 인덱스면 null을 반환합니다.
         return districtData[category][normalizedIndex] || null;
     }
 
+    // 동네 또는 카테고리 데이터가 없으면 조회 실패로 처리합니다.
     return null;
 };
 
 // 선택한 식당 정보를 세션 스토리지에 저장해서 상세 페이지에서 복원할 수 있게 합니다.
+// 내가 food_page에서 교동, 한식, 1 카드를 눌리면 이 코드가 실행되서 그 에 해당하는 페이지가 열림 
 window.setSelectedRestaurant = function (districtOrCategory, categoryOrIndex, maybeIndex) {
+    // 기본값은 현재 선택된 동네와 전달받은 카테고리·인덱스로 설정합니다.
     let district = window.currentSelectedDistrict || '교동';
     let category = districtOrCategory;
     let index = categoryOrIndex;
 
+    // 인자가 3개이면 district, category, index를 모두 전달받은 것으로 처리합니다.
     if (arguments.length >= 3) {
         district = districtOrCategory;
         category = categoryOrIndex;
         index = maybeIndex;
     }
 
+    // 지역·카테고리·인덱스를 이용해 선택한 식당의 원본 데이터를 조회합니다.
     const store = window.getRestaurantData(category, index, district);
+
+    // 일치하는 식당이 없으면 저장하지 않고 null을 반환합니다.
     if (!store) {
         return null;
     }
 
+    // 원본 식당 정보에 지역·카테고리·숫자로 변환한 ID를 추가합니다.
     const selected = {
         ...store,
         district,
@@ -1024,7 +1041,22 @@ window.setSelectedRestaurant = function (districtOrCategory, categoryOrIndex, ma
         id: Number(index)
     };
 
+    // 페이지 이동 후에도 선택한 식당을 복원할 수 있도록 JSON 문자열로 저장합니다.
     sessionStorage.setItem('selectedRestaurant', JSON.stringify(selected));
+    // sessionStorage는 대충 자바스크립트에서 사용하는 캐시느낌
+    // selectedRestaurant안에 이런 식으로 값이 저장됨
+    // {
+    //     name: '실비막국수',
+    //     img: '...',
+    //     address: '강원 춘천시 소양고개길 25 실비막국수',
+    //     rating: 4.7,
+    //     reviewCount: 3717,
+    //     district: '소양동',
+    //     category: '한식',
+    //     id: 0
+    // }
+
+    // 저장한 선택 식당 객체를 호출한 코드에 반환합니다.
     return selected;
 };
 
