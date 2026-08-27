@@ -1,0 +1,232 @@
+[02. 음식점 마커와 필터 코드]
+
+============================================================
+1. 음식점 마커 생성
+============================================================
+
+원본 위치: js/restaurantMap.js 203번째 줄
+
+```javascript
+function createRestaurantMarkers(restaurants) {
+    // 기존 마커를 지도에서 모두 제거한다.
+    restaurantMarkers.forEach(({ marker }) =>
+        marker.setMap(null)
+    );
+
+    // 기존 마커 목록도 빈 배열로 초기화한다.
+    restaurantMarkers = [];
+
+    // 같은 좌표의 음식점을 묶을 Map 객체다.
+    const groups = new Map();
+
+    restaurants.forEach(restaurant => {
+        // 소수점 8자리까지 같은 위도와 경도를 그룹 키로 사용한다.
+        const key =
+            `${restaurant.latitude.toFixed(8)},` +
+            `${restaurant.longitude.toFixed(8)}`;
+
+        // 기존 그룹이 없으면 빈 배열로 시작한다.
+        const group = groups.get(key) || [];
+
+        // 현재 음식점을 같은 위치의 그룹에 넣는다.
+        group.push(restaurant);
+        groups.set(key, group);
+    });
+
+    groups.forEach(restaurantsAtPosition => {
+        // 그룹의 첫 음식점 좌표를 대표 위치로 사용한다.
+        const restaurant = restaurantsAtPosition[0];
+
+        const marker = new kakao.maps.Marker({
+            // 현재 필터와 맞는 음식점이 있을 때만 지도에 표시한다.
+            map: restaurantsAtPosition.some(matchesFilter)
+                ? map
+                : null,
+
+            position: new kakao.maps.LatLng(
+                restaurant.latitude,
+                restaurant.longitude
+            ),
+
+            // 같은 위치의 음식점 이름을 쉼표로 연결한다.
+            title: restaurantsAtPosition
+                .map(item => item.name)
+                .join(', '),
+
+            image: createMarkerImage(MARKER_SVG)
+        });
+
+        // 마커 클릭 시 같은 위치의 음식점 정보창을 연다.
+        kakao.maps.event.addListener(marker, 'click', () =>
+            openRestaurantGroup(
+                marker,
+                restaurantsAtPosition
+            )
+        );
+
+        // 필터 변경 때 다시 사용할 수 있도록 저장한다.
+        restaurantMarkers.push({
+            restaurants: restaurantsAtPosition,
+            marker
+        });
+    });
+}
+```
+
+같은 좌표를 묶는 이유
+
+같은 건물이나 동일 주소에 여러 음식점이 있으면 마커가 겹친다.
+따라서 마커는 하나만 만들고 정보창 안에서 여러 음식점을 보여준다.
+
+
+============================================================
+2. 음식점 필터 조건
+============================================================
+
+원본 위치: js/restaurantMap.js 65번째 줄
+
+```javascript
+// 지도 CSV와 즐겨찾기를 비교하는 공통 식별 키다.
+const getRestaurantKey = restaurant =>
+    `${restaurant.district}|${restaurant.name}`;
+
+const matchesFilter = restaurant =>
+    // 전체 지역 또는 선택된 행정동인가?
+    (selectedDistricts.has(ALL) ||
+        selectedDistricts.has(restaurant.district)) &&
+
+    // 전체 음식 또는 선택된 카테고리인가?
+    (selectedCategory === ALL ||
+        restaurant.category === selectedCategory) &&
+
+    // 즐겨찾기 전체 보기이거나 즐겨찾기에 포함됐는가?
+    (favoriteRestaurantKeys === null ||
+        favoriteRestaurantKeys.has(
+            getRestaurantKey(restaurant)
+        ));
+```
+
+&&는 모든 조건이 true일 때만 true가 된다.
+
+```text
+지역 일치
+AND 카테고리 일치
+AND 즐겨찾기 조건 일치
+= 마커 표시
+```
+
+||는 둘 중 하나가 true면 true다.
+
+```text
+전체 지역이 선택됨
+OR 음식점이 선택 행정동에 있음
+= 지역 조건 통과
+```
+
+
+============================================================
+3. 마커 표시 상태 갱신
+============================================================
+
+원본 위치: js/restaurantMap.js 142번째 줄
+
+```javascript
+function updateMarkerVisibility() {
+    // 필터 변경 전에 열린 정보창을 닫는다.
+    infoWindow?.close();
+
+    restaurantMarkers.forEach(({ restaurants, marker }) => {
+        // 같은 위치의 음식점 중 하나라도 조건에 맞는지 검사한다.
+        const visible = restaurants.some(matchesFilter);
+
+        // visible이 true면 지도에 마커를 연결한다.
+        // false면 null을 전달해 지도에서 숨긴다.
+        marker.setMap(visible ? map : null);
+    });
+}
+```
+
+`조건 ? A : B`는 삼항 연산자다.
+
+```javascript
+visible ? map : null
+```
+
+일반 if문으로 바꾸면 다음과 같다.
+
+```javascript
+if (visible) {
+    marker.setMap(map);
+} else {
+    marker.setMap(null);
+}
+```
+
+
+============================================================
+4. 즐겨찾기 데이터를 지도 키로 변환
+============================================================
+
+원본 위치: js/restaurantExplorer.js 16번째 줄
+
+```javascript
+function getFavoriteRestaurantKeys() {
+    const keys = [];
+    const restaurantData = window.restaurantData || {};
+
+    Object.entries(restaurantData).forEach(
+        ([district, districtData]) => {
+            Object.entries(districtData).forEach(
+                ([category, stores]) => {
+                    stores.forEach((store, index) => {
+                        // 즐겨찾기에 저장된 기존 ID 형식
+                        const favoriteId =
+                            `${district}_${category}_${index}`;
+
+                        if (isFavorite(favoriteId)) {
+                            // 지도와 비교할 새 키 형식
+                            keys.push(
+                                `${district}|${store.name}`
+                            );
+                        }
+                    });
+                }
+            );
+        }
+    );
+
+    return keys;
+}
+```
+
+변환이 필요한 이유
+
+```text
+즐겨찾기 저장 형식: 행정동_카테고리_순번
+지도 비교 형식: 행정동|음식점명
+```
+
+서로 형식이 다르기 때문에 중간 변환 과정이 필요하다.
+
+
+============================================================
+5. 즐겨찾기 마커 동기화
+============================================================
+
+원본 위치: js/restaurantExplorer.js 33번째 줄
+
+```javascript
+function syncFavoriteMarkers() {
+    window.RestaurantMap?.selectFavorites(
+        favoritesOnly
+            // 즐겨찾기 보기 ON이면 즐겨찾기 키 전달
+            ? getFavoriteRestaurantKeys()
+
+            // OFF이면 필터를 해제하기 위해 null 전달
+            : null
+    );
+}
+```
+
+`?.`는 RestaurantMap이 존재할 때만 함수를 호출한다.
+지도 코드가 아직 준비되지 않았을 때 오류가 나는 것을 방지한다.

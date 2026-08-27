@@ -1,0 +1,279 @@
+[01. 지도와 GeoJSON 코드]
+
+============================================================
+1. GeoJSON이란?
+============================================================
+
+GeoJSON은 지도상의 위치와 영역을 JSON 형식으로 저장하는 규격이다.
+
+이 프로젝트에서 사용하는 파일은 다음 두 개다.
+
+- data/area/chuncheon-admin-dong.geojson
+  춘천시 행정동별 면 영역을 저장한다.
+
+- data/area/chuncheon-city-boundary.geojson
+  춘천시 전체 외곽선을 저장한다.
+
+대표적인 구조는 다음과 같다.
+
+```json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ADM_NM": "행정동 이름"
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": []
+      }
+    }
+  ]
+}
+```
+
+properties에는 행정동 이름 같은 설명 정보가 들어간다.
+geometry에는 실제 지도에 그릴 도형과 좌표가 들어간다.
+
+
+============================================================
+2. GeoJSON 파일 경로 설정
+============================================================
+
+원본 위치: js/restaurantMap.js 4번째 줄
+
+```javascript
+// 춘천시 행정동별 경계 데이터 파일
+const DISTRICT_URL =
+    '../data/area/chuncheon-admin-dong.geojson';
+
+// 춘천시 전체 외곽 경계 데이터 파일
+const CITY_URL =
+    '../data/area/chuncheon-city-boundary.geojson';
+```
+
+두 상수에는 브라우저가 요청할 파일의 상대 경로가 저장된다.
+나중에 fetch(DISTRICT_URL) 형태로 사용한다.
+
+
+============================================================
+3. GeoJSON 파일을 동시에 불러오기
+============================================================
+
+원본 위치: js/restaurantMap.js 164번째 줄
+
+```javascript
+async function loadBoundaries() {
+    // 두 파일의 다운로드를 동시에 시작한다.
+    const responses = await Promise.all([
+        fetch(DISTRICT_URL),
+        fetch(CITY_URL)
+    ]);
+
+    // 두 응답 중 하나라도 실패했는지 검사한다.
+    if (responses.some(response => !response.ok)) {
+        throw new Error(
+            '춘천시 경계 파일을 불러오지 못했습니다.'
+        );
+    }
+
+    // 응답 본문을 JavaScript JSON 객체로 변환한다.
+    [districtGeoJson, cityGeoJson] = await Promise.all(
+        responses.map(response => response.json())
+    );
+
+    // 경계 데이터 로딩이 끝났음을 기록한다.
+    boundaryLoaded = true;
+
+    // 현재 선택 지역의 경계를 지도에 표시한다.
+    highlightDistricts(Array.from(selectedDistricts));
+}
+```
+
+실행 순서
+
+1) fetch()가 두 GeoJSON 파일을 요청한다.
+2) Promise.all()이 두 요청이 끝날 때까지 기다린다.
+3) response.ok로 요청 성공 여부를 확인한다.
+4) response.json()이 JSON 문자열을 객체로 변환한다.
+5) highlightDistricts()가 경계를 지도에 그린다.
+
+
+============================================================
+4. response => !response.ok 상세 설명
+============================================================
+
+사용 코드
+
+```javascript
+responses.some(response => !response.ok)
+```
+
+response는 responses 배열에서 현재 검사하는 응답 한 개다.
+
+=>는 화살표 함수이며 다음 일반 함수와 같은 의미다.
+
+```javascript
+function (response) {
+    return !response.ok;
+}
+```
+
+response.ok는 HTTP 상태 코드가 200~299이면 true다.
+404나 500처럼 실패 상태라면 false다.
+
+!는 Boolean 값을 반대로 바꾸는 부정 연산자다.
+
+```text
+response.ok = true
+!response.ok = false
+
+response.ok = false
+!response.ok = true
+```
+
+some()은 배열 요소 중 하나라도 true가 나오면 true를 반환한다.
+
+```javascript
+const responses = [
+    { ok: true },
+    { ok: false }
+];
+
+responses.some(response => !response.ok);
+// 두 번째 응답이 실패했으므로 결과는 true
+```
+
+따라서 전체 코드는 다음 뜻이다.
+
+```text
+두 GeoJSON 응답 중 하나라도 실패했는가?
+```
+
+
+============================================================
+5. GeoJSON 좌표 순서 변환
+============================================================
+
+원본 위치: js/restaurantMap.js 43번째 줄
+
+```javascript
+// GeoJSON 좌표는 [경도, 위도] 순서다.
+// 카카오 LatLng는 (위도, 경도) 순서이므로 뒤집는다.
+const latLng = coordinate =>
+    new kakao.maps.LatLng(
+        coordinate[1], // 위도
+        coordinate[0]  // 경도
+    );
+```
+
+예시
+
+```javascript
+const coordinate = [127.7298, 37.8813];
+
+// coordinate[0]은 경도 127.7298
+// coordinate[1]은 위도 37.8813
+latLng(coordinate);
+```
+
+순서를 바꾸지 않으면 지도에서 완전히 잘못된 위치가 나오거나
+유효하지 않은 위도 값으로 처리될 수 있다.
+
+
+============================================================
+6. 지도 생성
+============================================================
+
+원본 위치: js/restaurantMap.js 231번째 줄
+
+```javascript
+// mapElement는 HTML의 id="map-api" 요소다.
+map = new kakao.maps.Map(mapElement, {
+    // 지도를 처음 열었을 때 중심 위치
+    center: new kakao.maps.LatLng(
+        37.8813,
+        127.7298
+    ),
+
+    // 카카오 지도 확대 수준
+    // 값이 작을수록 확대되고 클수록 축소된다.
+    level: 7
+});
+```
+
+생성된 map 객체는 다음 기능에서 함께 사용한다.
+
+- 행정동 Polygon
+- 춘천시 외곽 Polyline
+- 음식점 Marker
+- 현재 위치 CustomOverlay
+- 자동차 경로 Polyline
+
+
+============================================================
+7. 행정동 영역 그리기
+============================================================
+
+원본 위치: js/restaurantMap.js 82번째 줄
+
+```javascript
+function drawBoundaries() {
+    // 이전에 그린 경계를 지도에서 제거한다.
+    clearOverlays(boundaryOverlays);
+
+    // '전체' 지역이 선택됐는지 확인한다.
+    const showAll = selectedDistricts.has(ALL);
+
+    // 전체라면 춘천시 외곽선,
+    // 아니라면 행정동별 면 데이터를 사용한다.
+    const features = showAll
+        ? cityGeoJson.features
+        : districtGeoJson.features;
+
+    features.forEach(feature => {
+        // GeoJSON의 ADM_NM은 행정동 이름이다.
+        const selected = showAll || selectedDistricts.has(
+            feature.properties?.ADM_NM
+        );
+
+        // 춘천시 외곽선은 선으로 표시한다.
+        if (feature.geometry.type === 'MultiLineString') {
+            feature.geometry.coordinates.forEach(line => {
+                boundaryOverlays.push(
+                    new kakao.maps.Polyline({
+                        map,
+                        path: line.map(latLng),
+                        strokeWeight: 4,
+                        strokeColor: '#ba0707',
+                        strokeOpacity: 1
+                    })
+                );
+            });
+            return;
+        }
+
+        // 행정동 데이터는 면으로 표시한다.
+        polygonsOf(feature.geometry).forEach(polygon => {
+            boundaryOverlays.push(
+                new kakao.maps.Polygon({
+                    map,
+                    path: polygon.map(
+                        ring => ring.map(latLng)
+                    ),
+                    fillColor: '#fff',
+                    fillOpacity: selected ? 0.28 : 0.02
+                })
+            );
+        });
+    });
+}
+```
+
+활용 결과
+
+- 전체 선택: 춘천시 전체 외곽선을 표시한다.
+- 한 개 동 선택: 해당 행정동의 면을 강조한다.
+- 여러 동 선택: 선택된 동들을 함께 강조한다.

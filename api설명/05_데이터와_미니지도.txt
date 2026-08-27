@@ -1,0 +1,163 @@
+[05. 음식점 데이터와 미니 지도]
+
+============================================================
+1. 음식점 CSV 파일 로딩
+============================================================
+
+원본 위치: js/restaurantService.js 90번째 줄
+
+```javascript
+async function loadRestaurants() {
+    // 이미 실행 중인 요청이 있으면 같은 Promise를 돌려준다.
+    // 동일 CSV를 여러 번 다운로드하는 것을 방지한다.
+    if (restaurantPromise) {
+        return restaurantPromise;
+    }
+
+    restaurantPromise = fetch(
+        RESTAURANT_CSV_URL,
+        { cache: 'no-store' }
+    )
+        .then(response => {
+            // CSV 파일 요청이 실패했는지 확인한다.
+            if (!response.ok) {
+                throw new Error(
+                    '음식점 데이터를 불러오지 못했습니다.'
+                );
+            }
+
+            // CSV는 JSON이 아니므로 text()로 읽는다.
+            return response.text();
+        })
+        // CSV 문자열을 행별 음식점 객체로 변환한다.
+        .then(parseRestaurantCsv);
+
+    return restaurantPromise;
+}
+```
+
+JSON 파일은 response.json()으로 읽지만
+CSV 파일은 response.text()로 읽은 후 직접 분석해야 한다.
+
+
+============================================================
+2. 선택 음식점을 JSON으로 저장
+============================================================
+
+원본 위치: js/restaurantDetail.js 82번째 줄
+
+```javascript
+// JavaScript 객체는 sessionStorage에 직접 저장할 수 없다.
+// JSON.stringify()로 문자열로 바꿔 저장한다.
+sessionStorage.setItem(
+    'selectedRestaurant',
+    JSON.stringify({
+        district,
+        category,
+        index,
+        name: store.name,
+        address: store.address
+    })
+);
+```
+
+sessionStorage는 같은 브라우저 탭이 열려 있는 동안 데이터를 보관한다.
+
+
+============================================================
+3. 저장된 음식점 JSON 읽기
+============================================================
+
+원본 위치: js/restaurantDetailMap.js 18번째 줄
+
+```javascript
+function readSelectedRestaurant() {
+    try {
+        // 저장된 JSON 문자열을 다시 JavaScript 객체로 변환한다.
+        return JSON.parse(
+            sessionStorage.getItem('selectedRestaurant') ||
+            'null'
+        );
+    } catch (error) {
+        // JSON 문자열이 손상됐다면 null을 반환한다.
+        return null;
+    }
+}
+```
+
+`|| 'null'`은 저장된 값이 없을 때 문자열 'null'을 대신 사용한다.
+JSON.parse('null')의 결과는 JavaScript의 null이다.
+
+
+============================================================
+4. 메인 페이지 음식점 마커
+============================================================
+
+원본 위치: js/restaurant_homepageMap.js 133번째 줄
+
+```javascript
+async function showRestaurants(restaurants = []) {
+    // 지도 생성 전 호출되면 나중에 사용할 목록으로 저장한다.
+    if (!map) {
+        pendingRestaurants = restaurants;
+        return;
+    }
+
+    // 이전 음식점 마커를 제거한다.
+    clearMarkers();
+
+    // 음식점 이름별 좌표 CSV를 불러온다.
+    const coordinates = await loadCoordinateMap();
+
+    restaurants.forEach(restaurant => {
+        // 이름을 정리한 뒤 해당 음식점 좌표를 찾는다.
+        const position = coordinates.get(
+            normalizeName(restaurant.name)
+        );
+
+        // 좌표가 없는 음식점은 마커를 만들 수 없다.
+        if (!position) return;
+
+        const marker = new google.maps.Marker({
+            map,
+            position,
+            title: restaurant.name
+        });
+
+        restaurantMarkers.push({ marker });
+    });
+}
+```
+
+
+============================================================
+5. 상세 페이지 미니 지도
+============================================================
+
+원본 위치: js/restaurantDetailMap.js 40번째 줄
+
+```javascript
+function renderMap(restaurant) {
+    // 음식점 좌표를 Google 지도 위치 객체로 만든다.
+    const position = {
+        lat: Number(restaurant.latitude),
+        lng: Number(restaurant.longitude)
+    };
+
+    // 상세 페이지용 지도를 생성한다.
+    map = new google.maps.Map(mapElement, {
+        center: position,
+        zoom: 17
+    });
+
+    // 선택 음식점 위치에 마커 하나를 표시한다.
+    marker = new google.maps.Marker({
+        map,
+        position,
+        title: restaurant.name
+    });
+}
+```
+
+맛집 탐색 페이지는 카카오 지도를 사용하고,
+메인 및 상세 미니 지도 일부는 Google 지도를 사용한다.

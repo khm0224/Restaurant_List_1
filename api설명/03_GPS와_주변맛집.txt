@@ -1,0 +1,206 @@
+[03. GPS와 주변 맛집 코드]
+
+============================================================
+1. GPS 기본 설정
+============================================================
+
+원본 위치: js/geolocationService.js 5번째 줄
+
+```javascript
+const DEFAULT_OPTIONS = {
+    // 가능한 경우 정확도가 높은 위치 정보를 요청한다.
+    enableHighAccuracy: true,
+
+    // 최대 10초 동안 위치 응답을 기다린다.
+    timeout: 10000,
+
+    // 저장된 과거 위치 대신 새 위치를 요청한다.
+    maximumAge: 0
+};
+```
+
+
+============================================================
+2. 현재 위치 한 번 조회
+============================================================
+
+원본 위치: js/geolocationService.js 24번째 줄
+
+```javascript
+function getCurrentPosition(options = {}) {
+    // 브라우저가 위치 기능을 지원하는지 확인한다.
+    if (!navigator.geolocation) {
+        return Promise.reject(
+            new Error(
+                '이 브라우저는 현재 위치 기능을 지원하지 않습니다.'
+            )
+        );
+    }
+
+    // 콜백 기반 브라우저 API를 Promise로 감싼다.
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            // 위치 조회 성공
+            position => resolve({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy
+            }),
+
+            // 위치 조회 실패
+            error => reject(
+                new Error(getErrorMessage(error))
+            ),
+
+            // 기본 옵션과 함수 호출 시 전달된 옵션을 합친다.
+            { ...DEFAULT_OPTIONS, ...options }
+        );
+    });
+}
+```
+
+Promise로 감싸는 이유
+
+다른 코드에서 다음처럼 await를 사용할 수 있다.
+
+```javascript
+const position = await GeolocationService
+    .getCurrentPosition();
+```
+
+
+============================================================
+3. GPS 오류 코드 처리
+============================================================
+
+원본 위치: js/geolocationService.js 11번째 줄
+
+```javascript
+function getErrorMessage(error) {
+    switch (error?.code) {
+        case 1:
+            return '위치 권한이 거부되었습니다.';
+
+        case 2:
+            return '현재 위치를 확인할 수 없습니다.';
+
+        case 3:
+            return '위치 확인 시간이 초과되었습니다.';
+
+        default:
+            return '현재 위치를 불러오지 못했습니다.';
+    }
+}
+```
+
+브라우저가 주는 숫자 오류 코드를 사용자가 이해할 문장으로 바꾼다.
+
+
+============================================================
+4. 두 좌표 사이의 직선거리 계산
+============================================================
+
+원본 위치: js/nearbyRestaurantService.js 30번째 줄
+
+```javascript
+function calculateDistanceKm(origin, destination) {
+    // 입력 좌표를 동일한 형식으로 정리하고 범위를 검사한다.
+    const start = normalizeLocation(origin);
+    const end = normalizeLocation(destination);
+
+    // 위도와 경도의 차이를 라디안으로 변환한다.
+    const latitudeDifference = toRadians(
+        end.latitude - start.latitude
+    );
+    const longitudeDifference = toRadians(
+        end.longitude - start.longitude
+    );
+
+    const startLatitude = toRadians(start.latitude);
+    const endLatitude = toRadians(end.latitude);
+
+    // 하버사인 공식을 계산한다.
+    const haversine =
+        Math.sin(latitudeDifference / 2) ** 2 +
+        Math.cos(startLatitude) *
+        Math.cos(endLatitude) *
+        Math.sin(longitudeDifference / 2) ** 2;
+
+    // 지구 평균 반지름을 곱해 km 단위 거리로 반환한다.
+    return EARTH_RADIUS_KM * 2 * Math.atan2(
+        Math.sqrt(haversine),
+        Math.sqrt(1 - haversine)
+    );
+}
+```
+
+이 거리는 도로 이동 거리가 아니라 지도상의 직선거리다.
+자동차 실제 이동 거리는 길찾기 API가 계산한다.
+
+
+============================================================
+5. 선택 반경 안의 음식점 찾기
+============================================================
+
+원본 위치: js/nearbyRestaurantService.js 63번째 줄
+
+```javascript
+function findNearby({
+    origin,
+    restaurants = [],
+    radiusKm = 3,
+    limit = Infinity,
+    sortBy = 'distance'
+} = {}) {
+    // 출발 좌표가 올바른지 먼저 검사한다.
+    normalizeLocation(origin);
+
+    return restaurants
+        .flatMap(restaurant => {
+            try {
+                // 현재 위치에서 음식점까지 거리를 계산한다.
+                const distanceKm = calculateDistanceKm(
+                    origin,
+                    restaurant
+                );
+
+                // 선택 반경보다 멀면 빈 배열을 반환해 제외한다.
+                if (distanceKm > radiusKm) {
+                    return [];
+                }
+
+                // 반경 안이면 기존 음식점 정보에 거리를 추가한다.
+                return [{
+                    ...restaurant,
+                    distanceKm,
+                    distanceLabel: formatDistance(distanceKm)
+                }];
+            } catch (error) {
+                // 좌표가 잘못된 음식점은 결과에서 제외한다.
+                return [];
+            }
+        })
+        // 요청에 따라 평점순 또는 거리순으로 정렬한다.
+        .sort(
+            sortBy === 'rating'
+                ? ratingSort
+                : distanceSort
+        )
+        // 화면에 표시할 최대 개수만 남긴다.
+        .slice(0, limit);
+}
+```
+
+활용 예시
+
+```javascript
+const results = NearbyRestaurantService.findNearby({
+    origin: currentPosition,
+    restaurants,
+    radiusKm: 0.5,
+    limit: 3,
+    sortBy: 'rating'
+});
+```
+
+현재 위치 500m 안의 음식점 중 평점이 높은 3개를 반환한다.

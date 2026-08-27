@@ -1,0 +1,196 @@
+[04. 자동차 길찾기 코드]
+
+============================================================
+1. 길찾기 API 요청
+============================================================
+
+원본 위치: js/directionsService.js 15번째 줄
+
+```javascript
+async function findDrivingRoute(origin, destination) {
+    // 카카오 API가 요구하는 경도,위도 문자열을 만든다.
+    const query = new URLSearchParams({
+        origin:
+            `${origin.longitude},${origin.latitude}`,
+        destination:
+            `${destination.longitude},${destination.latitude}`,
+        priority: 'RECOMMEND',
+        alternatives: 'false',
+        road_details: 'false'
+    });
+
+    // 카카오모빌리티 서버에 자동차 경로를 요청한다.
+    const response = await fetch(
+        `${DIRECTIONS_ENDPOINT}?${query}`,
+        {
+            headers: {
+                Authorization:
+                    `KakaoAK ${getApiKey()}`
+            }
+        }
+    );
+
+    // HTTP 요청이 실패했는지 확인한다.
+    if (!response.ok) {
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            throw new Error(
+                '길찾기 API 인증에 실패했습니다.'
+            );
+        }
+
+        throw new Error(
+            `길찾기 요청에 실패했습니다. (${response.status})`
+        );
+    }
+
+    // 서버가 보낸 JSON 응답을 JavaScript 객체로 변환한다.
+    const data = await response.json();
+
+    // 추천 경로 배열의 첫 번째 경로를 사용한다.
+    const route = data.routes?.[0];
+
+    if (!route || route.result_code !== 0) {
+        throw new Error(
+            route?.result_msg ||
+            '탐색할 수 있는 자동차 경로가 없습니다.'
+        );
+    }
+
+    const points = [];
+
+    // vertexes는 경도, 위도가 반복되는 숫자 배열이다.
+    route.sections?.forEach(section => {
+        section.roads?.forEach(road => {
+            for (
+                let index = 0;
+                index < road.vertexes.length;
+                index += 2
+            ) {
+                points.push({
+                    longitude: road.vertexes[index],
+                    latitude: road.vertexes[index + 1]
+                });
+            }
+        });
+    });
+
+    // 경로선 좌표, 실제 거리, 예상 시간을 반환한다.
+    return {
+        points,
+        distance: route.summary.distance,
+        duration: route.summary.duration
+    };
+}
+```
+
+중요한 응답 값
+
+```text
+points   : 지도에 경로선을 그릴 좌표 배열
+distance : 자동차 실제 이동 거리, 단위는 미터
+duration : 예상 이동 시간, 단위는 초
+```
+
+
+============================================================
+2. 지도에 자동차 경로선 표시
+============================================================
+
+원본 위치: js/directionsController.js 146번째 줄
+
+```javascript
+function drawRoute(route) {
+    // 맛집 탐색에서 사용 중인 카카오 지도 객체를 가져온다.
+    const map = window.RestaurantMap?.getMap();
+
+    // 지도가 아직 만들어지지 않았다면 실행을 중단한다.
+    if (!map) {
+        throw new Error('지도가 아직 준비되지 않았습니다.');
+    }
+
+    // 이전 검색의 경로선이 있으면 지도에서 제거한다.
+    routePolyline?.setMap(null);
+
+    // 일반 좌표 객체를 카카오 LatLng 객체로 변환한다.
+    const path = route.points.map(point =>
+        new kakao.maps.LatLng(
+            point.latitude,
+            point.longitude
+        )
+    );
+
+    // 좌표를 이어 빨간 자동차 경로선을 생성한다.
+    routePolyline = new kakao.maps.Polyline({
+        map,
+        path,
+        strokeWeight: 7,
+        strokeColor: '#eb1111',
+        strokeOpacity: 0.9,
+        strokeStyle: 'solid'
+    });
+
+    // 경로 전체를 포함할 지도 범위를 만든다.
+    const bounds = new kakao.maps.LatLngBounds();
+    path.forEach(point => bounds.extend(point));
+
+    // 경로 전체가 보이도록 지도 위치와 확대 수준을 조절한다.
+    map.setBounds(bounds, 72, 72, 72, 72);
+}
+```
+
+
+============================================================
+3. 출발지와 도착지 검사 후 길찾기 실행
+============================================================
+
+원본 위치: js/directionsController.js 166번째 줄
+
+```javascript
+async function findRoute() {
+    // 출발지와 도착지 중 하나라도 없으면 API를 호출하지 않는다.
+    if (!routeLocations.origin || !routeLocations.destination) {
+        showRouteResult(
+            '출발지와 도착지를 지도에서 모두 지정해 주세요.',
+            true
+        );
+        return;
+    }
+
+    // 중복 클릭을 막기 위해 버튼을 잠근다.
+    routeSubmitButton.disabled = true;
+    routeSubmitButton.textContent = '경로 탐색 중…';
+
+    try {
+        // 출발지와 도착지 좌표로 자동차 경로를 요청한다.
+        const route = await window.DirectionsService
+            .findDrivingRoute(
+                routeLocations.origin,
+                routeLocations.destination
+            );
+
+        // 지도에 경로선을 표시한다.
+        drawRoute(route);
+
+        // 거리와 시간을 읽기 쉬운 형태로 표시한다.
+        showRouteResult(
+            `자동차 · ${formatDistance(route.distance)}` +
+            ` · 약 ${formatDuration(route.duration)}`
+        );
+    } catch (error) {
+        // API 오류가 발생하면 경로를 지우고 메시지를 표시한다.
+        clearRoute();
+        showRouteResult(error.message, true);
+    } finally {
+        // 성공과 실패에 관계없이 버튼을 다시 사용할 수 있게 한다.
+        routeSubmitButton.disabled = false;
+        routeSubmitButton.textContent = '경로 찾기';
+    }
+}
+```
+
+try는 정상 실행할 코드를 감싼다.
+catch는 오류가 발생했을 때 실행된다.
+finally는 성공과 실패에 관계없이 항상 실행된다.
