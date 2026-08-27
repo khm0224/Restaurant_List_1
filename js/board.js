@@ -10,7 +10,7 @@
 // 쪼개는 쪽이 에러 없이 잘못된 값을 내놓았음.
 window.RestaurantKey = {
     make(district, category, index) {
-        return `${district}_${category}_${index}`;
+        return `${district}_${category}_${index}`; // 각각의 식당을 나타내는 키값 생성 <ex) 교동_일식_2> 이런 식으로
     },
 
     // fallbackDistrict: 옛 형식(2조각) 키를 만났을 때 쓸 동네.
